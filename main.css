@@ -1,0 +1,1049 @@
+@import "tailwindcss";
+@source "./templates";
+@source "./static/js";
+
+@theme {
+    --radius-btn: var(--radius-field, 0.5rem);
+    --radius-box: var(--radius-box, 0.5rem);
+}
+
+@plugin "daisyui" {
+    root: ":root";
+    logs: true;
+    themes:
+        nord --default,
+        "dark",
+        "cupcake",
+        "bumblebee",
+        "emerald",
+        "corporate",
+        "synthwave",
+        "retro",
+        "cyberpunk",
+        "valentine",
+        "halloween",
+        "garden",
+        "forest",
+        "aqua",
+        "lofi",
+        "pastel",
+        "fantasy",
+        "wireframe",
+        "black",
+        "luxury",
+        "dracula",
+        "cmyk",
+        "autumn",
+        "business",
+        "acid",
+        "lemonade",
+        "night",
+        "coffee",
+        "winter";
+}
+
+@plugin "daisyui/theme" {
+    name: "modern";
+    default: false;
+    prefersdark: true;
+    color-scheme: "dark";
+
+    /* Base (Lighter grey background, not too dark) */
+    --color-base-100: oklch(32% 0.01 265);
+    --color-base-200: oklch(36% 0.012 265);
+    --color-base-300: oklch(42% 0.015 265);
+    --color-base-content: oklch(88% 0.01 265);
+
+    /* Primary (Vibrant crimson red) */
+    --color-primary: oklch(58% 0.2 25);
+    --color-primary-content: oklch(98% 0.005 25);
+
+    /* Secondary (Muted dark rose-red) */
+    --color-secondary: oklch(48% 0.14 15);
+    --color-secondary-content: oklch(96% 0.005 15);
+
+    /* Accent (Muted warm orange/amber) */
+    --color-accent: oklch(72% 0.11 45);
+    --color-accent-content: oklch(18% 0.01 45);
+
+    /* Neutral (Warm gray, lighter) */
+    --color-neutral: oklch(36% 0.01 25);
+    --color-neutral-content: oklch(94% 0.005 25);
+
+    /* Status */
+    --color-info: oklch(74% 0.12 225);
+    --color-info-content: oklch(18% 0.018 230);
+
+    --color-success: oklch(72% 0.15 145);
+    --color-success-content: oklch(17% 0.018 145);
+
+    --color-warning: oklch(80% 0.16 75);
+    --color-warning-content: oklch(22% 0.025 70);
+
+    --color-error: oklch(62% 0.2 25);
+    --color-error-content: oklch(98% 0.012 28);
+
+    --radius-selector: 1rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+    --border: 1.5px;
+}
+
+@plugin "daisyui/theme" {
+    name: "light";
+    default: false;
+    prefersdark: false;
+    color-scheme: "light";
+
+    --color-base-100: oklch(98% 0.002 247.839);
+    --color-base-200: oklch(96% 0.003 264.542);
+    --color-base-300: oklch(92% 0.006 264.531);
+    --color-base-content: oklch(21% 0.006 56.043);
+
+    --color-primary: oklch(63% 0.237 25.331);
+    --color-primary-content: oklch(27% 0.105 12.094);
+
+    --color-secondary: oklch(0% 0 0);
+    --color-secondary-content: oklch(100% 0 0);
+
+    --color-accent: oklch(82% 0.111 230.318);
+    --color-accent-content: oklch(29% 0.066 243.157);
+
+    --color-neutral: oklch(26% 0.007 34.298);
+    --color-neutral-content: oklch(98% 0.001 106.423);
+
+    --color-info: oklch(62% 0.214 259.815);
+    --color-info-content: oklch(97% 0.014 254.604);
+
+    --color-success: oklch(72% 0.219 149.579);
+    --color-success-content: oklch(98% 0.018 155.826);
+
+    --color-warning: oklch(76% 0.188 70.08);
+    --color-warning-content: oklch(98% 0.016 73.684);
+
+    --color-error: oklch(50% 0.213 27.518);
+    --color-error-content: oklch(96% 0.015 12.422);
+
+    /* ตรงนี้ของคุณซ้ำหลายบรรทัด เลือกชุดเดียวพอ */
+    --radius-selector: 1rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+    --border: 1.5px;
+
+    --depth: 1;
+    --noise: 0;
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    will-change: transform;
+}
+
+/* Define custom slide-out and slide-in keyframes */
+@keyframes slide-out {
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+    }
+}
+
+/* Apply animations to the structural view transition elements */
+::view-transition-old(root) {
+    animation: 300ms ease-out both slide-out;
+}
+
+::view-transition-new(root) {
+    animation: 300ms ease-out both slide-in;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: gray;
+}
+
+/* Change autocomplete styles in WebKit */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ***************************************** */
+
+/* option:focus, */
+option:active {
+    @apply bg-info;
+}
+
+select option {
+    @apply bg-base-100;
+}
+
+/* ***************************************** */
+
+::-webkit-scrollbar {
+    @apply w-4 h-4;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+    margin-block: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-full;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-success;
+}
+
+/* ล้างค่าเริ่มต้นของ Browser อื่นๆ */
+* {
+    /* scrollbar-width: thin; */
+    scrollbar-color: var(--color-primary) transparent;
+}
+
+/* For showToastNotification */
+.custom-toast-container {
+    position: fixed;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    max-height: 100vh;
+    /* overflow-y: auto; */
+    @apply p-8 gap-2 overflow-hidden;
+}
+
+.custom-toast-container.top-left {
+    top: 0;
+    left: 0;
+    align-items: flex-start;
+}
+.custom-toast-container.top-right {
+    top: 0;
+    right: 0;
+    align-items: flex-end;
+}
+.custom-toast-container.bottom-left {
+    bottom: 0;
+    left: 0;
+    align-items: flex-start;
+    flex-direction: column-reverse;
+}
+.custom-toast-container.bottom-right {
+    bottom: 0;
+    right: 0;
+    align-items: flex-end;
+    flex-direction: column-reverse;
+}
+.custom-toast-container.top-center {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+}
+.custom-toast-container.bottom-center {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    flex-direction: column-reverse;
+}
+
+.custom-toast-item {
+    pointer-events: auto;
+    width: auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    @apply text-base-content min-w-65 max-w-96 rounded-lg bg-base-100;
+}
+
+.custom-toast-item:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.toast-success {
+    @apply border-l-10 border-success border-r;
+}
+.toast-error {
+    @apply border-l-10 border-error border-r;
+}
+.toast-warning {
+    @apply border-l-10 border-warning border-r;
+}
+.toast-info {
+    @apply border-l-10 border-info border-r;
+}
+
+.toast-icon {
+    @apply shrink-0 text-xl;
+}
+
+.toast-content {
+    @apply flex flex-col;
+}
+
+.toast-title {
+    @apply font-black leading-tight text-lg;
+    @apply lg:text-xl;
+    margin-bottom: 2px;
+}
+
+.toast-message {
+    @apply font-medium opacity-90 leading-tight text-sm;
+    @apply lg:text-base;
+}
+
+.toast-close {
+    @apply ml-auto opacity-40 hover:opacity-100 transition-opacity;
+    @apply w-8 h-8 flex items-center justify-center shrink-0;
+    @apply text-xl;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.toast-progress-bar {
+    height: 100%;
+    background: currentColor;
+    opacity: 0.5;
+    width: 100%;
+}
+
+/* Animations */
+.toast-enter-left {
+    animation: toast-slide-in-left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.toast-enter-right {
+    animation: toast-slide-in-right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.toast-enter-top {
+    animation: toast-slide-in-top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.toast-enter-bottom {
+    animation: toast-slide-in-bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes toast-slide-in-left {
+    from {
+        transform: translateX(-120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-slide-in-right {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-slide-in-top {
+    from {
+        transform: translateY(-120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-slide-in-bottom {
+    from {
+        transform: translateY(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.toast-exit {
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.4s ease-in;
+}
+/* ! For showToastNotification */
+
+/* ***************************************** */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    /* animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards; */
+    /* @apply mb-8; */
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 100;
+    }
+}
+
+th,
+td {
+    white-space: nowrap;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    @apply w-48 h-48 border-8 border-warning/20 border-t-warning;
+    border-radius: 50%;
+    animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* over load css */
+
+.my-container {
+    @apply container max-w-full p-2;
+}
+
+.is-invalid {
+    @apply ring-2 ring-error;
+}
+
+.tab_list {
+    @apply px-2 hover:btn-primary btn text-primary;
+}
+
+.daterangepicker {
+    @apply bg-base-200;
+}
+
+.daterangepicker .calendar-table {
+    @apply bg-base-100;
+}
+
+/* **************************************************** */
+/* .tabs-lifted {
+    @apply p-2 bg-base-300 rounded-box overflow-x-auto;
+}
+
+.tab-content-custom {
+    @apply overflow-x-auto p-4 rounded-b-sm bg-base-100 mb-4;
+} */
+
+.tabs-lifted {
+    overflow-x: visible;
+}
+.tab-content-custom {
+    overflow-x: visible;
+}
+
+/* .tabs-box {
+    @apply bg-transparent;
+} */
+
+.tab-label-custom {
+    @apply text-primary h-8;
+}
+
+.tab-content-custom {
+    @apply border-base-300 p-4;
+}
+/* **************************************************** */
+
+/* แล้วทำ wrapper เฉพาะ table */
+.dt-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ? Table css */
+
+.badge-date {
+    @apply badge badge-sm badge-primary badge-soft;
+}
+.badge-time {
+    @apply badge badge-sm badge-info badge-soft;
+}
+
+/* ? My css */
+
+/* Modal Dialog css */
+.my-modal {
+    /* @apply backdrop-blur-xs; */
+}
+
+.my-modal-box {
+    @apply p-0 rounded-box bg-base-300 w-fit max-w-4xl;
+}
+
+.my-modal-title {
+    @apply text-2xl font-bold text-center;
+}
+
+.my-modal-content {
+    max-height: 70dvh;
+    @apply p-4 overflow-y-auto;
+}
+
+.my-modal-form {
+    @apply grid gap-4 sm:grid-cols-2;
+}
+
+.btn_block {
+    @apply rounded-sm border border-primary hover:ring-4;
+}
+
+.badge {
+    @apply rounded-box;
+}
+
+.my-block {
+    @apply block items-center;
+}
+.my-label {
+    @apply text-base font-semibold;
+}
+.my-input {
+    @apply input w-full rounded-box input-primary;
+}
+.my-select {
+    @apply select w-full rounded-box select-primary;
+}
+.my-select2 {
+    @apply input w-full rounded-box select-primary min-h-20;
+}
+
+/* กล่อง selection หลัก (multiple) */
+.my-select2 .select2-container--default .select2-selection--multiple {
+    @apply input w-full overflow-y-auto;
+}
+
+.my-textarea {
+    @apply textarea w-full rounded-box textarea-primary;
+}
+.my-checkbox {
+    @apply checkbox rounded-box checkbox-primary;
+}
+
+.my-card {
+    @apply bg-base-100 shadow-lg max-w-96;
+}
+
+/* ? Datatable  css */
+
+.dt-container .dt-column-title {
+    @apply text-primary font-bold text-nowrap;
+}
+
+.dt-container .top {
+    @apply flex flex-wrap justify-between p-2 items-center;
+}
+
+.dt-container .bottom {
+    @apply flex flex-wrap justify-between p-2;
+}
+
+/* .dt-container .dt-buttons .dt-button-collection {
+    @apply bg-primary rounded-full w-8 h-8 mx-1;
+} */
+
+.dt-container .dt-button-collection [role="menu"] {
+    @apply flex flex-col rounded-sm gap-2 p-4 fixed bg-base-300 shadow-lg overflow-y-auto top-4 max-h-96 w-60;
+}
+
+table.dataTable.display tbody {
+    @apply bg-base-300;
+}
+
+table.dataTable tbody tr > .dtfc-fixed-start,
+table.dataTable tbody tr > .dtfc-fixed-end {
+    z-index: 1;
+    @apply bg-base-300;
+    @apply text-center;
+}
+
+table.dataTable tfoot th {
+    @apply bg-base-300 font-bold text-end text-primary;
+}
+
+/* Button css */
+div.dt-buttons > .dt-button,
+div.dt-buttons > div.dt-button-split .dt-button {
+    @apply btn btn-square btn-sm;
+}
+
+div.dt-container .dt-paging .dt-paging-button {
+    @apply btn btn-sm mx-1;
+}
+div.dt-container .dt-paging .dt-paging-button.current {
+    @apply btn-primary text-white text-lg;
+}
+
+table.dataTable tr.selected {
+    background-color: var(--color-secondary);
+}
+
+/* Container styling */
+.dt-info {
+    @apply text-primary text-xs font-medium h-20 max-w-72 overflow-auto text-center;
+}
+
+/* Scrolling Fix css Table */
+div.dts div.dt-scroll-body table,
+div.dts div.dataTables_scrollBody table {
+    @apply bg-base-300;
+}
+
+/* ? Datatable  css */
+/* For Custom */
+
+.info-box {
+    display: -ms-flexbox;
+    @apply min-w-52 p-2 rounded-md w-full relative min-h-20 flex shadow-lg;
+}
+
+.info-box .info-box-icon {
+    border-radius: 0.25rem;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    font-size: 1.875rem;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
+    width: 70px;
+}
+
+.info-box .info-box-content {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: center;
+    line-height: 1.8;
+    -ms-flex: 1;
+    flex: 1;
+    padding: 0 10px;
+    overflow: hidden;
+}
+
+.info-box .info-box-number {
+    display: block;
+    margin-top: 0.25rem;
+    font-weight: 700;
+}
+
+.small-box {
+    border-radius: 0.25rem;
+    box-shadow:
+        0 0 1px rgba(0, 0, 0, 0.125),
+        0 1px 3px rgba(0, 0, 0, 0.2);
+    display: block;
+    position: relative;
+
+    @apply min-w-64;
+}
+
+.small-box > .inner {
+    padding: 10px;
+}
+
+.small-box h3 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.small-box > .small-box-footer {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    display: block;
+    padding: 3px 0;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.small-box > .small-box-footer:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+    color: #fff;
+}
+
+.small-box .icon {
+    color: rgba(0, 0, 0, 0.15);
+    z-index: 0;
+}
+
+.small-box .icon > i {
+    font-size: 90px;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    transition: -webkit-transform 0.3s linear;
+    transition: transform 0.3s linear;
+    transition:
+        transform 0.3s linear,
+        -webkit-transform 0.3s linear;
+}
+
+.small-box:hover .icon > i,
+.small-box:hover .icon > i.fa,
+.small-box:hover .icon > i.fas,
+.small-box:hover .icon > i.far,
+.small-box:hover .icon > i.fab,
+.small-box:hover .icon > i.fal,
+.small-box:hover .icon > i.fad,
+.small-box:hover .icon > i.ion {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+.dialog-close {
+    @apply absolute right-4 top-4 hover:scale-110 transition;
+}
+
+.table-select-column {
+    @apply select select-xs select-primary w-fit;
+}
+
+.table-custom {
+    @apply table;
+}
+
+/* flatpickr css */
+/* =========================
+   Flatpickr x DaisyUI (Tailwind @apply)
+   ========================= */
+
+.flatpickr-calendar {
+    /* z-index: 99999 !important; */
+    @apply bg-base-100 text-base-content border border-base-300 rounded-2xl shadow-2xl;
+}
+
+.flatpickr-months,
+.flatpickr-weekdays {
+    @apply bg-base-200 border-b border-base-300;
+}
+
+.flatpickr-current-month,
+.flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    @apply text-base-content;
+}
+
+.flatpickr-current-month span.cur-month {
+    @apply text-base-content;
+}
+
+/* arrows */
+.flatpickr-prev-month,
+.flatpickr-next-month {
+    @apply text-base-content opacity-80;
+}
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+    @apply opacity-100;
+}
+
+/* weekday */
+.flatpickr-weekday {
+    @apply text-primary/50 font-semibold;
+}
+
+/* day cells */
+.flatpickr-day {
+    @apply text-base-content rounded-xl border border-transparent;
+}
+.flatpickr-day:hover {
+    @apply bg-base-200 border-base-300;
+}
+
+/* today */
+.flatpickr-day.today {
+    @apply text-primary font-bold;
+}
+
+/* selected + range endpoints */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    @apply bg-base-300 text-primary-content border-primary border-2;
+}
+
+/* inRange */
+.flatpickr-day.inRange {
+    /* DaisyUI ไม่มีคลาส alpha สำเร็จสำหรับ primary แบบ var ตรง ๆ เสมอไป
+     ใช้ bg-primary/15 ได้ถ้า Tailwind รองรับ opacity กับสี theme (ส่วนใหญ่ได้) */
+    @apply bg-primary/15;
+}
+
+/* disabled */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.notAllowed {
+    @apply text-base-content/30;
+}
+
+/* time picker */
+.flatpickr-time {
+    @apply bg-base-100 text-base-content border-t border-base-300;
+}
+
+.flatpickr-time input,
+.flatpickr-time .flatpickr-am-pm {
+    @apply bg-base-100 text-base-content;
+}
+
+.flatpickr-time .flatpickr-hour {
+    @apply bg-base-100 text-lg;
+}
+
+.flatpickr-time .flatpickr-minute {
+    @apply bg-base-100 text-lg;
+}
+
+/* Quick ranges (ถ้าคุณใช้ fp-quick-ranges + fp-quick-btn) */
+.fp-quick-ranges {
+    @apply bg-base-200 border-b border-base-300 p-2 flex flex-wrap gap-2;
+}
+.fp-quick-btn {
+    @apply btn btn-ghost btn-xs rounded-xl;
+}
+
+.flatpickr-day.inRange,
+.flatpickr-day.prevMonthDay.inRange,
+.flatpickr-day.nextMonthDay.inRange,
+.flatpickr-day.today.inRange,
+.flatpickr-day.prevMonthDay.today.inRange,
+.flatpickr-day.nextMonthDay.today.inRange,
+.flatpickr-day:hover,
+.flatpickr-day.prevMonthDay:hover,
+.flatpickr-day.nextMonthDay:hover,
+.flatpickr-day:focus,
+.flatpickr-day.prevMonthDay:focus,
+.flatpickr-day.nextMonthDay:focus {
+    @apply bg-base-200 border-base-300;
+}
+
+.flatpickr-day.today {
+    @apply bg-base-200;
+}
+.flatpickr-day.today:hover,
+.flatpickr-day.today:focus {
+    @apply bg-base-200 border-base-300 text-primary;
+}
+
+.fp-quick-ranges {
+    /* @apply bg-base-200 border-b border-base-300 p-2 flex flex-wrap gap-2; */
+    @apply bg-base-100 p-2 flex flex-wrap gap-2 mt-6 justify-center items-center;
+}
+.fp-quick-btn {
+    @apply btn btn-ghost btn-xs rounded-xl;
+}
+
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover,
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.notAllowed,
+.flatpickr-day.notAllowed.prevMonthDay,
+.flatpickr-day.notAllowed.nextMonthDay {
+    @apply text-base-content/30;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-decoration: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    height: 34px;
+    padding: 10px;
+    z-index: 3;
+    /* @apply text-warning; */
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    @apply fill-primary;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    /* fill: #f64747; */
+    @apply fill-primary;
+}
+
+.flatpickr-current-month {
+    font-size: 135%;
+    line-height: inherit;
+    font-weight: 300;
+    color: inherit;
+    position: absolute;
+    width: 75%;
+    left: 12.5%;
+    padding: 7.48px 0 0 0;
+    line-height: 1;
+    /* height: 34px; */
+    display: inline-block;
+    text-align: center;
+    -webkit-transform: translate3d(0px, 0px, 0px);
+    transform: translate3d(0px, 0px, 0px);
+    @apply h-auto;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: transparent;
+    color: rgba(0, 0, 0, 0.9);
+    fill: rgba(0, 0, 0, 0.9);
+    height: 34px;
+    line-height: 1;
+    text-align: center;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow: hidden;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+.dayContainer {
+    @apply border-2 border-base-300 rounded-box;
+}
+
+/* ? Manual & Policy Pages */
+.nav-glass {
+    @apply sticky top-0 z-50 bg-base-200/80 backdrop-blur-md border-b border-base-300/50 px-4 py-3;
+}
+.category-card {
+    @apply card bg-base-100 shadow-xl border border-base-300 transition-all duration-300 overflow-hidden h-full;
+}
+.category-card:hover {
+    @apply shadow-2xl shadow-primary/10 -translate-y-1 border-primary/30;
+}
+.icon-box {
+    @apply flex items-center justify-center w-12 h-12 rounded-2xl mb-4 shadow-lg;
+}
+.section-icon {
+    @apply flex items-center justify-center w-10 h-10 rounded-xl mb-4;
+}
+#pdf-viewer-container canvas {
+    @apply max-w-full h-auto rounded-lg shadow-inner border border-base-300;
+}
+
+.step-item {
+    @apply flex gap-3 items-start p-2 rounded-xl hover:bg-base-200 transition-colors;
+}
+.step-number {
+    @apply flex-none w-5 h-5 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center font-bold mt-0.5;
+}
+
+/* 📜 Scrollbar styles for smaller scrollable container elements */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--color-base-content) 20%, transparent) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--color-base-content) 15%, transparent);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--color-base-content) 30%, transparent);
+}
+
+/* 🚗 Kiosk Horizontal Purpose Cards Scrollbar */
+.kiosk-horizontal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--color-base-content) 35%, transparent) color-mix(in oklch, var(--color-base-300) 50%, transparent);
+}
+
+.kiosk-horizontal-scrollbar::-webkit-scrollbar {
+    height: 6px;
+}
+
+.kiosk-horizontal-scrollbar::-webkit-scrollbar-track {
+    background: color-mix(in oklch, var(--color-base-300) 40%, transparent);
+    border-radius: 9999px;
+    margin: 0 4px;
+}
+
+.kiosk-horizontal-scrollbar::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--color-base-content) 35%, transparent);
+    border-radius: 9999px;
+}
+
+.kiosk-horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--color-primary) 60%, transparent);
+}
+

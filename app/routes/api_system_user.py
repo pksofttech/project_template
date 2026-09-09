@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel
 
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, HTTPException, Request, Response, status
 from app.core.auth import (
     authenticate_user,
     create_access_token,
