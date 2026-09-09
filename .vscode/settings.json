@@ -1,0 +1,19 @@
+{
+    "pylint.args": [
+        "--disable=C0302,E1101,E1102,C0103,W0718,W0603,R0914,W0622,W0613,R0913",
+        "--max-line-length=200"
+    ],
+    "editor.quickSuggestions": {
+        "strings": "on"
+    },
+    "CodeGPT.apiKey": "CodeGPT Plus Beta",
+    "cSpell.words": [
+        "HTTPF",
+        "HTTPU",
+        "ISOD",
+        "JWTD",
+        "LPRM",
+        "RTSP"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

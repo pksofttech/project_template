@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>403 Forbidden</title>
+	<style>
+		/* 🌈 Gradient Background */
+		body {
+			margin: 0;
+			height: 100vh;
+			background-color: #0f2027;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			font-family: "Segoe UI", sans-serif;
+		}
+
+		/* SVG Gate */
+		.gate {
+			width: 300px;
+			position: absolute;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			animation: gate-slam 1.5s ease-out forwards;
+			opacity: 0.9;
+		}
+
+		@keyframes gate-slam {
+			0% {
+				top: -1000px;
+				opacity: 0;
+			}
+
+			80% {
+				top: 40px;
+				opacity: 1;
+			}
+
+			100% {
+				top: 20px;
+			}
+		}
+
+		/* 🪟 Glassmorphism Container */
+		.glass-container {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			padding: 40px 60px;
+			text-align: center;
+			backdrop-filter: blur(12px);
+			background: rgba(255, 255, 255, 0.08);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 20px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+			color: #fff;
+			animation: text-appear 2.5s ease forwards;
+		}
+
+		@keyframes text-appear {
+			0% {
+				opacity: 0;
+				transform: translate(-50%, -60%);
+			}
+
+			50% {
+				opacity: 0.3;
+			}
+
+			100% {
+				opacity: 1;
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.glass-container h1 {
+			font-size: 6rem;
+			margin: 0;
+			text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+		}
+
+		.glass-container h3 {
+			margin: 10px 0;
+			font-weight: 400;
+			opacity: 0.8;
+		}
+
+		/* 🔘 Beautiful Button */
+		.btn-back {
+			display: inline-block;
+			margin-top: 20px;
+			padding: 12px 30px;
+			background: rgba(255, 255, 255, 0.1);
+			color: #fff;
+			text-decoration: none;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			border-radius: 10px;
+			backdrop-filter: blur(5px);
+			transition: all 0.3s ease;
+		}
+
+		.btn-back:hover {
+			background: rgba(255, 255, 255, 0.3);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		}
+
+		/* Optional Stone Archway Image */
+		.stonearchway {
+			width: 400px;
+			position: absolute;
+			top: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			opacity: 0.2;
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- Gate Animation -->
+	<svg class="gate" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 536.52">
+		<title>Gate</title>
+		<rect x="0.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="70.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="140.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="210.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="280.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="350.5" y="0.5" width="39" height="500" style="fill:#333" />
+		<rect x="0.5" y="371.5" width="389" height="39" style="fill:#333" />
+		<rect x="0.5" y="90.5" width="389" height="39" style="fill:#333" />
+	</svg>
+
+	<!-- Optional stone frame -->
+	<!-- <img class="stonearchway" src="/static/image/Stone_Archway.png" alt=""> -->
+
+	<!-- Glassmorphism Message Box -->
+	<div class="glass-container">
+		<h1>403</h1>
+		<h3>FORBIDDEN</h3>
+		<h3>Access Denied / Unauthorized Action</h3>
+		<a href="/" class="btn-back">⬅ Go Back</a>
+	</div>
+
+</body>
+
+</html>

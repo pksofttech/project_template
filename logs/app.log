@@ -1,0 +1,141 @@
+2026-09-09 12:05:59 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:05:59 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:05:59 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:05:59 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:05:59 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:05:59 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:05:59 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:05:59 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:05:59 [SUCCESS] [database_init.py:62 #database_init_default]: 👤 Seeded default account: system / 12341234
+2026-09-09 12:05:59 [SUCCESS] [database_init.py:62 #database_init_default]: 👤 Seeded default account: ssystem / 12341234
+2026-09-09 12:05:59 [SUCCESS] [database_init.py:116 #database_init_default]: 📦 Seeded 5 sample items for DataTables preview
+2026-09-09 12:05:59 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:05:59 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:05:59 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:06:00 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:06:00 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:06:00 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:06:00 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:06:00.997911+07:00
+2026-09-09 12:06:01 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:06:42 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:06:42 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:06:42 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:06:42 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:06:42 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:06:42 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:06:42 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:06:42 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:06:42 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:06:42 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:06:42 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:06:44 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:06:44 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:06:44 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:06:44 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:06:44.509134+07:00
+2026-09-09 12:06:44 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:07:07 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:07:07 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:07:07 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:07:07 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:07:07 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:07:07 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:07:07 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:07:07 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:07:07 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:07:07 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:07:07 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:07:09 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:07:09 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:07:09 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:07:09 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:07:09.401869+07:00
+2026-09-09 12:07:09 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:07:17 [SUCCESS] [api_system_user.py:53 #login]: User 'ssystem' logged in successfully.
+2026-09-09 12:08:18 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:08:39 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:08:43 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:08:46 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:08:55 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:11:10 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:11:10 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:11:10 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:11:10 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:11:10 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:11:10 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:11:10 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:11:10 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:11:10 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:11:10 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:11:10 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:11:11 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:11:11 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:11:11 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:11:11 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:11:11.942779+07:00
+2026-09-09 12:11:11 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:11:21 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:12:15 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:12:15 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:12:15 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:12:15 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:12:15 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:12:15 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:12:15 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:12:15 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:12:15 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:12:15 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:12:15 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:12:17 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:12:17 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:12:17 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:12:17 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:12:17.534013+07:00
+2026-09-09 12:12:17 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:12:25 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:13:09 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:14:22 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:15:22 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:15:22 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:15:22 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:17:00 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:20:43 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:20:47 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:24:47 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:24:47 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:24:47 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:24:47 [DEBUG] [start_server.py:83 #main]: 🚀 Initializing server on 0.0.0.0:8000 (Dev=True)...
+2026-09-09 12:24:47 [DEBUG] [database_init.py:15 #database_init_default]: 🛠️ Starting Database Initialization...
+2026-09-09 12:24:47 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ app_configurations: Columns up-to-date.
+2026-09-09 12:24:47 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ system_users: Columns up-to-date.
+2026-09-09 12:24:47 [DEBUG] [sqlite_migrator.py:74 #sqlite_auto_migrate_async]:    ✔️ sample_item: Columns up-to-date.
+2026-09-09 12:24:47 [SUCCESS] [database_init.py:119 #database_init_default]: ✅ Database initialization and seeding completed successfully.
+2026-09-09 12:24:47 [SUCCESS] [start_server.py:92 #main]: 🌐 Server ready at http://localhost:8000
+2026-09-09 12:24:47 [SUCCESS] [start_server.py:93 #main]: 📚 API Documentation at http://localhost:8000/docs
+2026-09-09 12:24:48 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:24:48 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:24:48 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:24:49 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:24:49.195626+07:00
+2026-09-09 12:24:49 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:24:50 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:24:56 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:25:00 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:25:14 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:25:17 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:25:20 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:27:23 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:27:23 [DEBUG] [main.py:28 #lifespan]: 🛑 Application shutting down...
+2026-09-09 12:27:24 [DEBUG] [config_app.py:26 #AppConfig]: 🚀 Initialize App Config
+2026-09-09 12:27:24 [SUCCESS] [config_app.py:27 #AppConfig]: ✅ APP_NAME: PROJECT-STARTER-PKS (v1.0.0)
+2026-09-09 12:27:24 [SUCCESS] [config_app.py:28 #AppConfig]: ✅ Current Hostname: PKSOFTTECH.ORG
+2026-09-09 12:27:25 [DEBUG] [main.py:25 #lifespan]: 🧬 Application Lifespan Start: 2026-09-09 12:27:25.085288+07:00
+2026-09-09 12:27:25 [DEBUG] [database.py:72 #init_sqlite_pragmas]: 🛠️ SQLite PRAGMA initialized with WAL & performance tuning.
+2026-09-09 12:29:09 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:29:22 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:29:26 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:29:41 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:30:45 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:32:14 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:32:20 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:33:08 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:33:41 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:34:17 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:34:32 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:34:36 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.
+2026-09-09 12:34:42 [DEBUG] [main.py:81 #event_generator]: Removed disconnected SSE client.

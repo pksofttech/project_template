@@ -1,0 +1,201 @@
+{% set user = current_user or user or {'username': 'Admin', 'name': 'Administrator', 'role': 'admin'} %}
+
+<!-- ✅ Glass Navbar Component -->
+<div class="navbar sticky top-0 z-50 border-b border-base-content/5 bg-base-200/80 backdrop-blur-xl transition-all duration-300 px-4">
+    <!-- Left: Mobile Menu & Brand -->
+    <div class="navbar-start flex items-center gap-1.5 lg:gap-3">
+        <label for="main-drawer" class="btn btn-ghost btn-circle hover:bg-base-content/10 lg:hidden" aria-label="Open Menu">
+            <i class="fa-solid fa-bars-staggered text-lg"></i>
+        </label>
+
+        <!-- Desktop Quick Links -->
+        <div class="hidden lg:flex items-center gap-1">
+            <a href="/" class="group flex h-9 w-9 items-center justify-center rounded-box text-base-content/40 transition-all hover:bg-primary/10 hover:text-primary" title="Home">
+                <i class="fa-solid fa-house text-sm transition-transform group-hover:scale-110"></i>
+            </a>
+            <a href="/dashboard" class="group flex h-9 w-9 items-center justify-center rounded-box text-base-content/40 transition-all hover:bg-primary/10 hover:text-primary" title="Dashboard">
+                <i class="fa-solid fa-gauge-high text-sm transition-transform group-hover:scale-110"></i>
+            </a>
+        </div>
+
+        <!-- Brand Component -->
+        <a href="/dashboard" class="flex items-center gap-2 font-bold text-base text-primary tracking-wide ml-1">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <i class="fa-solid fa-shapes text-lg"></i>
+            </div>
+            <span>{{ app_name }}</span>
+            <span class="badge badge-primary badge-outline badge-xs font-mono">v{{ version }}</span>
+        </a>
+    </div>
+
+    <!-- Center: Desktop Links (Optional) -->
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1 gap-1">
+            <li>
+                <a href="/dashboard" class="rounded-lg {% if active_page == 'dashboard' %}bg-primary/10 text-primary font-bold{% endif %}">
+                    <i class="fa-solid fa-gauge-high"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/sample" class="rounded-lg {% if active_page == 'sample' %}bg-primary/10 text-primary font-bold{% endif %}">
+                    <i class="fa-solid fa-box-archive"></i> Sample Items
+                </a>
+            </li>
+            <li>
+                <a href="/system_config" class="rounded-lg {% if active_page == 'system_config' %}bg-primary/10 text-primary font-bold{% endif %}">
+                    <i class="fa-solid fa-sliders"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- RIGHT: Theme Switcher & User Profile (Aligned with original template) -->
+    <div class="navbar-end gap-1 md:gap-2">
+        <!-- Toolbar Actions -->
+        <div class="flex items-center gap-0.5 md:gap-1">
+            <!-- 🎨 Theme Palette Selector Button -->
+            <button class="btn btn-ghost btn-circle btn-sm hover:bg-primary/10 hover:text-primary transition-colors" onclick="theme_modal.showModal()" title="Themes">
+                <i class="fa-solid fa-palette text-sm"></i>
+            </button>
+
+            <!-- 🔄 Reload System Button -->
+            <button class="btn btn-ghost btn-circle btn-sm hover:bg-info/10 hover:text-info transition-all active:rotate-180" onclick="window.location.reload()" title="Reload System">
+                <i class="fa-solid fa-rotate-right text-sm"></i>
+            </button>
+
+            <div class="h-6 w-px bg-base-content/10 mx-1 hidden md:block"></div>
+
+            <!-- 👤 User Profile Button -->
+            <button class="group flex items-center gap-2 rounded-box p-1 pr-3 transition-all hover:bg-base-content/5 active:scale-95" onclick="profile_modal.showModal()">
+                <div class="avatar online">
+                    <div class="h-8 w-8 rounded-box ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all overflow-hidden bg-base-200">
+                        <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" alt="{{ user.name or user.username }}" onerror="this.src='/static/favicon.svg'" />
+                    </div>
+                </div>
+                <div class="hidden lg:flex flex-col items-start leading-none">
+                    <span class="text-[11px] font-bold text-base-content/80 group-hover:text-primary transition-colors">{{ user.username }}</span>
+                    <span class="text-[9px] font-medium text-base-content/40 uppercase tracking-tighter">Profile</span>
+                </div>
+            </button>
+
+            <!-- 🌐 Language Switcher -->
+            {% include '_lang_dropdown.html' %}
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- 🪟 NAVBAR MODALS (Theme Selector & User Profile)          -->
+<!-- ======================================================== -->
+
+<!-- 🎨 Theme Selector Modal -->
+<dialog id="theme_modal" class="modal">
+    <div class="modal-box max-w-lg overflow-hidden rounded-box border border-base-300 shadow-2xl bg-base-100 p-0">
+        <!-- Header -->
+        <div class="bg-linear-to-r from-primary/15 via-base-200/60 to-primary/5 px-6 py-4 border-b border-base-300/80 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-box bg-primary/15 text-primary flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black tracking-tight text-base-content">System Theme</h3>
+                    <p class="text-xs text-base-content/60 font-medium">Customize system theme and interface color palette</p>
+                </div>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="p-5 max-h-[65vh] overflow-y-auto">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" data-choose-theme>
+                {% for theme in ['modern', 'nord', 'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'valentine', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'luxury', 'dracula', 'autumn', 'business', 'acid', 'lemonade', 'coffee', 'winter'] %}
+                <button class="btn btn-sm btn-outline justify-start gap-2.5 border-base-300 hover:border-primary hover:bg-primary/10 transition-all font-bold rounded-btn h-10 shadow-2xs" data-set-theme="{{ theme }}">
+                    <span class="h-3 w-3 rounded-full bg-primary/80 ring-2 ring-primary/20 shrink-0"></span>
+                    <span class="capitalize text-xs truncate">{{ theme }}</span>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Footer Dismiss -->
+        <div class="bg-base-200/50 px-6 py-3 border-t border-base-300/80 flex justify-end">
+            <form method="dialog">
+                <button class="btn btn-ghost btn-sm rounded-btn font-bold gap-1.5">
+                    <i class="fa-solid fa-check"></i> <span>Done</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<!-- 👤 User Profile Modal -->
+<dialog id="profile_modal" class="modal">
+    <div class="modal-box max-w-sm overflow-hidden bg-base-100 rounded-box border border-base-300 shadow-2xl p-0">
+        <!-- Cover Banner -->
+        <div class="h-28 w-full bg-linear-to-r from-primary via-primary/85 to-secondary relative flex justify-end p-3">
+            <button class="btn btn-sm btn-circle bg-black/20 hover:bg-black/40 text-white border-none transition-all shadow-xs" onclick="profile_modal.close()">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div class="px-6 pb-6 text-center">
+            <!-- Avatar -->
+            <div class="avatar -mt-14 mb-3 flex justify-center">
+                <div class="w-24 h-24 rounded-box ring-4 ring-base-100 shadow-2xl bg-base-100 overflow-hidden">
+                    <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" class="object-cover w-full h-full" onerror="this.src='/static/favicon.svg'" />
+                </div>
+            </div>
+
+            <!-- Name + Role -->
+            <div class="space-y-1">
+                <h3 class="text-xl font-black tracking-tight text-base-content">
+                    {{ user.username }}
+                </h3>
+                <p class="text-xs font-bold text-base-content/60 uppercase tracking-wider">{{ user.name or user.username }}</p>
+
+                <div class="pt-2 flex justify-center">
+                    {% set role_label = user.role | default('Admin') %}
+                    {% set role_class = "badge-info" if role_label == 'admin' else "badge-primary" %}
+                    <span class="badge {{ role_class }} badge-soft badge-lg h-7 gap-2 px-3 text-[11px] font-black uppercase tracking-widest border border-base-300/40">
+                        <i class="fa-solid fa-shield-halved opacity-70"></i>
+                        {{ role_label | upper }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Stats/Info -->
+            <div class="mt-6 grid grid-cols-3 gap-2">
+                <div class="flex flex-col items-center justify-center rounded-box bg-base-200/70 border border-base-300/50 p-2.5 transition-colors">
+                    <i class="fa-solid fa-calendar-day text-primary mb-1 text-xs"></i>
+                    <span class="text-[9px] font-bold uppercase text-base-content/50">Joined</span>
+                    <span class="text-xs font-black text-base-content mt-0.5">2026</span>
+                </div>
+                <div class="flex flex-col items-center justify-center rounded-box bg-base-200/70 border border-base-300/50 p-2.5 transition-colors">
+                    <i class="fa-solid fa-signal text-success mb-1 text-xs"></i>
+                    <span class="text-[9px] font-bold uppercase text-base-content/50">Status</span>
+                    <span class="text-xs font-black text-success mt-0.5">Online</span>
+                </div>
+                <div class="flex flex-col items-center justify-center rounded-box bg-base-200/70 border border-base-300/50 p-2.5 transition-colors">
+                    <i class="fa-solid fa-circle-check text-info mb-1 text-xs"></i>
+                    <span class="text-[9px] font-bold uppercase text-base-content/50">Verified</span>
+                    <span class="text-xs font-black text-info mt-0.5">Yes</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-6 flex flex-col gap-2.5">
+                <a href="/system_config" class="btn btn-primary h-11 rounded-btn border-none shadow-lg shadow-primary/20 transition-all font-bold gap-2">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Account Settings</span>
+                </a>
+                <a href="/logout" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</dialog>

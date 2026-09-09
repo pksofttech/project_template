@@ -1,0 +1,26 @@
+<!-- Premium Header Card -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 bg-base-100 rounded-box border border-base-content/5 shadow-sm hover:shadow-md transition-all duration-300 mb-6">
+	<div class="flex items-center gap-4">
+		<div class="p-3 bg-primary/10 text-primary rounded-box shadow-inner">
+			<i class="{{ header_icon | default('fa-solid fa-sliders') }} text-2xl animate-pulse"></i>
+		</div>
+		<div>
+			<h3 class="text-xl md:text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+				<span>{{ header_title }}</span>
+				{% if header_badge %}
+				<span class="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">{{ header_badge }}</span>
+				{% endif %}
+			</h3>
+			{% if header_desc %}
+			<p class="text-xs md:text-sm text-base-content/60">{{ header_desc }}</p>
+			{% endif %}
+		</div>
+	</div>
+
+	{% if show_back_btn | default(true) %}
+	<button type="button" onclick="history.back()" class="btn btn-ghost btn-sm border border-base-content/10 hover:bg-base-content/5 gap-2 rounded-btn transition-all duration-200">
+		<i class="text-xs fa-solid fa-chevron-left"></i>
+		<span>Back</span>
+	</button>
+	{% endif %}
+</div>

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: pks_template_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./database:/app/database
+      - ./logs:/app/logs
+      - ./static/uploads:/app/static/uploads
+    environment:
+      - APP_NAME=PROJECT-STARTER-PKS
+      - DEBUG=False
+      - PORT=8000

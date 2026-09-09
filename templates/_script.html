@@ -1,0 +1,35 @@
+<!-- Core Vendor Scripts -->
+<script src="/static/plugins/jquery/jquery.min.js"></script>
+<script src="/static/plugins/datatable/datatables.min.js"></script>
+<script src="/static/plugins/dayjs/dayjs.min.js"></script>
+<script src="/static/plugins/flatpickr/flatpickr.min.js"></script>
+<script src="/static/plugins/toastr/toastr.min.js"></script>
+<script src="/static/common/theme_change.js"></script>
+
+<script>
+    // Toastr default options
+    if (typeof toastr !== "undefined") {
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-bottom-right",
+            timeOut: "3000",
+        };
+    }
+
+    // Connect to Server-Sent Events (SSE)
+    if (!!window.EventSource) {
+        const source = new EventSource('/sse');
+        source.onmessage = function(e) {
+            try {
+                const data = JSON.parse(e.data);
+                console.log("⚡ SSE Realtime Message:", data);
+            } catch(err) {
+                console.log("⚡ SSE Raw:", e.data);
+            }
+        };
+        source.onerror = function(err) {
+            // console.warn("SSE Connection error, reconnecting...");
+        };
+    }
+</script>

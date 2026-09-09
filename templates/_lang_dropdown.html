@@ -1,0 +1,79 @@
+{# 
+    🌐 Centralized Multi-Language Switcher Component
+    Parameters:
+      - lang_style: 'navbar' (default) | 'kiosk' | 'floating' | 'select'
+      - lang_color: 'primary' (default) | 'success' | 'error' | 'warning' | 'info'
+      - lang_align: 'dropdown-end' (default) | 'dropdown-start'
+#}
+
+{% set current_style = lang_style | default('navbar') %}
+{% set current_color = lang_color | default('primary') %}
+{% set current_align = lang_align | default('dropdown-end') %}
+
+{% if current_style == 'select' %}
+    <!-- 📄 Select Dropdown Style (e.g. Member Info) -->
+    <select class="select select-xs select-bordered rounded-box sm:rounded-box bg-base-200/60 w-fit font-semibold h-7 min-h-7 text-[11px] px-1" id="select_lang" onchange="changeLang(this.value)">
+        <option value="en">🇺🇸</option>
+        <option value="th">🇹🇭</option>
+        <option value="lo">🇱🇦</option>
+        <option value="jp">🇯🇵</option>
+        <option value="zh">🇨🇳</option>
+        <option value="my">🇲🇲</option>
+    </select>
+
+{% elif current_style == 'kiosk' %}
+    <!-- 🖥️ Kiosk Touch Screen Style (Large buttons) -->
+    <details class="dropdown {{ current_align }} shrink-0">
+        <summary class="btn h-10 min-h-10 btn-ghost bg-base-200 hover:bg-base-300 text-base-content font-black rounded-box px-3.5 cursor-pointer list-none flex items-center gap-2 border border-base-300 text-sm">
+            <i class="fa-solid fa-globe text-{{ current_color }} text-base"></i>
+            <span id="current_lang" data-field="current_lang" class="font-mono text-sm font-black">TH</span>
+            <i class="fa-solid fa-chevron-down text-xs opacity-60"></i>
+        </summary>
+        <ul class="dropdown-content z-50 menu p-2 bg-base-100 rounded-box w-52 border-2 border-base-300 gap-1 mt-1.5 text-base-content shadow-2xl">
+            <li class="menu-title text-xs uppercase tracking-widest opacity-60 px-2.5 py-1" data-i18n="select_language">Select Language</li>
+            <li><a onclick="changeLang('th'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>ไทย</span><span class="opacity-60 font-mono text-xs">TH</span></a></li>
+            <li><a onclick="changeLang('en'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>English</span><span class="opacity-60 font-mono text-xs">US</span></a></li>
+            <li><a onclick="changeLang('lo'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>ລາວ</span><span class="opacity-60 font-mono text-xs">LA</span></a></li>
+            <li><a onclick="changeLang('jp'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>日本語</span><span class="opacity-60 font-mono text-xs">JP</span></a></li>
+            <li><a onclick="changeLang('zh'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>中文</span><span class="opacity-60 font-mono text-xs">ZH</span></a></li>
+            <li><a onclick="changeLang('my'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2.5 px-3 rounded-box font-black text-sm hover:bg-{{ current_color }} hover:text-{{ current_color }}-content active:scale-95 transition-colors duration-75 cursor-pointer"><span>မြန်မာ</span><span class="opacity-60 font-mono text-xs">MY</span></a></li>
+        </ul>
+    </details>
+
+{% elif current_style == 'floating' %}
+    <!-- 🌐 Floating Card Style (e.g. Payment Service) -->
+    <details class="dropdown {{ current_align }}">
+        <summary class="btn btn-ghost btn-sm gap-1.5 font-bold text-xs hover:bg-base-content/10 rounded-box cursor-pointer list-none">
+            <i class="fa-solid fa-globe text-{{ current_color }}"></i>
+            <span id="current_lang" data-field="current_lang" class="font-mono">TH</span>
+        </summary>
+        <ul class="dropdown-content menu menu-sm mt-2 p-2 shadow-2xl bg-base-100/98 backdrop-blur-md rounded-box w-44 border border-base-content/10 z-50">
+            <li class="menu-title text-[9px] uppercase tracking-widest opacity-50 px-3 py-1.5" data-i18n="select_language">Select Language</li>
+            <li><a onclick="changeLang('th'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>ไทย</span><span class="opacity-50 font-mono">TH</span></a></li>
+            <li><a onclick="changeLang('en'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>English</span><span class="opacity-50 font-mono">US</span></a></li>
+            <li><a onclick="changeLang('lo'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>ລາວ</span><span class="opacity-50 font-mono">LA</span></a></li>
+            <li><a onclick="changeLang('jp'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>日本語</span><span class="opacity-50 font-mono">JP</span></a></li>
+            <li><a onclick="changeLang('zh'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>中文</span><span class="opacity-50 font-mono">ZH</span></a></li>
+            <li><a onclick="changeLang('my'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-2 px-2.5 rounded-lg font-bold"><span>မြန်မာ</span><span class="opacity-50 font-mono">MY</span></a></li>
+        </ul>
+    </details>
+
+{% else %}
+    <!-- 🌐 Standard Navbar Style (Default) -->
+    <details class="dropdown {{ current_align }} shrink-0">
+        <summary class="btn btn-ghost btn-sm gap-1.5 font-bold text-[10px] hover:bg-primary/10 cursor-pointer list-none flex items-center">
+            <i class="fa-solid fa-globe text-{{ current_color }}/70 text-xs"></i>
+            <span id="current_lang" data-field="current_lang" class="font-mono">TH</span>
+            <i class="fa-solid fa-chevron-down text-[8px] opacity-60"></i>
+        </summary>
+        <ul class="dropdown-content menu menu-sm mt-2 p-2 shadow-xl bg-base-100/95 backdrop-blur-md rounded-box w-44 border border-base-300 z-50">
+            <li class="menu-title text-[9px] uppercase tracking-widest opacity-60 px-2 py-1" data-i18n="select_language">Select Language</li>
+            <li><a onclick="changeLang('th'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>ไทย</span><span class="opacity-50 font-mono text-xs">TH</span></a></li>
+            <li><a onclick="changeLang('en'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>English</span><span class="opacity-50 font-mono text-xs">US</span></a></li>
+            <li><a onclick="changeLang('lo'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>ລາວ</span><span class="opacity-50 font-mono text-xs">LA</span></a></li>
+            <li><a onclick="changeLang('jp'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>日本語</span><span class="opacity-50 font-mono text-xs">JP</span></a></li>
+            <li><a onclick="changeLang('zh'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>中文</span><span class="opacity-50 font-mono text-xs">ZH</span></a></li>
+            <li><a onclick="changeLang('my'); this.closest('details')?.removeAttribute('open');" class="flex justify-between py-1.5 px-2.5 rounded-box font-bold"><span>မြန်မာ</span><span class="opacity-50 font-mono text-xs">MY</span></a></li>
+        </ul>
+    </details>
+{% endif %}

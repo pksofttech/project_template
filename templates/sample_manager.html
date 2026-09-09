@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    {% include '_meta.html' %}
+</head>
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+        
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+                
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-box-archive" %}
+                {% set header_title = "Sample Items Management" %}
+                {% set header_desc = "Server-side DataTables CRUD with pagination, search, filters, and streaming Excel export." %}
+                {% set header_badge = "CRUD Boilerplate" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add New Item</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/sample/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <select id="filterStatus" onchange="reloadTable()" class="select select-bordered select-sm text-xs">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DataTables Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/5 p-4 overflow-x-auto">
+                    <table id="tableSample" class="table table-zebra table-sm w-full text-xs">
+                        <thead>
+                            <tr class="bg-base-200/60 text-base-content/70">
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th>Updated At</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar Navigation -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Item Modal -->
+    <dialog id="itemModal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-cube"></i>
+                <span>Add New Item</span>
+            </h3>
+
+            <form id="itemForm" onsubmit="saveItem(event)" class="space-y-3">
+                <input type="hidden" id="itemId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Code *</span></label>
+                        <input type="text" id="itemCode" class="input input-bordered input-sm" placeholder="e.g. ITM-101" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Category</span></label>
+                        <input type="text" id="itemCategory" class="input input-bordered input-sm" placeholder="e.g. Hardware" value="General" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Item Name *</span></label>
+                    <input type="text" id="itemName" class="input input-bordered input-sm" placeholder="Full product or entity name" required />
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Price (฿)</span></label>
+                        <input type="number" step="0.01" id="itemPrice" class="input input-bordered input-sm" value="0.00" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Quantity</span></label>
+                        <input type="number" id="itemQuantity" class="input input-bordered input-sm" value="0" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="itemStatus" class="select select-bordered select-sm text-xs">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Description</span></label>
+                    <textarea id="itemDescription" class="textarea textarea-bordered textarea-sm" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="itemModal.close()">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script>
+        let table = null;
+
+        $(document).ready(function() {
+            table = $('#tableSample').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                ajax: {
+                    url: '/api/sample/datatable',
+                    type: 'GET',
+                    data: function(d) {
+                        const statusVal = $('#filterStatus').val();
+                        if (statusVal) {
+                            d.filter = JSON.stringify({ "sample_item.status": statusVal });
+                        }
+                    }
+                },
+                columns: [
+                    { data: "Sample_Item.id", name: "id" },
+                    { 
+                        data: "Sample_Item.code", 
+                        name: "code",
+                        render: data => `<span class="badge badge-outline badge-primary font-mono text-[11px] font-bold">${data}</span>`
+                    },
+                    { data: "Sample_Item.name", name: "name", className: "font-semibold" },
+                    { data: "Sample_Item.category", name: "category" },
+                    { 
+                        data: "Sample_Item.price", 
+                        name: "price",
+                        render: data => Number(data || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }) + " ฿"
+                    },
+                    { data: "Sample_Item.quantity", name: "quantity" },
+                    { 
+                        data: "Sample_Item.status", 
+                        name: "status",
+                        render: function(data) {
+                            if (data === "active") return '<span class="badge badge-success badge-xs gap-1">active</span>';
+                            return '<span class="badge badge-ghost badge-xs gap-1">inactive</span>';
+                        }
+                    },
+                    { 
+                        data: "Sample_Item.updated_at", 
+                        name: "updated_at",
+                        render: data => data ? dayjs(data).format('DD/MM/YYYY HH:mm') : '-'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center",
+                        render: function(data, type, row) {
+                            const id = row.id || row["Sample_Item.id"];
+                            return `
+                                <div class="inline-flex gap-1">
+                                    <button class="btn btn-ghost btn-xs text-info hover:bg-info/10" onclick="editItem(${id})" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn btn-ghost btn-xs text-error hover:bg-error/10" onclick="deleteItem(${id})" title="Delete">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[0, 'desc']],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search code, name..."
+                }
+            });
+        });
+
+        function reloadTable() {
+            if (table) table.ajax.reload(null, false);
+        }
+
+        function openCreateModal() {
+            document.getElementById("itemForm").reset();
+            document.getElementById("itemId").value = "";
+            document.getElementById("itemCode").disabled = false;
+            document.getElementById("modalTitle").innerHTML = '<i class="fa-solid fa-plus"></i><span>Add New Item</span>';
+            document.getElementById("itemModal").showModal();
+        }
+
+        async function editItem(id) {
+            try {
+                const res = await fetch(`/api/sample/${id}`);
+                if (!res.ok) throw new Error("Failed to load item");
+                const item = await res.json();
+
+                document.getElementById("itemId").value = item.id;
+                document.getElementById("itemCode").value = item.code;
+                document.getElementById("itemCode").disabled = true; // Code should be immutable
+                document.getElementById("itemName").value = item.name;
+                document.getElementById("itemCategory").value = item.category || "General";
+                document.getElementById("itemPrice").value = item.price || 0;
+                document.getElementById("itemQuantity").value = item.quantity || 0;
+                document.getElementById("itemStatus").value = item.status || "active";
+                document.getElementById("itemDescription").value = item.description || "";
+
+                document.getElementById("modalTitle").innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Edit Item</span>';
+                document.getElementById("itemModal").showModal();
+            } catch (err) {
+                toastr.error(err.message);
+            }
+        }
+
+        async function saveItem(e) {
+            e.preventDefault();
+            const id = document.getElementById("itemId").value;
+            const isEdit = !!id;
+
+            const payload = {
+                code: document.getElementById("itemCode").value.trim(),
+                name: document.getElementById("itemName").value.trim(),
+                category: document.getElementById("itemCategory").value.trim(),
+                price: parseFloat(document.getElementById("itemPrice").value) || 0,
+                quantity: parseInt(document.getElementById("itemQuantity").value) || 0,
+                status: document.getElementById("itemStatus").value,
+                description: document.getElementById("itemDescription").value.trim()
+            };
+
+            const url = isEdit ? `/api/sample/${id}` : `/api/sample`;
+            const method = isEdit ? "PUT" : "POST";
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Failed to save item");
+
+                toastr.success(isEdit ? "Item updated successfully" : "Item created successfully");
+                document.getElementById("itemModal").close();
+                reloadTable();
+            } catch (err) {
+                toastr.error(err.message);
+            }
+        }
+
+        function deleteItem(id) {
+            showConfirm("Confirm Delete", `Are you sure you want to delete item #${id}?`, async () => {
+                try {
+                    const res = await fetch(`/api/sample/${id}`, { method: "DELETE" });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.detail || "Failed to delete item");
+
+                    toastr.success("Item deleted successfully");
+                    reloadTable();
+                } catch (err) {
+                    toastr.error(err.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    {% include "_meta.html" %}
+</head>
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+        
+        <div class="drawer-content flex flex-col min-h-screen">
+            <!-- Navbar -->
+            {% include "_nav_bar.html" %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+                
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-sliders" %}
+                {% set header_title = "System Configuration" %}
+                {% set header_desc = "Configure global parameters, system preferences, and user access" %}
+                {% set header_badge = "Settings" %}
+                {% set show_back_btn = false %}
+                {% include "_header_card.html" %}
+
+                <!-- Tabs Container -->
+                <div class="tabs tabs-box bg-transparent border-0 gap-2 p-0">
+                    <!-- TAB 1: System Configuration (Card Grid Menu) -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB01" onchange="event_tab_active(this)" checked="checked" />
+                        <i class="fa-solid fa-sliders text-sm"></i>
+                        <span class="px-2 font-bold">System Configuration</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm">
+                        <!-- 🌀 Config Selection Menu Cards -->
+                        <div class="max-w-7xl px-2 py-4 mx-auto text-center">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 py-2 justify-center">
+                                
+                                <!-- Card 1: General Settings -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Configure App Title, Description & Defaults">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="show_dialog_general_config()">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-gear text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                General Settings
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-primary transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 2: User Accounts -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Manage Administrative & Operator Accounts">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-secondary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB02')">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-secondary group-hover:bg-secondary group-hover:text-secondary-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-users text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                User Management
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-secondary transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: Security & Password -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Change Password & Credential Security">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-warning/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="show_dialog_change_password()">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-warning/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-warning group-hover:bg-warning group-hover:text-warning-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-lock text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                Security & Password
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-warning transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 4: Database & Maintenance -->
+                                <div class="tooltip tooltip-top w-full" data-tip="SQLite WAL Maintenance & Hot Backups">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-info/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB03')">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-info/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-info group-hover:bg-info group-hover:text-info-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-database text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                Database & Backup
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-info transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 5: Real-time SSE -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Server-Sent Events Live Streaming & Broadcast">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-accent/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="show_dialog_sse_broadcast()">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-accent/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-accent group-hover:bg-accent group-hover:text-accent-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-tower-broadcast text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                Real-time SSE
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-accent transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 6: Swagger API Docs -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Interactive Swagger UI & OpenAPI Documentation">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="window.open('/docs', '_blank')">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-book-bookmark text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                                API Docs
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-primary transition-colors duration-300">
+                                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Open</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: System Users Management -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB02" onchange="event_tab_active(this)" />
+                        <i class="fa-solid fa-users text-sm"></i>
+                        <span class="px-2 font-bold">System Users Management</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-base-content/10">
+                            <div>
+                                <h3 class="text-lg font-bold text-primary flex items-center gap-2">
+                                    <i class="fa-solid fa-users-gear"></i>
+                                    <span>System Users Management</span>
+                                </h3>
+                                <p class="text-xs text-base-content/60">Manage accounts, roles, and administrative access.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="show_dialog_create_user()" class="btn btn-primary btn-sm gap-2">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    <span>Add User</span>
+                                </button>
+                                <button onclick="reloadUserTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- DataTables Table -->
+                        <div class="card bg-base-100 border border-base-content/5 p-3 overflow-x-auto shadow-sm">
+                            <table id="tableSystemUsers" class="table table-zebra table-sm w-full text-xs">
+                                <thead>
+                                    <tr class="bg-base-200/60 text-base-content/70">
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Created Date</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Database & Maintenance -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB03" onchange="event_tab_active(this)" />
+                        <i class="fa-solid fa-database text-sm"></i>
+                        <span class="px-2 font-bold">Database & Maintenance</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Database Status Card -->
+                            <div class="card bg-base-100 border border-base-content/5 p-5 shadow-sm space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-sm text-primary flex items-center gap-2">
+                                        <i class="fa-solid fa-database"></i> SQLite WAL Engine
+                                    </h4>
+                                    <span class="badge badge-success badge-xs">Online</span>
+                                </div>
+                                <div class="text-xs space-y-2 text-base-content/70">
+                                    <div class="flex justify-between"><span>Journal Mode:</span> <span class="font-mono font-bold text-base-content">WAL</span></div>
+                                    <div class="flex justify-between"><span>Synchronous:</span> <span class="font-mono font-bold text-base-content">NORMAL</span></div>
+                                    <div class="flex justify-between"><span>Busy Timeout:</span> <span class="font-mono font-bold text-base-content">30,000 ms</span></div>
+                                    <div class="flex justify-between"><span>Cache Size:</span> <span class="font-mono font-bold text-base-content">-20000 (20MB)</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Hot Backup Card -->
+                            <div class="card bg-base-100 border border-base-content/5 p-5 shadow-sm space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-sm text-info flex items-center gap-2">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Online Hot Backup
+                                    </h4>
+                                    <span class="badge badge-info badge-xs">Lock-free</span>
+                                </div>
+                                <p class="text-xs text-base-content/60">
+                                    Create instant GZIP compressed snapshots of SQLite without locking live connections.
+                                </p>
+                                <button onclick="createBackup()" id="btnCreateBackup" class="btn btn-info btn-outline btn-sm w-full gap-2">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Backup Database Now</span>
+                                </button>
+                            </div>
+
+                            <!-- Auto-Migrator Info -->
+                            <div class="card bg-base-100 border border-base-content/5 p-5 shadow-sm space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-sm text-accent flex items-center gap-2">
+                                        <i class="fa-solid fa-code-compare"></i> Auto-Migration
+                                    </h4>
+                                    <span class="badge badge-accent badge-xs">Zero-Config</span>
+                                </div>
+                                <p class="text-xs text-base-content/60">
+                                    Schema auto-detection checks SQLite table columns on startup and migrates columns automatically.
+                                </p>
+                                <div class="text-[11px] text-success flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>All models up to date</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backups History Table -->
+                        <div class="card bg-base-100 border border-base-content/5 p-4 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-sm text-base-content flex items-center gap-2">
+                                    <i class="fa-solid fa-clock-rotate-left text-info"></i>
+                                    <span>Available Database Backups</span>
+                                </h4>
+                                <button onclick="loadBackups()" class="btn btn-ghost btn-xs gap-1">
+                                    <i class="fa-solid fa-rotate text-xs"></i> <span>Refresh</span>
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table id="tableBackups" class="table table-zebra table-sm w-full text-xs">
+                                    <thead>
+                                        <tr class="bg-base-200/60 text-base-content/70">
+                                            <th>File Name</th>
+                                            <th>Size</th>
+                                            <th>Timestamp</th>
+                                            <th>Format</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyBackups">
+                                        <tr><td colspan="4" class="text-center py-4 text-base-content/40">No backups found</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: Account Security -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB04" onchange="event_tab_active(this)" />
+                        <i class="fa-solid fa-lock text-sm"></i>
+                        <span class="px-2 font-bold">Account Security</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm">
+                        <div class="max-w-xl mx-auto card bg-base-100 border border-base-content/5 p-6 shadow-sm space-y-5">
+                            <div class="flex items-center gap-3 pb-3 border-b border-base-content/10">
+                                <div class="w-10 h-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-key"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-base text-base-content">Change Account Password</h3>
+                                    <p class="text-xs text-base-content/60">Update your password to keep your account secure.</p>
+                                </div>
+                            </div>
+
+                            <form id="passwordFormTab" onsubmit="changePassword(event)" class="space-y-4">
+                                <div class="form-control">
+                                    <label class="label py-1"><span class="label-text text-xs font-semibold">Current Password</span></label>
+                                    <input type="password" id="tabOldPassword" class="input input-bordered input-sm" required />
+                                </div>
+                                <div class="form-control">
+                                    <label class="label py-1"><span class="label-text text-xs font-semibold">New Password</span></label>
+                                    <input type="password" id="tabNewPassword" class="input input-bordered input-sm" required minlength="6" />
+                                </div>
+                                <div class="form-control">
+                                    <label class="label py-1"><span class="label-text text-xs font-semibold">Confirm New Password</span></label>
+                                    <input type="password" id="tabConfirmPassword" class="input input-bordered input-sm" required minlength="6" />
+                                </div>
+                                <div class="pt-2">
+                                    <button type="submit" class="btn btn-warning btn-sm px-6 gap-2">
+                                        <i class="fa-solid fa-key text-xs"></i>
+                                        <span>Update Password</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include "_footer.html" %}
+        </div>
+
+        <!-- Sidebar Navigation -->
+        {% include "_side_menu_bar.html" %}
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 🪟 MODALS & DIALOGS                                       -->
+    <!-- ======================================================== -->
+
+    <!-- 1. Modal: General Application Configurations -->
+    <dialog id="modal_general_config" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-xl w-full p-0 overflow-hidden rounded-box">
+            {% with modal_title="Application Configurations" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <form id="configFormModal" onsubmit="saveConfigs(event)" class="p-6 space-y-4">
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Application Title</span></label>
+                    <input type="text" id="cfgAppTitle" class="input input-bordered input-sm" placeholder="e.g. My Smart System" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Description</span></label>
+                    <textarea id="cfgAppDesc" class="textarea textarea-bordered textarea-sm" rows="2"></textarea>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Default Records Per Page</span></label>
+                    <select id="cfgPerPage" class="select select-bordered select-sm text-xs">
+                        <option value="10">10 records</option>
+                        <option value="25">25 records</option>
+                        <option value="50">50 records</option>
+                        <option value="100">100 records</option>
+                    </select>
+                </div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="modal_general_config.close()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 2. Modal: Change Password -->
+    <dialog id="modal_change_password" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-md w-full p-0 overflow-hidden rounded-box">
+            {% with modal_title="Change Password" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <form id="passwordFormModal" onsubmit="changePasswordModal(event)" class="p-6 space-y-4">
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Current Password</span></label>
+                    <input type="password" id="modalOldPassword" class="input input-bordered input-sm" required />
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">New Password</span></label>
+                    <input type="password" id="modalNewPassword" class="input input-bordered input-sm" required minlength="6" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Confirm New Password</span></label>
+                    <input type="password" id="modalConfirmPassword" class="input input-bordered input-sm" required minlength="6" />
+                </div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="modal_change_password.close()">Cancel</button>
+                    <button type="submit" class="btn btn-warning btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Update Password</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 3. Modal: Create User -->
+    <dialog id="modal_create_user" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-lg w-full p-0 overflow-hidden rounded-box">
+            {% with modal_title="Add New System User" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <form id="createUserForm" onsubmit="createUser(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Username *</span></label>
+                        <input type="text" id="newUsername" class="input input-bordered input-sm" placeholder="e.g. operator1" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Password *</span></label>
+                        <input type="password" id="newUserPassword" class="input input-bordered input-sm" placeholder="Min 6 chars" required minlength="6" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Full Name</span></label>
+                    <input type="text" id="newFullName" class="input input-bordered input-sm" placeholder="John Doe" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Email</span></label>
+                        <input type="email" id="newUserEmail" class="input input-bordered input-sm" placeholder="user@domain.com" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Role</span></label>
+                        <select id="newUserRole" class="select select-bordered select-sm text-xs">
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="operator">Operator</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="modal_create_user.close()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 4. Modal: Real-time SSE Broadcast Tester -->
+    <dialog id="modal_sse_broadcast" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-lg w-full p-0 overflow-hidden rounded-box">
+            {% with modal_title="Real-time SSE Broadcast" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <form onsubmit="sendBroadcastSSE(event)" class="p-6 space-y-4">
+                <div class="alert alert-info/10 border border-info/20 text-xs text-base-content/80 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-info text-base"></i>
+                    <span>Broadcasts live JSON events across all open browser windows via `/broadcast_sse`.</span>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Event Topic / Title</span></label>
+                    <input type="text" id="sseTopic" class="input input-bordered input-sm" value="SYSTEM_NOTIFICATION" required />
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Message Payload</span></label>
+                    <textarea id="sseMessage" class="textarea textarea-bordered textarea-sm" rows="3" placeholder="Hello from System Admin!">Broadcast message test</textarea>
+                </div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="modal_sse_broadcast.close()">Cancel</button>
+                    <button type="submit" class="btn btn-accent btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Send Broadcast</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include "_dialog.html" %}
+    {% include "_script.html" %}
+
+    <!-- External Module JS (Standardized like original template) -->
+    <script type="module" src="/static/js/system_config.js?t={{ now }}"></script>
+</body>
+</html>

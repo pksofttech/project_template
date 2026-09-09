@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include '_meta.html' %}
+    <style>
+        /* 🌈 Gradient Background */
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: #141E30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: "Roboto", sans-serif;
+        }
+
+        /* Floating Polygons */
+        svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -250px;
+            margin-left: -400px;
+            opacity: 0.4;
+        }
+
+        #Polygon-1,
+        #Polygon-2,
+        #Polygon-3,
+        #Polygon-4,
+        #Polygon-5 {
+            animation: float 3s ease-in-out infinite alternate;
+        }
+
+        #Polygon-2 {
+            animation-delay: 0.3s;
+        }
+
+        #Polygon-3 {
+            animation-delay: 0.6s;
+        }
+
+        #Polygon-4 {
+            animation-delay: 0.9s;
+        }
+
+        #Polygon-5 {
+            animation-delay: 1.2s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            100% {
+                transform: translateY(30px);
+            }
+        }
+
+        /* 🪟 Glassmorphism Message Box */
+        .message-box {
+            width: 380px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            animation: fadeIn 1.5s ease forwards;
+        }
+
+        .message-box h1 {
+            font-size: 80px;
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .message-box h4 {
+            font-size: 18px;
+            margin: 10px 0;
+            opacity: 0.8;
+            word-break: break-all;
+        }
+
+        .message-box p {
+            margin: 10px 0 30px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        /* 🔘 Glass Buttons */
+        .buttons-con .action-link-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .buttons-con .action-link-wrap a {
+            padding: 12px 25px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-weight: 500;
+            font-size: 15px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .buttons-con .action-link-wrap a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media (max-width: 450px) {
+            svg {
+                margin-left: -190px;
+            }
+
+            .message-box {
+                width: 85%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Polygon SVG -->
+    <svg width="380px" height="600px" viewBox="0 0 837 1045" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <path d="M353,9 L626.664028,170 L626.664028,487 L353,642 L79.3359724,487 L79.3359724,170 L353,9 Z" id="Polygon-1" stroke="#00B4DB" stroke-width="6"></path>
+            <path d="M78.5,529 L147,569.186414 L147,648.311216 L78.5,687 L10,648.311216 L10,569.186414 L78.5,529 Z" id="Polygon-2" stroke="#FF4B2B" stroke-width="6"></path>
+            <path d="M773,186 L827,217.538705 L827,279.636651 L773,310 L719,279.636651 L719,217.538705 L773,186 Z" id="Polygon-3" stroke="#8E54E9" stroke-width="6"></path>
+            <path d="M639,529 L773,607.846761 L773,763.091627 L639,839 L505,763.091627 L505,607.846761 L639,529 Z" id="Polygon-4" stroke="#F7971E" stroke-width="6"></path>
+            <path d="M281,801 L383,861.025276 L383,979.21169 L281,1037 L179,979.21169 L179,861.025276 L281,801 Z" id="Polygon-5" stroke="#56ab2f" stroke-width="6"></path>
+        </g>
+    </svg>
+
+    <!-- Glassmorphism 404 Box -->
+    <div class="message-box">
+        <h1>404</h1>
+        <h4>{{ url }}</h4>
+        <p>Page not found</p>
+        <div class="buttons-con">
+            <div class="action-link-wrap">
+                <a onclick="history.back(-1)" class="link-button link-back-button">⬅ Go Back</a>
+                <a href="/" class="link-button">🏠 Home Page</a>
+            </div>
+        </div>
+    </div>
+
+    {% include '_script.html' %}
+</body>
+
+</html>

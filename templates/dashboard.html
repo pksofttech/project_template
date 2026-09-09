@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    {% include '_meta.html' %}
+</head>
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+        
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+                
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-gauge-high" %}
+                {% set header_title = "Administration Dashboard" %}
+                {% set header_desc = "Real-time system overview, quick metrics, and template starter guides." %}
+                {% set header_badge = "Online" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Metric Stat Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Stat 1 -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 p-5 hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-base-content/60 uppercase tracking-wider">Total Items</p>
+                                <h3 id="statTotalItems" class="text-2xl font-black mt-1 text-primary">5</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1.5 text-xs text-success">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <span>Sample Entity Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2 -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 p-5 hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-base-content/60 uppercase tracking-wider">API Framework</p>
+                                <h3 class="text-2xl font-black mt-1 text-secondary">FastAPI</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1.5 text-xs text-base-content/60">
+                            <span>v0.115+ Async Engine</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3 -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 p-5 hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-base-content/60 uppercase tracking-wider">Database</p>
+                                <h3 class="text-2xl font-black mt-1 text-accent">SQLite WAL</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-database"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1.5 text-xs text-success">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Auto-Migrate Enabled</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4 -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 p-5 hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-semibold text-base-content/60 uppercase tracking-wider">UI Framework</p>
+                                <h3 class="text-2xl font-black mt-1 text-info">DaisyUI v5</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-info/10 text-info flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-palette"></i>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex items-center gap-1.5 text-xs text-base-content/60">
+                            <span>Tailwind CSS v4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Action & Getting Started Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Guide Card -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 lg:col-span-2 p-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-lightbulb text-warning"></i>
+                            <span>How to Build Your Project from this Template</span>
+                        </h3>
+                        
+                        <div class="space-y-4 text-sm text-base-content/80">
+                            <div class="flex items-start gap-3 p-3 bg-base-200/50 rounded-xl">
+                                <div class="badge badge-primary font-bold">1</div>
+                                <div>
+                                    <p class="font-bold text-base-content">Define Your Models</p>
+                                    <p class="text-xs text-base-content/60 mt-0.5">
+                                        Open <code class="text-primary font-mono">app/core/models.py</code> and add your SQLModel classes with <code class="font-mono">ISODateTime</code> for timestamps.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 bg-base-200/50 rounded-xl">
+                                <div class="badge badge-primary font-bold">2</div>
+                                <div>
+                                    <p class="font-bold text-base-content">Create CRUD & DataTables Endpoints</p>
+                                    <p class="text-xs text-base-content/60 mt-0.5">
+                                        Copy <code class="text-primary font-mono">app/routes/api_sample.py</code> to create new resource endpoints using <code class="font-mono">AsyncDbDep</code>.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 bg-base-200/50 rounded-xl">
+                                <div class="badge badge-primary font-bold">3</div>
+                                <div>
+                                    <p class="font-bold text-base-content">Build Beautiful Pages</p>
+                                    <p class="text-xs text-base-content/60 mt-0.5">
+                                        Clone <code class="text-primary font-mono">templates/sample_manager.html</code> to create new admin views with DataTables and modal forms.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <a href="/sample" class="btn btn-primary btn-sm gap-2">
+                                <i class="fa-solid fa-box-archive"></i>
+                                <span>View Sample CRUD Page</span>
+                            </a>
+                            <a href="/docs" target="_blank" class="btn btn-outline btn-sm gap-2">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>Interactive Swagger Docs</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- System Status Card -->
+                    <div class="card bg-base-100 shadow-sm border border-base-content/5 p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-server text-info"></i>
+                                <span>Environment Info</span>
+                            </h3>
+
+                            <ul class="space-y-3 text-xs">
+                                <li class="flex justify-between pb-2 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Application Name:</span>
+                                    <span class="font-bold font-mono">{{ app_name }}</span>
+                                </li>
+                                <li class="flex justify-between pb-2 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Version:</span>
+                                    <span class="font-bold font-mono">v{{ version }}</span>
+                                </li>
+                                <li class="flex justify-between pb-2 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Timezone:</span>
+                                    <span class="font-bold text-primary">GMT+7 (Asia/Bangkok)</span>
+                                </li>
+                                <li class="flex justify-between pb-2 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Hot Backup:</span>
+                                    <span class="badge badge-xs badge-success">Enabled</span>
+                                </li>
+                                <li class="flex justify-between pb-2 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Realtime Stream:</span>
+                                    <span class="badge badge-xs badge-info">SSE Active</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-base-content/10">
+                            <a href="/system_config" class="btn btn-ghost btn-sm w-full gap-2">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Configure System</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar Navigation -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Fastapi-Debug",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "start_server.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--dev",
+                "--workers",
+                "4"
+            ],
+        }
+    ]
+}

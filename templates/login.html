@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    {% include '_meta.html' %}
+</head>
+<body class="bg-base-200 min-h-screen flex items-center justify-center p-4">
+
+    <div class="card lg:card-side bg-base-100 shadow-2xl max-w-3xl w-full border border-base-content/10 overflow-hidden">
+        <!-- Left Side: Branding -->
+        <div class="lg:w-1/2 bg-gradient-to-br from-primary to-primary-focus text-primary-content p-8 lg:p-12 flex flex-col justify-between">
+            <div>
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md mb-6">
+                    <i class="fa-solid fa-shapes text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2">{{ app_name }}</h1>
+                <p class="text-white/80 text-sm leading-relaxed">
+                    Modern Management System Boilerplate built with FastAPI, Async SQLite, and DaisyUI v5.
+                </p>
+            </div>
+
+            <div class="space-y-3 my-8">
+                <div class="flex items-center gap-3 text-xs text-white/90">
+                    <i class="fa-solid fa-bolt text-warning"></i>
+                    <span>FastAPI 0.115+ Async Backend</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-white/90">
+                    <i class="fa-solid fa-database text-info"></i>
+                    <span>SQLite WAL Mode + Auto-Migration</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-white/90">
+                    <i class="fa-solid fa-shield-halved text-success"></i>
+                    <span>Argon2 / JWT Secure Authentication</span>
+                </div>
+            </div>
+
+            <div class="text-[11px] text-white/60">
+                © 2026 PKS Softtech. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="card-body lg:w-1/2 p-8 lg:p-12 justify-center">
+            <h2 class="card-title text-2xl font-bold mb-1">Sign In</h2>
+            <p class="text-xs text-base-content/60 mb-6">Enter your credentials to access the administration portal.</p>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <!-- Error Alert -->
+                <div id="errorAlert" class="alert alert-error text-xs py-2 hidden">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="errorMsg">Invalid credentials</span>
+                </div>
+
+                <!-- Username -->
+                <div class="form-control">
+                    <label class="label py-1">
+                        <span class="label-text text-xs font-semibold">Username</span>
+                    </label>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <i class="fa-solid fa-user text-base-content/40 text-xs"></i>
+                        <input type="text" id="username" class="grow text-sm" placeholder="Username" value="ssystem" required />
+                    </label>
+                </div>
+
+                <!-- Password -->
+                <div class="form-control">
+                    <label class="label py-1">
+                        <span class="label-text text-xs font-semibold">Password</span>
+                    </label>
+                    <label class="input input-bordered flex items-center gap-2">
+                        <i class="fa-solid fa-lock text-base-content/40 text-xs"></i>
+                        <input type="password" id="password" class="grow text-sm" placeholder="••••••••" value="12341234" required />
+                        <button type="button" onclick="togglePassword()" class="btn btn-ghost btn-xs btn-circle">
+                            <i id="eyeIcon" class="fa-solid fa-eye-slash text-xs"></i>
+                        </button>
+                    </label>
+                </div>
+
+                <!-- Default Hint -->
+                <div class="bg-base-200 p-2.5 rounded-lg text-[11px] text-base-content/70 flex items-center justify-between">
+                    <span>Default: <code class="font-bold text-primary">ssystem</code> (หรือ <code class="font-bold text-primary">system</code>) / <code class="font-bold text-primary">12341234</code></span>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" class="btn btn-primary w-full shadow-lg mt-2">
+                    <span>Sign In</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% include '_script.html' %}
+    <script>
+        function togglePassword() {
+            const passInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eyeIcon");
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                eyeIcon.className = "fa-solid fa-eye text-xs";
+            } else {
+                passInput.type = "password";
+                eyeIcon.className = "fa-solid fa-eye-slash text-xs";
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            const errAlert = document.getElementById("errorAlert");
+            const errMsg = document.getElementById("errorMsg");
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Signing in...';
+            errAlert.classList.add("hidden");
+
+            try {
+                const res = await fetch("/api/system_user/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: document.getElementById("username").value.trim(),
+                        password: document.getElementById("password").value
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    toastr.success("Login successful!");
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 500);
+                } else {
+                    errMsg.innerText = data.detail || "Authentication failed";
+                    errAlert.classList.remove("hidden");
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Sign In</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+                }
+            } catch (err) {
+                errMsg.innerText = "Network error, please try again.";
+                errAlert.classList.remove("hidden");
+                btn.disabled = false;
+                btn.innerHTML = '<span>Sign In</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+            }
+        }
+    </script>
+</body>
+</html>
