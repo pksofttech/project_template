@@ -30,7 +30,7 @@
                             <!-- Add New Button -->
                             <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2">
                                 <i class="fa-solid fa-plus"></i>
-                                <span>Add New Item</span>
+                                <span data-i18n="Add New">Add New Item</span>
                             </button>
                             <!-- Export Excel -->
                             <a href="/api/sample/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
@@ -38,7 +38,7 @@
                                 <span>Export Excel</span>
                             </a>
                             <!-- Refresh -->
-                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table" data-i18n-title="Refresh">
                                 <i class="fa-solid fa-rotate text-sm"></i>
                             </button>
                         </div>
@@ -138,8 +138,8 @@
                 </div>
 
                 <div class="modal-action justify-end gap-2 pt-2">
-                    <button type="button" class="btn btn-ghost btn-sm" onclick="itemModal.close()">Cancel</button>
-                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Item</button>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="itemModal.close()" data-i18n="Cancel">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5" data-i18n="Save">Save Item</button>
                 </div>
             </form>
         </div>

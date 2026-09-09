@@ -2,11 +2,21 @@
 <script src="/static/plugins/jquery/jquery.min.js"></script>
 <script src="/static/plugins/datatable/datatables.min.js"></script>
 <script src="/static/plugins/dayjs/dayjs.min.js"></script>
+<script src="/static/plugins/dayjs/locale/th.js"></script>
+<script src="/static/plugins/dayjs/plugin/customParseFormat.js"></script>
+<script src="/static/plugins/dayjs/plugin/relativeTime.js"></script>
 <script src="/static/plugins/flatpickr/flatpickr.min.js"></script>
+<script src="/static/plugins/flatpickr/l10n/th.js"></script>
 <script src="/static/plugins/toastr/toastr.min.js"></script>
+<script src="/static/common/howler.min.js"></script>
 <script src="/static/common/theme_change.js"></script>
+<!-- Unity Core (i18n Multi-Language, Audio & Shared Utilities) -->
+<script type="module" src="/static/js/unity.js"></script>
 
 <script>
+    window.software_packet_feature = window.software_packet_feature || "{{ packet_feature | default('') }}";
+    window.software_maturity = window.software_maturity || "{{ maturity | default('') }}";
+
     // Toastr default options
     if (typeof toastr !== "undefined") {
         toastr.options = {

@@ -51,16 +51,24 @@ export const logger = {
 export const LOGIN_USER = { system_type: 0 };
 export let HEADERS = null;
 
-dayjs.extend(window.dayjs_plugin_customParseFormat);
-dayjs.extend(window.dayjs_plugin_relativeTime);
-dayjs.locale("en");
-// dayjs.locale("th");
+if (typeof dayjs !== "undefined") {
+    if (window.dayjs_plugin_customParseFormat) {
+        dayjs.extend(window.dayjs_plugin_customParseFormat);
+    }
+    if (window.dayjs_plugin_relativeTime) {
+        dayjs.extend(window.dayjs_plugin_relativeTime);
+    }
+    dayjs.locale("en");
+    // dayjs.locale("th");
+    logger.info("📌 dayjs:", dayjs.locale());
+}
 
-logger.info("📌 dayjs:", dayjs.locale());
-
-flatpickr.setDefaults({
-    locale: { ...flatpickr.l10ns.th, rangeSeparator: " - " },
-});
+if (typeof flatpickr !== "undefined") {
+    const thLocale = flatpickr.l10ns?.th || {};
+    flatpickr.setDefaults({
+        locale: { ...thLocale, rangeSeparator: " - " },
+    });
+}
 
 // ? ********************   WebSocketClient    ********************
 export class WebSocketClient {
@@ -193,18 +201,26 @@ window.showPreviewImageView = showPreviewImageView;
  * @param {string} src - The URL of the image to display.
  */
 function showPreviewImageView(src) {
-    const dialog = Dialog_Preview_Image;
-    dialog.querySelector('[data-field="preview_image"]').src = src;
+    const dialog = document.getElementById("Dialog_Preview_Image");
+    if (!dialog) return;
+    const img = dialog.querySelector('[data-field="preview_image"]');
+    if (img) img.src = src;
     dialog.showModal();
 }
 
 export function showDialogLoading(content = "Loading...") {
-    Dialog_Loading.querySelector("[data-field='msg']").innerHTML = content;
-    Dialog_Loading.showModal();
+    const dialog = document.getElementById("Dialog_Loading") || document.getElementById("global_loading_modal");
+    if (!dialog) return;
+    const msg = dialog.querySelector("[data-field='msg']") || dialog.querySelector("#global_loading_text");
+    if (msg) msg.innerHTML = content;
+    if (typeof dialog.showModal === "function") dialog.showModal();
 }
 
 export function closeDialogLoading() {
-    Dialog_Loading.close();
+    const dialog = document.getElementById("Dialog_Loading") || document.getElementById("global_loading_modal");
+    if (dialog && dialog.open && typeof dialog.close === "function") {
+        dialog.close();
+    }
 }
 /**
  * Show an info dialog with a title and message.
@@ -214,7 +230,11 @@ export function closeDialogLoading() {
  * @param {string} [opts.msg=info] - Dialog message.
  */
 export function showDialogInfo({ title = "Info", msg = "info" } = {}) {
-    const dialog = Dialog_Info;
+    const dialog = document.getElementById("Dialog_Info");
+    if (!dialog) {
+        if (typeof toastr !== "undefined") toastr.info(msg, title);
+        return;
+    }
     if (dialog.querySelector("[data-field='title']")) dialog.querySelector("[data-field='title']").innerHTML = title;
     if (dialog.querySelector("[data-field='msg']")) dialog.querySelector("[data-field='msg']").innerHTML = msg;
     dialog.showModal();
@@ -228,13 +248,14 @@ export function showDialogInfo({ title = "Info", msg = "info" } = {}) {
  * @param {string} [opts.msg=Operation Successful] - Dialog message.
  */
 export function showDialogSuccess({ title = "Success", msg = "Operation successful" } = {}) {
-    const dialog = Dialog_Success;
-    dialog.querySelector("[data-field='title']").innerHTML = title;
-    dialog.querySelector("[data-field='msg']").innerHTML = msg;
+    const dialog = document.getElementById("Dialog_Success");
+    if (!dialog) {
+        if (typeof toastr !== "undefined") toastr.success(msg, title);
+        return;
+    }
+    if (dialog.querySelector("[data-field='title']")) dialog.querySelector("[data-field='title']").innerHTML = title;
+    if (dialog.querySelector("[data-field='msg']")) dialog.querySelector("[data-field='msg']").innerHTML = msg;
     dialog.showModal();
-    // setTimeout(() => {
-    //     dialog.close();
-    // }, auto_close_dialog_timeout);
 }
 
 /**
@@ -245,9 +266,13 @@ export function showDialogSuccess({ title = "Success", msg = "Operation successf
  * @param {string} [opts.msg=info] - Dialog message.
  */
 export function showDialogWarning({ title = "Warning!", msg = "info" } = {}) {
-    const dialog = Dialog_Warning;
-    dialog.querySelector("[data-field='title']").innerHTML = title;
-    dialog.querySelector("[data-field='msg']").innerHTML = msg;
+    const dialog = document.getElementById("Dialog_Warning");
+    if (!dialog) {
+        if (typeof toastr !== "undefined") toastr.warning(msg, title);
+        return;
+    }
+    if (dialog.querySelector("[data-field='title']")) dialog.querySelector("[data-field='title']").innerHTML = title;
+    if (dialog.querySelector("[data-field='msg']")) dialog.querySelector("[data-field='msg']").innerHTML = msg;
     dialog.showModal();
 }
 
@@ -259,9 +284,13 @@ export function showDialogWarning({ title = "Warning!", msg = "info" } = {}) {
  * @param {string} [opts.msg=info] - Dialog message.
  */
 export function showDialogError({ title = "Error", msg = "info" } = {}) {
-    const dialog = Dialog_Error;
-    dialog.querySelector("[data-field='title']").innerHTML = title;
-    dialog.querySelector("[data-field='msg']").innerHTML = msg;
+    const dialog = document.getElementById("Dialog_Error");
+    if (!dialog) {
+        if (typeof toastr !== "undefined") toastr.error(msg, title);
+        return;
+    }
+    if (dialog.querySelector("[data-field='title']")) dialog.querySelector("[data-field='title']").innerHTML = title;
+    if (dialog.querySelector("[data-field='msg']")) dialog.querySelector("[data-field='msg']").innerHTML = msg;
     dialog.showModal();
 }
 
@@ -438,10 +467,10 @@ export function isScreenReady() {
 }
 
 export function clear_dialog() {
-    Dialog_Info.close();
-    Dialog_Success.close();
-    Dialog_Warning.close();
-    Dialog_Error.close();
+    ["Dialog_Info", "Dialog_Success", "Dialog_Warning", "Dialog_Error", "Dialog_Loading"].forEach((id) => {
+        const d = document.getElementById(id);
+        if (d && d.open && typeof d.close === "function") d.close();
+    });
 }
 
 /**
@@ -463,15 +492,23 @@ export async function showDialogConfirm({
     cancelBtn = true,
 } = {}) {
     return new Promise((resolve) => {
-        const dialogElement = Dialog_Confirm;
+        const dialogElement = document.getElementById("Dialog_Confirm") || document.getElementById("global_confirm_modal");
+        if (!dialogElement) {
+            const confirmed = window.confirm(`${title}\n${content}`);
+            resolve({ confirm: confirmed, value: null });
+            return;
+        }
 
         // reset result
         const result = { confirm: false, value: null };
 
         // set UI
-        dialogElement.querySelector("[data-field='title']").innerHTML = title;
-        dialogElement.querySelector("[data-field='content']").innerHTML = content;
-        dialogElement.querySelector("[data-field='cancel_btn']").classList.toggle("hidden", !cancelBtn);
+        const titleEl = dialogElement.querySelector("[data-field='title']");
+        if (titleEl) titleEl.innerHTML = title;
+        const contentEl = dialogElement.querySelector("[data-field='content']");
+        if (contentEl) contentEl.innerHTML = content;
+        const cancelBtnEl = dialogElement.querySelector("[data-field='cancel_btn']");
+        if (cancelBtnEl) cancelBtnEl.classList.toggle("hidden", !cancelBtn);
 
         const returnValueElement = dialogElement.querySelector("[data-field='returnValue']");
 
@@ -890,17 +927,19 @@ export function debugForm(formData) {
 
 let controlSound = false;
 
-const soundBtn = new Howl({
+const dummyHowl = { play: () => {} };
+
+const soundBtn = typeof Howl !== "undefined" ? new Howl({
     src: ["/static/sound/click-button-140881.mp3"],
-});
+}) : dummyHowl;
 
-const soundError = new Howl({
+const soundError = typeof Howl !== "undefined" ? new Howl({
     src: ["/static/sound/computer-error-meme-jam-fx-1-00-02.mp3"],
-});
+}) : dummyHowl;
 
-const soundSuccess = new Howl({
+const soundSuccess = typeof Howl !== "undefined" ? new Howl({
     src: ["/static/sound/success-1-6297.mp3"],
-});
+}) : dummyHowl;
 
 function btnClickSound() {
     if (controlSound) {
@@ -4167,19 +4206,6 @@ export async function generate_attr_i18n(root = document.body) {
     console.log("🌎 Unique Keys found:", keysToTranslate.length);
     console.log("✅ Total Elements tagged:", taggedElements.length);
 
-    // 2. Send collected keys to backend i18n endpoint
-    if (window.location.port == "8000") {
-        if (keysToTranslate.length > 0) {
-            try {
-                const res = await fetchApi("/i18n", "post", JSON.stringify(keysToTranslate), "json");
-                console.log("🚀 API Response:", res);
-            } catch (error) {
-                console.error("❌ Failed to send keys to API:", error);
-            }
-        } else {
-            console.log("ℹ️ No keys found to translate.");
-        }
-    }
 
     return keysToTranslate;
 }
@@ -4243,6 +4269,8 @@ export async function initI18n() {
         await i18next.init({
             lng: savedLang,
             fallbackLng: fallbackLang,
+            keySeparator: false,
+            nsSeparator: false,
             resources,
         });
         initI18nDone = true;
@@ -4341,6 +4369,11 @@ export function i18next_translate(key, options = {}) {
 export const t = i18next_translate;
 
 window.changeLang = changeLang;
+window.initI18n = initI18n;
+window.updateContent = updateContent;
+window.updateTooltip = updateTooltip;
+window.t = t;
+window.i18next_translate = i18next_translate;
 export async function changeLang(lang) {
     const normLang = normalizeLang(lang);
     const langMap = {
@@ -4687,10 +4720,13 @@ function init_date_time_picker() {
     flatpickr(".datetimepicker", config);
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    document.body.setAttribute("translate", "no");
+async function initUnityApp() {
+    if (document.body) {
+        document.body.setAttribute("translate", "no");
+    }
     controlSound = localStorage.getItem("SOUND_ENABLE") == "true" ? true : false;
-    initializeUnity();
+    await initI18n();
+    await initializeUnity();
     logger.info("controlSound Enable : ", controlSound);
     if (controlSound) {
         logger.info("addEventListener btnClickSound => click");
@@ -4702,10 +4738,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
-
     initSelect2();
     HEADERS = await getHeaders();
-    console.log("DOM fully loaded and parsed at:", performance.now(), "ms");
+    console.log(
+        `%c ⚡ DOM %c ${performance.now().toFixed(2)} ms %c Fully loaded and parsed`,
+        "background: #2563eb; color: #ffffff; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;",
+        "background: #1e293b; color: #38bdf8; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0; font-family: monospace;",
+        "color: #64748b; font-size: 11px; margin-left: 6px;",
+    );
     init_searchBox();
     init_date_time_picker();
 
@@ -4723,7 +4763,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // software_packet_feature info
-    if (software_packet_feature) {
+    if (typeof software_packet_feature !== "undefined" && software_packet_feature) {
         if (software_packet_feature == "Demo Mode/Test Mode") {
             showDialogInfo({
                 title: "⚠️ Software For Demo/Test",
@@ -4731,7 +4771,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     }
-    if (software_demo_date) {
+    if (typeof software_demo_date !== "undefined" && software_demo_date) {
         try {
             const _software_demo_date = new Date(software_demo_date);
             console.log("⚠️ Software For Demo/Test", _software_demo_date);
@@ -4739,8 +4779,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("⚠️ Software For Demo/Test", error);
         }
     }
-    if (software_is_demo_expired == "true") {
-        switch (software_demo_expired_option) {
+    if (typeof software_is_demo_expired !== "undefined" && software_is_demo_expired == "true") {
+        const demo_option = typeof software_demo_expired_option !== "undefined" ? software_demo_expired_option : "warning";
+        switch (demo_option) {
             case "warning":
                 showDialogWarning({
                     title: "⚠️ Software is expired for Demo/Test",
@@ -4765,7 +4806,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             e.preventDefault();
         }
     });
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initUnityApp);
+} else {
+    initUnityApp();
+}
 
 /**
  * Initializes WebRTC/HLS live camera stream

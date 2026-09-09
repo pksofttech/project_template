@@ -1,6 +1,6 @@
 """HTML Template View Routes (Jinja2 + DaisyUI v5)."""
 
-from fastapi import APIRouter, Cookie, Request, Response
+from fastapi import APIRouter, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -20,6 +20,13 @@ def get_view_context(request: Request, title: str = "", **kwargs) -> dict:
         payload = decode_access_token(token)
         if payload:
             user = payload
+            if "system_user_type_id" not in user:
+                role = str(user.get("role", "")).upper()
+                user["system_user_type_id"] = 1 if role in ("ROOT", "SYSTEM") else (2 if role == "ADMIN" else 4)
+
+    # Provide fallback user with ROOT privileges for dev / direct navigation
+    if not user:
+        user = {"id": 1, "username": "admin", "role": "ROOT", "system_user_type_id": 1}
 
     context = {
         "request": request,
@@ -27,6 +34,7 @@ def get_view_context(request: Request, title: str = "", **kwargs) -> dict:
         "app_name": AppConfig.APP_NAME,
         "version": AppConfig.VERSION,
         "current_user": user,
+        "user": user,
         "now": time_now().strftime("%Y%m%d%H%M%S"),
     }
     context.update(kwargs)

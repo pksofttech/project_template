@@ -36,7 +36,7 @@
                     <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm">
                         <!-- 🌀 Config Selection Menu Cards -->
                         <div class="max-w-7xl px-2 py-4 mx-auto text-center">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 py-2 justify-center">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-5 py-2 justify-center">
 
                                 <!-- Card 1: General Settings -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Configure App Title, Description & Defaults">
@@ -69,7 +69,7 @@
                                             <i class="fa-solid fa-users text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
-                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="User Management">
                                                 User Management
                                             </h3>
                                         </div>
@@ -80,7 +80,28 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 3: Security & Password -->
+                                <!-- Card 3: User Types -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Manage Roles & Access Permissions">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-info/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB03')">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-info/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-info group-hover:bg-info group-hover:text-info-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-users-gear text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="User Types">
+                                                User Types
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-info transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 4: Security & Password -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Change Password & Credential Security">
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-warning/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="show_dialog_change_password()">
@@ -90,7 +111,7 @@
                                             <i class="fa-solid fa-lock text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
-                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="Security & Password">
                                                 Security & Password
                                             </h3>
                                         </div>
@@ -101,17 +122,17 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 4: Database & Maintenance -->
+                                <!-- Card 5: Database & Maintenance -->
                                 <div class="tooltip tooltip-top w-full" data-tip="SQLite WAL Maintenance & Hot Backups">
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-info/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
-                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB03')">
+                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB04')">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-info/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                         <div
                                             class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-info group-hover:bg-info group-hover:text-info-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-database text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
-                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="Database & Backup">
                                                 Database & Backup
                                             </h3>
                                         </div>
@@ -122,7 +143,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 5: Real-time SSE -->
+                                <!-- Card 6: Real-time SSE -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Server-Sent Events Live Streaming & Broadcast">
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-accent/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="show_dialog_sse_broadcast()">
@@ -132,7 +153,7 @@
                                             <i class="fa-solid fa-tower-broadcast text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
-                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="Real-time SSE">
                                                 Real-time SSE
                                             </h3>
                                         </div>
@@ -143,7 +164,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Card 6: Swagger API Docs -->
+                                <!-- Card 7: Swagger API Docs -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Interactive Swagger UI & OpenAPI Documentation">
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="window.open('/docs', '_blank')">
@@ -153,7 +174,7 @@
                                             <i class="fa-solid fa-book-bookmark text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
-                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="API Docs">
                                                 API Docs
                                             </h3>
                                         </div>
@@ -172,9 +193,10 @@
                     <label class="tab tab-label-custom">
                         <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB02" onchange="event_tab_active(this)" />
                         <i class="fa-solid fa-users text-sm"></i>
-                        <span class="px-2 font-bold">System Users Management</span>
+                        <span class="px-2 font-bold" data-i18n="System Users Management">System Users Management</span>
                     </label>
                     <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-4">
+                        {% if user and user.system_user_type_id in [1, 2] %} <!-- ✅ SYSTEM USER TABLE -->
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-base-content/10">
                             <div>
                                 <h3 class="text-lg font-bold text-primary flex items-center gap-2">
@@ -184,7 +206,7 @@
                                 <p class="text-xs text-base-content/60">Manage accounts, roles, and administrative access.</p>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button onclick="show_dialog_create_user()" class="btn btn-primary btn-sm gap-2">
+                                <button id="btnAddUser" onclick="show_dialog_create_user()" class="btn btn-primary btn-sm gap-2">
                                     <i class="fa-solid fa-user-plus"></i>
                                     <span>Add User</span>
                                 </button>
@@ -195,14 +217,79 @@
                         </div>
 
                         <!-- ✅ Table -->
-                        <div id="system_user_table"></div>
+                        <div id="system_user_table" class="w-full overflow-x-auto"></div>
+
+                        {% else %}
+                        <!-- ❌ NO PERMISSION ALERT -->
+                        <div class="alert alert-error shadow-xl rounded-box bg-error/15 border border-error/30 mt-4 p-5">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error shrink-0 animate-pulse">
+                                    <i class="fa-solid fa-circle-exclamation text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-lg text-error">Insufficient Permissions</h4>
+                                    <p class="text-sm opacity-80 mt-1">
+                                        You do not have permission to access this section. Please log in with <span class="font-bold text-error">Administrator</span> or higher privileges.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
 
-                    <!-- TAB 3: Database & Maintenance -->
+                    <!-- TAB 3: System User Types -->
                     <label class="tab tab-label-custom">
                         <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB03" onchange="event_tab_active(this)" />
+                        <i class="fa-solid fa-users-gear text-info text-sm"></i>
+                        <span class="px-2 font-bold" data-i18n="System User Types">System User Types</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-4">
+                        {% if user and user.system_user_type_id in [1] %} <!-- ✅ SYSTEM USER TYPE TABLE -->
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-2 border-b border-base-content/10">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-primary flex items-center gap-2 mb-1">
+                                    <i class="fa-solid fa-users-gear text-info"></i>
+                                    <span data-i18n="System User Types">System User Types</span>
+                                </h3>
+                                <p class="text-xs text-base-content/60">Manage system user roles, access levels, and granular permissions.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="btnAddUserType" onclick="show_dialog_create_user_type()" class="btn btn-primary btn-sm gap-2">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Add User Type</span>
+                                </button>
+                                <button onclick="reloadUserTypeTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ✅ Table -->
+                        <div id="system_user_type_table" class="w-full overflow-x-auto"></div>
+
+                        {% else %}
+                        <!-- ❌ NO PERMISSION ALERT -->
+                        <div class="alert alert-error shadow-xl rounded-box bg-error/15 border border-error/30 mt-4 p-5">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error shrink-0 animate-pulse">
+                                    <i class="fa-solid fa-circle-exclamation text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-lg text-error">Insufficient Permissions</h4>
+                                    <p class="text-sm opacity-80 mt-1">
+                                        You cannot access this section. Please log in with <span class="font-bold text-error">Root</span> privileges.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- TAB 4: Database & Maintenance -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB04" onchange="event_tab_active(this)" />
                         <i class="fa-solid fa-database text-sm"></i>
-                        <span class="px-2 font-bold">Database & Maintenance</span>
+                        <span class="px-2 font-bold" data-i18n="Database & Backup">Database & Maintenance</span>
                     </label>
                     <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -288,46 +375,7 @@
                         </div>
                     </div>
 
-                    <!-- TAB 4: Account Security -->
-                    <label class="tab tab-label-custom">
-                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB04" onchange="event_tab_active(this)" />
-                        <i class="fa-solid fa-lock text-sm"></i>
-                        <span class="px-2 font-bold">Account Security</span>
-                    </label>
-                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm">
-                        <div class="max-w-xl mx-auto card bg-base-100 border border-base-content/5 p-6 shadow-sm space-y-5">
-                            <div class="flex items-center gap-3 pb-3 border-b border-base-content/10">
-                                <div class="w-10 h-10 rounded-xl bg-warning/10 text-warning flex items-center justify-center text-lg">
-                                    <i class="fa-solid fa-key"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-base text-base-content">Change Account Password</h3>
-                                    <p class="text-xs text-base-content/60">Update your password to keep your account secure.</p>
-                                </div>
-                            </div>
 
-                            <form id="passwordFormTab" onsubmit="changePassword(event)" class="space-y-4">
-                                <div class="form-control">
-                                    <label class="label py-1"><span class="label-text text-xs font-semibold">Current Password</span></label>
-                                    <input type="password" id="tabOldPassword" class="input input-bordered input-sm" required />
-                                </div>
-                                <div class="form-control">
-                                    <label class="label py-1"><span class="label-text text-xs font-semibold">New Password</span></label>
-                                    <input type="password" id="tabNewPassword" class="input input-bordered input-sm" required minlength="6" />
-                                </div>
-                                <div class="form-control">
-                                    <label class="label py-1"><span class="label-text text-xs font-semibold">Confirm New Password</span></label>
-                                    <input type="password" id="tabConfirmPassword" class="input input-bordered input-sm" required minlength="6" />
-                                </div>
-                                <div class="pt-2">
-                                    <button type="submit" class="btn btn-warning btn-sm px-6 gap-2">
-                                        <i class="fa-solid fa-key text-xs"></i>
-                                        <span>Update Password</span>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                 </div>
 
             </main>
@@ -417,56 +465,267 @@
         </div>
     </dialog>
 
-    <!-- 3. Modal: Create User -->
+    <!-- 3. Modal: Create / Edit User -->
     <dialog id="modal_create_user" class="modal my-modal">
         <div class="modal-box my-modal-box max-w-lg w-full p-0 overflow-hidden rounded-box">
-            {% with modal_title="Add New System User" %}
+            {% with modal_title="System User" %}
             {% include "_modal_header.html" %}
             {% endwith %}
 
-            <form id="createUserForm" onsubmit="createUser(event)" class="p-6 space-y-4">
+            <form id="createUserForm" onsubmit="event.preventDefault();" class="p-6 space-y-4">
+                <input type="hidden" id="userId" data-field="id" value="0" />
+
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-control">
                         <label class="label py-1"><span class="label-text text-xs font-semibold">Username *</span></label>
-                        <input type="text" id="newUsername" class="input input-bordered input-sm" placeholder="e.g. operator1" required />
+                        <input type="text" id="newUsername" data-field="username" class="input input-bordered input-sm" placeholder="e.g. operator1" required />
                     </div>
                     <div class="form-control">
-                        <label class="label py-1"><span class="label-text text-xs font-semibold">Password *</span></label>
-                        <input type="password" id="newUserPassword" class="input input-bordered input-sm" placeholder="Min 6 chars" required minlength="6" />
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" id="labelUserPassword">Password *</span></label>
+                        <input type="password" id="newUserPassword" data-field="password" class="input input-bordered input-sm" placeholder="Min 6 chars" />
                     </div>
                 </div>
 
                 <div class="form-control">
                     <label class="label py-1"><span class="label-text text-xs font-semibold">Full Name</span></label>
-                    <input type="text" id="newFullName" class="input input-bordered input-sm" placeholder="John Doe" />
+                    <input type="text" id="newFullName" data-field="name" class="input input-bordered input-sm" placeholder="John Doe" />
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-control">
                         <label class="label py-1"><span class="label-text text-xs font-semibold">Email</span></label>
-                        <input type="email" id="newUserEmail" class="input input-bordered input-sm" placeholder="user@domain.com" />
+                        <input type="email" id="newUserEmail" data-field="email" class="input input-bordered input-sm" placeholder="user@domain.com" />
                     </div>
                     <div class="form-control">
                         <label class="label py-1"><span class="label-text text-xs font-semibold">Role</span></label>
-                        <select id="newUserRole" class="select select-bordered select-sm text-xs">
-                            <option value="admin">Admin</option>
-                            <option value="manager">Manager</option>
-                            <option value="operator">Operator</option>
-                            <option value="user">User</option>
+                        <select id="newUserRole" data-field="role" class="select select-bordered select-sm text-xs">
+                            <option value="ROOT">ROOT</option>
+                            <option value="ADMIN" selected>ADMIN</option>
+                            <option value="ACCOUNT">ACCOUNT</option>
+                            <option value="OPERATOR">OPERATOR</option>
+                            <option value="DEVICES">DEVICES</option>
+                            <option value="VIEWER">VIEWER</option>
                         </select>
                     </div>
                 </div>
 
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-3 py-1">
+                        <input type="checkbox" id="newUserIsActive" data-field="is_active" class="toggle toggle-primary toggle-sm" checked />
+                        <span class="label-text text-xs font-semibold">Active Account</span>
+                    </label>
+                </div>
+
                 <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
                     <button type="button" class="btn btn-ghost btn-sm" onclick="modal_create_user.close()">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-sm px-6 gap-2">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>Create Account</span>
+                    <button type="button" data-field="btn_submit" class="btn btn-primary btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span id="btnSubmitUserText">Save Account</span>
                     </button>
                 </div>
             </form>
         </div>
     </dialog>
+
+    <!-- 4. Modal: Create / Edit System User Type -->
+    <dialog id="Modal_System_User_Type" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-5xl w-full p-0 overflow-hidden rounded-box border border-base-300 shadow-2xl bg-base-100">
+            {% with modal_title="System User Role & Access Permissions" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <!-- Sub Header -->
+            <div class="bg-base-200/60 px-5 py-3 border-b border-base-300/80 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-box bg-primary/10 text-primary flex items-center justify-center font-bold text-lg shrink-0">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] text-base-content/60 font-semibold uppercase tracking-wider block">Sidebar navigation and dashboard widget permissions</span>
+                        <h4 class="text-base font-black text-base-content truncate">Role Configuration & Granular Access Control</h4>
+                    </div>
+                </div>
+                <span class="badge badge-primary badge-soft badge-sm font-bold">Role & Permissions</span>
+            </div>
+
+            <form id="formUserType" onsubmit="event.preventDefault();" class="p-4 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                <input type="hidden" data-field="id" value="0" />
+
+                <!-- 📌 Top Form: Type Name & Description (Card) -->
+                <div class="card bg-base-200/40 border border-base-300/80 rounded-box p-4 shadow-xs space-y-3">
+                    <div class="text-xs font-bold uppercase tracking-wider text-base-content/70 flex items-center gap-1.5 border-b border-base-300/60 pb-2">
+                        <i class="fa-solid fa-id-badge text-primary"></i>
+                        <span>User Role Details</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div class="space-y-1">
+                            <label class="label text-xs font-bold text-base-content/80 p-0 flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-primary text-xs"></i>
+                                <span>Role Type Name <span class="text-error">*</span></span>
+                            </label>
+                            <input type="text" class="input input-bordered input-primary input-sm sm:input-md w-full rounded-box text-sm font-bold uppercase" data-field="user_type" data-validate="required" placeholder="e.g. ROOT, ADMIN, OPERATOR, VIEWER" required />
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="label text-xs font-bold text-base-content/80 p-0 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-lines text-info text-xs"></i>
+                                <span>Description / Responsibilities</span>
+                            </label>
+                            <input type="text" class="input input-bordered input-primary input-sm sm:input-md w-full rounded-box text-sm" data-field="description" placeholder="Role scope and responsibilities..." />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 📌 Main Permissions & Widgets Layout (3 Columns) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- 🛠️ Column 1: Side-Menu Access -->
+                    <div class="card bg-base-200/40 border border-base-300/80 rounded-box p-4 shadow-xs flex flex-col gap-3">
+                        <div class="flex items-center gap-2.5 pb-2 border-b border-base-300/70">
+                            <div class="w-8 h-8 rounded-box bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                                <i class="fa-solid fa-bars-staggered"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-base-content">Side-Menu Access</h3>
+                                <p class="text-[11px] text-base-content/60">Configure sidebar navigation menu access</p>
+                            </div>
+                        </div>
+
+                        <fieldset class="space-y-2 max-h-96 overflow-y-auto pr-1" data-ignore="true" data-field="menu_list">
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-house text-primary text-xs"></i> Home
+                                </span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-xs menu-toggle" name="menu_list[]" value="HOME" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-gauge-high text-primary text-xs"></i> Dashboard
+                                </span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-xs menu-toggle" name="menu_list[]" value="DASHBOARD" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-box-archive text-primary text-xs"></i> Sample Items
+                                </span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-xs menu-toggle" name="menu_list[]" value="SAMPLE" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-sliders text-primary text-xs"></i> System Settings
+                                </span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-xs menu-toggle" name="menu_list[]" value="SYSTEM_CONFIG" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-code text-primary text-xs"></i> Swagger API Docs
+                                </span>
+                                <input type="checkbox" class="toggle toggle-primary toggle-xs menu-toggle" name="menu_list[]" value="SWAGGER_DOCS" />
+                            </label>
+                        </fieldset>
+                    </div>
+
+                    <!-- 🛠️ Column 2: System Settings Modules -->
+                    <div class="card bg-base-200/40 border border-base-300/80 rounded-box p-4 shadow-xs flex flex-col gap-3">
+                        <div class="flex items-center gap-2.5 pb-2 border-b border-base-300/70">
+                            <div class="w-8 h-8 rounded-box bg-success/10 text-success flex items-center justify-center font-bold text-sm shrink-0">
+                                <i class="fa-solid fa-sliders"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-base-content">System Modules</h3>
+                                <p class="text-[11px] text-base-content/60">Configure access to settings modules</p>
+                            </div>
+                        </div>
+
+                        <fieldset class="space-y-2 max-h-96 overflow-y-auto pr-1" data-ignore="true" data-field="system_config_list">
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-gear text-success text-xs"></i> General Settings
+                                </span>
+                                <input type="checkbox" class="toggle toggle-success toggle-xs menu-toggle" name="menu_list[]" value="GENERAL_SETTINGS" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-success text-xs"></i> User Management
+                                </span>
+                                <input type="checkbox" class="toggle toggle-success toggle-xs menu-toggle" name="menu_list[]" value="USER_MANAGEMENT" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-users-gear text-success text-xs"></i> System User Types
+                                </span>
+                                <input type="checkbox" class="toggle toggle-success toggle-xs menu-toggle" name="menu_list[]" value="USER_TYPES" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-database text-success text-xs"></i> Database &amp; Maintenance
+                                </span>
+                                <input type="checkbox" class="toggle toggle-success toggle-xs menu-toggle" name="menu_list[]" value="DATABASE_MAINTENANCE" />
+                            </label>
+                            <label class="flex items-center justify-between p-2.5 rounded-box bg-base-100/80 hover:bg-base-100 transition-all cursor-pointer border border-base-300/50">
+                                <span class="text-xs font-semibold text-base-content/90 flex items-center gap-2">
+                                    <i class="fa-solid fa-tower-broadcast text-success text-xs"></i> Real-time SSE
+                                </span>
+                                <input type="checkbox" class="toggle toggle-success toggle-xs menu-toggle" name="menu_list[]" value="REALTIME_SSE" />
+                            </label>
+                        </fieldset>
+                    </div>
+
+                    <!-- 📦 Column 3: Home-Item Widgets (Drag & Drop) -->
+                    <div class="card bg-base-200/40 border border-base-300/80 rounded-box p-4 shadow-xs flex flex-col gap-3">
+                        <div class="flex items-center gap-2.5 pb-2 border-b border-base-300/70">
+                            <div class="w-8 h-8 rounded-box bg-accent/10 text-accent flex items-center justify-center font-bold text-sm shrink-0">
+                                <i class="fa-solid fa-grip flex items-center"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-sm text-base-content">Home Widgets</h3>
+                                <p class="text-[11px] text-base-content/60">Drag & drop to configure visible cards</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
+                            <!-- Zone A: Enabled -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-xs font-semibold text-success px-1">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Enabled Widgets</span>
+                                    <span class="badge badge-success badge-soft badge-xs font-mono font-bold">Show</span>
+                                </div>
+                                <div class="dropzone min-h-24 rounded-box border-2 border-dashed border-success/40 bg-success/5 p-2 space-y-1.5 transition-all duration-200" data-ignore="true" data-field="use_item_box" data-zone="A"></div>
+                            </div>
+
+                            <!-- Zone B: Disabled -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-xs font-semibold text-base-content/60 px-1">
+                                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-minus"></i> Disabled Widgets</span>
+                                    <span class="badge badge-ghost badge-xs font-mono font-bold">Hide</span>
+                                </div>
+                                <div class="dropzone min-h-24 rounded-box border-2 border-dashed border-base-300 bg-base-100/40 p-2 space-y-1.5 transition-all duration-200" data-ignore="true" data-field="not_use_item_box" data-zone="B"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="Modal_System_User_Type.close()">Cancel</button>
+                    <button type="button" data-field="btn_submit" class="btn btn-primary btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <template id="template_home_item">
+        <div class="drag-item group flex items-center justify-between rounded-box border border-base-300/80 bg-base-100 px-3 py-2 cursor-grab active:cursor-grabbing select-none shadow-2xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-sm hover:border-primary/50 active:scale-[0.98]" draggable="true">
+            <div class="flex items-center gap-2 min-w-0">
+                <i class="fa-solid fa-grip-vertical text-base-content/30 group-hover:text-primary transition-colors text-xs shrink-0"></i>
+                <i class="fa-solid fa-cube text-primary/70 text-xs shrink-0"></i>
+                <span class="text-xs font-medium text-base-content/90 truncate" name="item_name">item_name</span>
+            </div>
+            <i class="fa-solid fa-arrows-up-down-left-right text-[10px] text-base-content/20 group-hover:text-base-content/50 transition-colors shrink-0"></i>
+        </div>
+    </template>
 
     <!-- 4. Modal: Real-time SSE Broadcast Tester -->
     <dialog id="modal_sse_broadcast" class="modal my-modal">

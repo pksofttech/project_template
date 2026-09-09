@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import String, TypeDecorator
 from sqlmodel import Field, SQLModel, and_
 
-from app.stdio import print_debug, time_now
+from app.stdio import time_now
 
 
 class ISODateTime(TypeDecorator):
@@ -52,18 +52,72 @@ class App_Configurations(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
 
 
-class System_Users(SQLModel, table=True):
-    """Administrative and system user accounts table."""
+class System_User_Type(SQLModel, table=True):
+    """System_User_Type"""
 
     id: int | None = Field(default=None, primary_key=True)
-    username: str = Field(unique=True, index=True, nullable=False)
-    password: str = Field(nullable=False)
-    name: str = Field(default="")
-    email: str | None = Field(default=None)
-    role: str = Field(default="admin")  # admin, manager, user
-    is_active: bool = Field(default=True)
-    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
-    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    user_type: str = Field(nullable=False, unique=True)
+    permission_allowed: str = Field(default="")
+    menu_config: str = Field(default="")
+    system_config: str = Field(default="")
+    home_item_config: str = Field(default="")
+    description: str = Field(default="", max_length=128)
+
+
+class System_Users(SQLModel, table=True):
+    """System_Users table"""
+
+    id: int | None = Field(default=None, primary_key=True)
+
+    username: str = Field(unique=True, index=True)
+    name: str = Field(unique=True, index=True)
+
+    password: str  # เก็บ password hash นะ ไม่ใช่ plaintext
+
+    createDate: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    create_by: str = Field(default="system")
+
+    status: str = Field(default="ENABLE", index=True)  # ENABLE / DISABLE
+    pictureUrl: str = Field(default="")
+    remark: str = Field(default="")
+
+    system_user_type_id: int = Field(foreign_key="system_user_type.id", nullable=False, index=True)
+
+    @property
+    def is_active(self) -> bool:
+        return (self.status or "").upper() == "ENABLE"
+
+    @is_active.setter
+    def is_active(self, value: bool):
+        self.status = "ENABLE" if value else "DISABLE"
+
+    @property
+    def created_at(self) -> datetime:
+        return self.createDate
+
+    @created_at.setter
+    def created_at(self, value: datetime):
+        self.createDate = value
+
+    @property
+    def updated_at(self) -> datetime:
+        return self.createDate
+
+    @updated_at.setter
+    def updated_at(self, value: datetime):
+        self.createDate = value
+
+    @property
+    def email(self) -> str:
+        return ""
+
+    @email.setter
+    def email(self, value: str):
+        pass
+
+    @property
+    def role(self) -> str:
+        return "admin"
 
 
 class Sample_Item(SQLModel, table=True):
@@ -87,6 +141,8 @@ class Sample_Item(SQLModel, table=True):
 # Dynamic model mapping for generic DataTables queries
 MODEL_MAP = {
     "App_Configurations": App_Configurations,
+    "System_User_Type": System_User_Type,
+    "system_user_type": System_User_Type,
     "System_Users": System_Users,
     "system_users": System_Users,
     "Sample_Item": Sample_Item,

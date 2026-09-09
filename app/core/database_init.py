@@ -5,7 +5,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.auth import get_password_hash
 from app.core.database import async_engine
-from app.core.models import App_Configurations, Sample_Item, System_Users
+from app.core.models import App_Configurations, Sample_Item, System_User_Type, System_Users
 from app.core.sqlite_migrator import sqlite_auto_migrate_async
 from app.stdio import print_debug, print_error, print_success, time_now
 
@@ -39,12 +39,63 @@ async def database_init_default():
                 if not existing:
                     session.add(App_Configurations(key=key, value=val, description=desc))
 
-            # Seed Default User Accounts (system / ssystem with password 12341234)
+            # Seed Default User Types if empty
+            user_type_stmt = select(System_User_Type)
+            existing_types = (await session.exec(user_type_stmt)).all()
+            if not existing_types:
+                default_types = [
+                    (
+                        "ROOT",
+                        "สิทธิสูงสุดของระบบ (เข้าถึงทุกโมดูลทุกส่วน)",
+                        "system_config,management_system_user,station_config",
+                    ),
+                    (
+                        "ADMIN",
+                        "ผู้ดูแลระบบทั่วไป จัดการการตั้งค่าและผู้ใช้",
+                        "system_config,management_system_user,station_config",
+                    ),
+                    ("ACCOUNT", "ฝ่ายบัญชี การเงิน การออกบิล/ชำระเงิน", ""),
+                    ("OPERATOR", "เจ้าหน้าที่ปฏิบัติการ", ""),
+                    ("DEVICES", "ผู้ดูแลอุปกรณ์ LPR, Gateway, Hardware", ""),
+                    ("VIEWER", "บัญชีสำหรับดูข้อมูลอย่างเดียว (Read-Only)", ""),
+                ]
+                for type_name, desc, perms in default_types:
+                    session.add(
+                        System_User_Type(
+                            user_type=type_name,
+                            permission_allowed=perms,
+                            description=desc,
+                            menu_config="[]",
+                            system_config="[]",
+                            home_item_config="[]",
+                        )
+                    )
+                await session.flush()
+                print_success("✔ Seeded default system_user_types (ROOT, ADMIN, ...)")
+
+            root_type = (await session.exec(select(System_User_Type).where(System_User_Type.user_type == "ROOT"))).first()
+            root_id = root_type.id if root_type else 1
+
+            # Fetch all user types
+            all_types = (await session.exec(select(System_User_Type))).all()
+            type_map = {t.user_type: t for t in all_types}
+
+            # Seed Default User Accounts for every User Type (password 12341234)
             default_accounts = [
-                ("system", "System Administrator", "system@example.com"),
-                ("ssystem", "System Administrator", "ssystem@example.com"),
+                ("system", "System Administrator", "ROOT", "สิทธิสูงสุดของระบบ (เข้าถึงทุกโมดูล)"),
+                ("admin", "Administrator", "ADMIN", "ผู้ดูแลระบบทั่วไป จัดการการตั้งค่าและผู้ใช้"),
+                ("account", "Accounting Staff", "ACCOUNT", "ฝ่ายบัญชี การเงิน การออกบิล/ชำระเงิน"),
+                ("operator", "Operations Officer", "OPERATOR", "เจ้าหน้าที่ปฏิบัติการ"),
+                ("devices", "Device Specialist", "DEVICES", "ผู้ดูแลอุปกรณ์ LPR, Gateway, Hardware"),
+                ("viewer", "General Viewer", "VIEWER", "บัญชีสำหรับดูข้อมูลอย่างเดียว (Read-Only)"),
             ]
-            for u_name, display_name, email in default_accounts:
+
+            seeded_type_ids = set()
+            for u_name, display_name, target_type, desc in default_accounts:
+                target_type_obj = type_map.get(target_type)
+                target_type_id = target_type_obj.id if target_type_obj else root_id
+                seeded_type_ids.add(target_type_id)
+
                 user_stmt = select(System_Users).where(System_Users.username == u_name)
                 existing_user = (await session.exec(user_stmt)).first()
                 if not existing_user:
@@ -52,14 +103,45 @@ async def database_init_default():
                         username=u_name,
                         password=get_password_hash("12341234"),
                         name=display_name,
-                        email=email,
-                        role="admin",
-                        is_active=True,
-                        created_at=time_now(),
-                        updated_at=time_now(),
+                        createDate=time_now(),
+                        create_by="system",
+                        status="ENABLE",
+                        pictureUrl="",
+                        remark=desc,
+                        system_user_type_id=target_type_id,
                     )
                     session.add(new_user)
-                    print_success(f"👤 Seeded default account: {u_name} / 12341234")
+                    print_success(f"👤 Seeded default account: {u_name} ({target_type}) / 12341234")
+                else:
+                    changed = False
+                    if not getattr(existing_user, "system_user_type_id", None):
+                        existing_user.system_user_type_id = target_type_id
+                        changed = True
+                    if not getattr(existing_user, "createDate", None):
+                        existing_user.createDate = time_now()
+                        changed = True
+                    if changed:
+                        session.add(existing_user)
+
+            # Ensure any custom User Types dynamically have at least one account
+            for t in all_types:
+                if t.id not in seeded_type_ids:
+                    u_exists = (await session.exec(select(System_Users).where(System_Users.system_user_type_id == t.id))).first()
+                    if not u_exists:
+                        u_name = f"user_{t.user_type.lower()}"
+                        new_user = System_Users(
+                            username=u_name,
+                            password=get_password_hash("12341234"),
+                            name=f"{t.user_type.title()} User",
+                            createDate=time_now(),
+                            create_by="system",
+                            status="ENABLE",
+                            pictureUrl="",
+                            remark=t.description or f"Default account for {t.user_type}",
+                            system_user_type_id=t.id,
+                        )
+                        session.add(new_user)
+                        print_success(f"👤 Seeded default account for {t.user_type}: {u_name} / 12341234")
 
             # Seed Sample Items if empty
             sample_stmt = select(Sample_Item)

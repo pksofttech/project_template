@@ -1,0 +1,3424 @@
+A 1234
+A4 Summary Report
+AA:BB:CC:DD:EE:FF
+AB 1234, ABC 123
+ACCESS READER
+ACCOUNT
+ACTIVE
+ADMIN
+AI INSPECTION ACTIVE
+AI Plate Recognition
+AI Recognition
+ALL
+ALL (Everyone matching criteria)
+ALLOW_PASS
+ANTI_PASSBACK
+API DOCS
+API Docs
+API Endpoints & Swagger Documentation
+API Key / Password
+API Key Password
+Accept Exit Payment
+Access
+Access & Lane Permission Configuration
+Access Active
+Access Control & Category Policy
+Access Control Manager
+Access Control Report
+Access Control Setting
+Access Control Settings
+Access Control System
+Access Denied / Unauthorized Action
+Access Device & Hardware Configuration
+Access Devices
+Access Direction Mode
+Access Door Role
+Access Hardware
+Access Log
+Access Mode
+Access Permission Rule Conditions
+Access Permission Rules (Time & Day Window)
+Access Permissions
+Access Privilege
+Access Readers List
+Access Restrictions
+Access Result / Status
+Access Role
+Access Role & Permission Mapping
+Access Role (For Access Control)
+Access Role Name
+Access Rule
+Access Zone
+Access Zone / Gate
+Access permission data
+Access permission policy ID
+Access_Devices
+Access_Zones
+Account
+Account & Income Report
+Account & Receipt No. Config
+Account Config
+Account Details
+Account Information
+Account Information & Credentials
+Account Information (Name, email address, profile picture)
+Account Manager
+Account Name
+Account Records
+Account Settings
+Account Status
+Account Status & Security
+Account Transactions
+Account_Record (Financial Transactions & Receipts Table)
+Accounting
+Action
+Action & Display
+Action & Message
+Actions
+Active
+Active / Enabled
+Active Cards & License Plates
+Active Cashier / Operator
+Active Checked-In Guest Vehicles (Active [])
+Active Checked-In Vehicles
+Active Checked-In Vehicles (Active [])
+Active Gateway Matrix
+Active Guests
+Active Package
+Active Scenarios:
+Active State Monitor
+Active Status
+Active Tariff Profile:
+Active status (Enable/Disable)
+Actual Fee Deduction (
+Add
+Add / Edit Fuel Type
+Add / Edit Group / Division
+Add / Edit Member Card Type
+Add / Edit Member User
+Add / Edit Objective
+Add / Edit Permission
+Add / Edit Vehicle Type
+Add / Edit Visitor
+Add / Edit Visitor Booking
+Add 10 THB at 03:00 and every 60 minutes thereafter
+Add 10 THB billed to linked customer when exceeding 02:00
+Add 10 THB when parked duration exceeds 02:00
+Add Auto Module
+Add Card Entries by Uploading Excel or CSV File
+Add Card Reader
+Add Condition
+Add E-Stamp Terminal
+Add Gate Lane
+Add Item
+Add LPR Camera
+Add License Plate
+Add Member Card/License Plate
+Add Member User Entries by Uploading Excel or CSV File
+Add New
+Add New Booking
+Add Parking Lot
+Add Restriction Rule
+Add Step Item
+Add Vehicle License Plate
+Add authorized license plates by typing the plate number or selecting from active visitor captures.
+Add authorized license plates by typing the plate number or selecting from entry capture, then save vehicle.
+Add/Edit Member User (Process Manager)
+Added Fee
+Additional Details
+Additional Notes
+Additional Notes / Remarks
+Additional conditions or remark...
+Additional information regarding the system.
+Additional notes for staff or internal records...
+Additional remark
+Additional remarks
+Additional remarks or notes...
+Additional remarks...
+Address
+Address & Optional Notes
+Address & Remarks
+Address (Facility Address)
+Address / Contact Details
+Address / Contact Info
+Address:
+Advanced Configuration (Custom / Dynamic Mode)
+Advanced Features
+Advanced Parking Logic
+Alert Prompt Message
+Algorithm: Aggregate-v2.1
+Align ID card inside the frame
+Align QR Code in the center of scanner box
+All
+All (Excl. Customer Credit)
+All Booking Records
+All Booking Records (Bookings)
+All Gateways
+All Parking Lots
+All Parking Lots (Global Rule)
+All Total
+All Types
+All Visitor Bookings
+All registered vehicle and contact information must be accurate and up to date
+All — All Payment Types
+Allow
+Allow (Apply Discount Stamp)
+Allow but Alert Guard
+Allow device to receive credentials and trigger door unlocks
+Allowed
+Allowed License Plate Formats
+Allowed Tariff / Discount Profiles
+Allowed Value
+Allows 1 mismatch across any characters. Suitable for free barrier gates or fast-transit access.
+American Express
+Amount
+Amount (THB)
+Amount Paid
+Amount to Pay
+Amount:
+Any Fuel Type
+Any Member Type
+Any Objective
+Any Vehicle Type
+Applied discount
+Apply CODE E-Stamp
+Apply E-Stamp Discount
+Apply Lost Card Fine
+Apply Rate to Settings
+Apply Stamp
+Apply System Update
+Apply globally to all cameras in system
+Archive Browser
+Archive Capacity
+Archive Package
+Archive info
+Assign LPR Gate Access Privileges
+Assigned Gate
+Assigned parking lot ID
+Associated transaction ID
+At Duration (HH:MM)
+Audit Log Records
+Audit Logging for LPR & Card Readers
+Audit Logs
+Audit corporate tenant customer accounts and E-Stamp credit balances
+Auth Layer
+Authenticate identity via assigned Username, PIN, or configured Social Login
+Authentication & Session Management
+Authorize & Override
+Authorized Security Zones
+Authorized Signature
+Authorized Time Window
+Authorized Users
+Auto Calculate
+Auto Credit
+Auto Credit Balance
+Auto Module
+Auto Module Station (Kiosk & Terminal)
+Auto Print
+Auto Realtime
+Auto Release Barrier on Valid Member
+Auto Terminal
+Auto focus to Card ID when Enter is pressed on License Plate.
+Auto-Cycle Multiple Lines
+Auto-Delete Card on Expiry
+Auto-Refresh (60s)
+Auto-cancels when expired
+Auto-correct recognized OCR misreads
+Automated Access Revocation (Auto-Expire)
+Automated Daily Email Dispatch Toggle (Auto Email Toggle)
+Automated Entry Restriction When Full (Limit Entry Policy)
+Automated LPR Camera Integration (LPR-API-MODE)
+Automated Plate Correction (AI Auto Map Plate)
+Automated Tariff Switching:
+Automated Visitor LPR Gate Processing
+Automated webhook triggered upon successful payment completion
+Automation & Kiosk
+Availability
+Available
+Available :
+Available Parking Spaces
+Available Slots
+Avoid scanning under direct glare or heavy reflections
+Awaiting Input
+Awaiting Payment
+Awaiting payment confirmation...
+BEAM
+BK-20260823-002
+BLACKLIST
+BOOKING SERVICE
+Back
+Back to System
+Backup, Restore & Migration
+Bar Chart
+Barrier Access & Directional Permissions
+Barrier Access Permission Role
+Barrier Gate & Terminal
+Barrier Gate Lane Configuration
+Barrier Gate Lanes & Hardware Triggers
+Barrier Gate Policy
+Barrier Open Trigger URL (HTTP Relay / API)
+Barrier opens automatically and prints thermal entry slip (if enabled)
+Basement
+Basic
+Batch Card & Plate Registration
+Batch License Plate Mapping Import
+Batch Member Card Import
+Batch Member User Import
+Batch Update Numbers
+Beam Payment
+Beam Payment Server Configuration
+Beam Server API URL
+Before
+Behavior & Recommendations
+Beta Version
+Billed to Customer
+Billing / Tax Address
+Billing Cycle
+Billing Cycle Mode
+Billing Email
+Billing Profile
+Billing cycle calculation round
+Blacklist
+Blacklist & Alert Details
+Blacklist Detection & Security Enforcement
+Blacklist License Plate
+Blacklist Manager
+Blacklist Plate Records Table
+Blacklist Status (Watchlist)
+Block
+Block entry and trigger immediate security alert on arrival attempt
+Block entry on blacklist match
+Blocks visitor entries during midnight hours (00:00 - 05:00).
+Booking
+Booking Management
+Booking Manager
+Booking Member Type
+Booking Process
+Booking Quota
+Booking Record
+Booking Service
+Booking Type
+Booking Visitor Service
+Booking Visitor Service - PKS Smart LPR
+Booking visitor
+Bookings
+Bookings registered by system users or host members
+Bookmarks
+Booth
+Brand & Facility Imagery (Brand & Images)
+Brand & Model
+Brand / Model
+Brightness
+Building Management / Commercial Store
+Building Management / Store
+By Billing Cycle
+By Cashiers
+By Customers
+By Gate
+By Parking
+By Parking Lot
+By Payment Type
+By Record Table
+By Status
+By: admin
+CACYYMMDD-######
+CAM 01 Front
+CAM 02 Plate
+CAM 03 Driver
+CAM 04 Rear
+CANCEL
+CANCEL / RETURN CARD
+CAPTURED
+CAR
+CAR (รถยนต์)
+CARD-ID
+CARD-XXXX
+CASH
+CASHIER POS STATION
+CASHIER TERMINAL
+CASHIER001
+CGI / IP Camera Snapshot
+CHANNEL_TOKEN & CHANNEL_HANDLER
+CHECKOUT COMPLETED
+CODE
+CODE SELECT
+CODE STAMP
+CODE-STAMP
+CODE:
+COMPLETE PURGE (ALL TIME)
+CPU
+CPU Load
+CUSTOM-MODE ⚡ (Custom)
+Calculate
+Calculate & Close Shift
+Calculate Fee
+Calculation Step Table
+Calculation Test Result
+Calculation Timestamp
+Callback
+Callback signal triggered when QR Code request is accepted
+Cam 1 & 2 Active
+Camera
+Camera - Live
+Camera / Gate
+Camera Detected Plate
+Camera Live Config (JSON)
+Camera Snapshot Capture URL (HTTP/RTSP Capture)
+Camera Snapshots
+Camera Type / Brand
+Camera scans plate automatically
+Camera streams LPR log to backend daemon over network socket
+Cancel
+Cancel / Reset
+Cancel Payment
+Cancel Process
+Cancel Scan
+Cancel Transaction
+Cancel current exit transaction or close modal.
+Capacity
+Capacity Auto-Lock (Full Lot Denial)
+Capacity Config
+Capacity Control
+Capture
+Capture Driver / Member ID card photo.
+Capture ID Card
+Capture ID Card (OCR)
+Capture Image
+Capture citizen ID photo (Optional) and confirm Entry Transaction
+Capture citizen ID photo (Optional) and confirm \"Entry Transaction\"
+Captured snapshot image paths
+Car
+Car Detected
+Car Infomation
+Card
+Card & Holder Information
+Card / ID Snapshot
+Card / License
+Card / License Plate
+Card / License Plate ID
+Card Count
+Card Details, Member Status & Vehicle Specs
+Card Dispensers & Automated Kiosk Modules
+Card Filters
+Card ID
+Card ID / Barcode / RFID
+Card ID / Code
+Card ID / License Plate
+Card ID / Plate
+Card ID / Reference code
+Card ID Reader Integration (P3000-READER-WG)
+Card ID:
+Card Issuance Fee
+Card Management
+Card Number
+Card Reader & Relay Controller Module
+Card Renewal
+Card Renewal History
+Card Status
+Card Type
+Card Type & Validity Settings
+Card Type Name
+Card Type Remarks & Description
+Card Type, Billing Cycles & Tariff Rules
+Card Usage Limit
+Card Validity
+Card Validity Extension & Fee Calculation
+Card dispensers and automated entrance/exit Kiosk modules
+Card validity extension confirmed successfully
+Card/Plate Registration & User Assignment
+Card: 1
+Cardholder
+Cardholder / Owner
+Cardholder Full Name
+Cardholder Name
+Cardholder Profile Information
+Cardholder Status
+Cash
+Cash (Admin)
+Cash (CASH)
+Cashier
+Cashier / Operator
+Cashier POS
+Cashier Renewal Member
+Cashier Renewal Member User
+Cashier Terminal
+Cashier Terminal (Payment Processing)
+Cashier username or ID
+Cashier:
+Center Bottom
+Center Top
+Central server connection and exit terminal payment options
+Central switch to enable or disable all automated system notifications
+Change
+Change Exit Tariff Profile
+Change Owner
+Change PIN Code
+Change Password
+Change Photo
+Change Product License Key
+Change Profile Picture
+Change Security PIN
+Change Tariff
+Change Tariff Profile
+Channel
+Characters and digits must match 100% exactly. Recommended for paid parking billing operations.
+Charts
+Check
+Check &
+Check Fee
+Check In/Register
+Check Out/Extend
+Check for Updates
+Check-In Time
+Check-Out Time
+Check-Out Time (Access Expiration)
+Checking card dispenser status…
+Choose New Image
+Citizen ID
+Citizen ID Number
+Classification
+Clear
+Clear Field
+Clear Form
+Clear License Plate Access & Finalize
+Clear Transactional Buffers
+Click
+Click Apply Stamp to record discount quota or grant free parking period
+Click Entry Transaction button to confirm entry & open barrier
+Click \"Apply Stamp\" to record discount quota or grant free parking period
+Click button to apply discount stamp
+Click gear icon on terminal cards to configure permissions and tariffs
+Click preset to quick test:
+Click to edit/add remark
+Close
+Close Shift
+Close Shift Report
+Close Window
+Close cashier shift and generate shift settlement slip
+Cloud & Services
+Code
+Code Identity & Tag
+Code Name
+Code Stamp Manager
+Color
+Column Reference
+Command Key
+Commit Query Sequence
+Commit success
+Common Policy Templates:
+Company
+Company & Partner Profile
+Company / Affiliation / Address
+Company / Division / Address
+Company / Organization
+Company profile, contact info, credit limit & e-Stamp privileges
+Company:
+Complete Check-Out
+Completed
+Comprehensive documentation and system architecture guide
+Condition Identity & Type
+Condition Name
+Condition Type
+Condition Value
+Config WF1-485
+Configuration
+Configuration Guide & Popular Rule Examples
+Configuration updates will apply globally to all LPR modules automatically
+Configure
+Configure Access Permission Rules
+Configure OCR character similarity tolerance rules for vehicle plate matching
+Configure administrative system settings permissions
+Configure authorized member privileges and card usage limits
+Configure e-payment gateways, APIs, and fee calculation settings
+Configure entrance gate lanes and assigned LPR cameras
+Configure exit gate lanes and assigned LPR cameras
+Configure on-board RTC clock, e.g.
+Configure sidebar navigation menu access rights
+Configure system parking logic.
+Configure tariff profiles and facility profile in System Settings
+Configure tariff profiles and facility profile in \"System Settings\"
+Confirm
+Confirm & Save
+Confirm Card Validity Extension
+Confirm Check-In
+Confirm Check-Out
+Confirm Entry
+Confirm Entry Information
+Confirm Exit
+Confirm Exit Transaction to unlock barrier gate and print official receipt
+Confirm Import
+Confirm Member Exit
+Confirm New Password
+Confirm Renewal Transaction
+Confirm Transaction
+Confirm \"Exit Transaction\" to unlock barrier gate and print official receipt
+Confirm before stamping
+Confirmation
+Connected to server
+Connection Check
+Constraints
+Consumer ID
+Consumer Secret
+Contact
+Contact Address
+Contact Info
+Contact Info / Address / Organization
+Contact Information & Address
+Contact Person
+Contact Unit / Member
+Contact Unit:
+Contact phone number
+Contact:
+Continue with Google
+Continuous Operation
+Control Devices
+Controller
+Copy
+Core Functions
+Corrected Plate Fix
+Count IN
+Count OUT
+Count of amount
+Countdown Timer:
+Coupon
+Create and manage visitor booking appointments
+Create user accounts and assign Admin/Cashier roles
+Created by user ID
+Creator user ID
+Credit Limit (THB)
+Credit Terms & Financial Limits
+Credit Terms (Days)
+Criteria:
+Current Active License Key
+Current Active Session Info
+Current Active Validity
+Current Customer
+Current Customer:
+Current Expiry Date
+Current Expiry:
+Current PIN
+Current Parked
+Current Parked (Vehicles)
+Current Parked Duration
+Current Password
+Current Tariff:
+Currently Parked
+Currently Parked (Parked)
+Currently Parked Vehicles
+Custom Duration & Fee
+Custom Regex Pattern Definition (Custom Regex Pattern)
+Custom Renewal
+Custom reference code
+Customer
+Customer & Discount Permission Rules
+Customer & Partner Management
+Customer / Account Name
+Customer / Bill To
+Customer / Company
+Customer / Company Name
+Customer / Credit:
+Customer / Entity Name (Tax Profile)
+Customer / Organization
+Customer / Payer
+Customer / Tenant Account
+Customer Account Auto Credit [Stamp]
+Customer Account Auto Credit[Stamp]
+Customer Account Manager
+Customer Code
+Customer Details
+Customer ID
+Customer Info
+Customer Invoices
+Customer Management
+Customer Manager
+Customer Name
+Customer Organization
+Customer Organization & Booking Privileges
+Customer Process Manager
+Customer Profile & Billing Account
+Customer Record
+Customer Signature
+Customer Stamp
+Customer Stamp Code
+Customer Stamp Codes
+Customer Tax Invoice Profile
+Customer-facing dual display for parking fee summary and vehicle snapshot
+Customer:
+Customize system theme and interface color palette
+DENIED
+DEV-MOD
+DEVICES
+DISC50
+Daily Email Report Dispatch Settings
+Daily Scheduled Dispatch Time (e.g. 08:00)
+Daily Statistics (By Date)
+DaisyUI V5.0
+Dashboard
+Dashboard Wallpaper Image (Wallpaper)
+Data
+Data Base Management
+Data Processing Status
+DataBase Table
+Database
+Database & Backup
+Database Infrastructure
+Database Tables Schema Reference
+Date
+Date & Time
+Date & Time Range:
+Date / Time
+Date Range
+Date Range Filter
+Date Time
+Date Time Range
+Date/Time
+Date/Time:
+DateTime
+Days
+Days Left
+Days of Week
+Daytime start hour (e.g.
+Debtor Report
+Default
+Default Tariff Rate
+Default: 0
+Default: CACYYMMDD-######
+Default: CASH
+Default: ETXMYYMMDD-######
+Default: ETXUYYMMDD-######
+Default: EXTYYMMDD-######
+Default: Enable
+Default: GENERAL
+Default: IN
+Default: NORMAL
+Default: \"\"
+Define X, Y coordinates, data fields, and font sizes
+Define coordinates and data fields...
+Define rules restricting entry based on Objective, Vehicle Type, Fuel Type, Member Type, and Schedule.
+Del
+Delete
+Delete Selected
+Delivery / Food & Parcel
+Delivery / Food & Parcel Drop-off
+Denied Access Events & Audit Trail
+Density Protocol
+Deny
+Deny / Reject
+Deny Barrier
+Deny Notice Message
+Deny entry transactions and prevent automatic barrier opening when available parking capacity reaches 0
+Department
+Description
+Description / Example
+Description / Location Notes
+Description / Notes
+Description / Policy Reason
+Description / Purpose Details
+Description / Responsibilities
+Description / Service Items
+Description or notes for this fuel type...
+Description or notes for this vehicle type...
+Description or notes for this visit objective...
+Deselect
+Designated Tariff Profile
+Desired Target Net Amount
+Detailed User Documentation
+Details
+Details & Additional Remarks
+Details / Billing Cycle
+Details / Billing Plan
+Details / Description
+Details / Notes
+Detected Category:
+Detected Time
+Developer Network
+Development Mode(PKSOFTTECH.ORG)
+Device
+Device / Terminal
+Device Active Status
+Device ID
+Device Identity
+Device Identity & Access Zone
+Device Manager
+Device Model
+Device Name
+Device Nane
+Device Type
+Device Type (Type)
+Devices
+Devices Control Gate Manager
+Devices Control Gate System
+Devices Management
+Devices Monitor
+Digital Receipts
+Direct Registry Manipulation
+Direction
+Disable
+Disable (Full Screen),
+Disabled
+Disabled / Maintenance Mode
+Disabled Widgets
+Disallows heavy trucks in commercial and residential zones.
+Discount
+Discount CODE
+Discount updates live in database and triggers LINE notification
+Discounts
+Discovering LPR WF1 devices...
+Discovering cameras...
+Dispatching status notifications via LINE or system alerts
+Dispense Card
+Display
+Display Full Name
+Display interactive help menu and command list on console
+Display string (ASCII alphanumeric and standard symbols) for this row
+Displayed when blacklisted / expired / outstanding balance is detected
+Displayed when valid plate / active member / paid exit is detected
+Do not include # prefix
+Docker Desktop license agreement
+Document
+Document version 2.01
+Documentation
+Domain Name (LINE API / Webhook)
+Done
+Download
+Downloads
+Drag and drop to rearrange home dashboard widgets
+Due Date:
+Dump current running status and all active NVRAM configuration values
+Duplicate Plate Detection Timeout
+Duplicate Scan Suppression & Anti-Passback Timing Rules
+Duration
+Duration (HH:MM)
+Duration [HH:MM:SS]
+Duration in seconds for this message line to remain on screen
+During this scheduled period, the system automatically applies the event tariff profile and temporarily disables e-Stamp discounts.
+Dwell time in seconds before cycling to the next message line
+Dynamic Permission Rule Conditions Table
+Dynamic Permission Rules
+Dynamic Step Calculation Engine
+E Stamp
+E Stamp Devices
+E Stamp Parked
+E Stamp Report
+E-Mail Address
+E-Payment
+E-Payment Receipt
+E-Slip
+E-Stamp
+E-Stamp Code Redemption
+E-Stamp Confirmation
+E-Stamp Device
+E-Stamp Device Management
+E-Stamp Devices Manager
+E-Stamp Devices Manager - PK Management LPR V5
+E-Stamp Discount Applied
+E-Stamp Discount Details
+E-Stamp ID
+E-Stamp Limit (0 = Unlimited)
+E-Stamp Limit(*parked)
+E-Stamp Network
+E-Stamp Node
+E-Stamp Online Discount Validation
+E-Stamp Privilege Details
+E-Stamp Terminal & Discount Profile
+E-Stamp Terminal Configuration
+E-Stamp Terminals
+E-Stamp Transaction Report
+E-mail
+EN
+ERROR
+ESTABLISHED
+ESTAMP SERVICE
+ESTAMP TERMINAL
+ETXMYYMMDD-######
+ETXUYYMMDD-######
+EXIT KIOSK 🅾️
+EXPIRED
+EXTYYMMDD-######
+Edit
+Edit Details
+Edit Member Info
+Edit User Profile
+Electronic slips and tax invoices
+Email
+Email Address
+Email Report config
+Email-Billing
+Emergency
+Emergency Barrier Open
+Emergency Barrier Override (* Requires P3000 Relay Controller)
+Employee ID / UID
+Enable
+Enable / Active Status
+Enable / Disable
+Enable Split Screen (Left-Right)
+Enable exit kiosk payment
+Enable this fuel type in the system
+Enable this vehicle type for billing and registration
+Enabled
+Enabled Widgets
+Enabled status (Enable/Disable)
+End Date & Time
+End Time
+End-to-end encrypted data streams ensuring system integrity and personnel data privacy.
+Endpoint Path
+Enforce & Alert
+Enforce strict syntax verification on license plate strings before recording or searching
+English
+English (EN)
+Ensure start and end timestamps are verified before saving to maintain accurate parking fee calculations.
+Enter 13-digit Tax ID
+Enter 6-digit PIN for security
+Enter CODE...
+Enter Card ID
+Enter Card ID / Scan...
+Enter Card ID or License Plate to inspect...
+Enter Card ID or license plate above and click Verify
+Enter Guest Info & Plates
+Enter Plate Number
+Enter Unit / Room No.
+Enter additional remarks...
+Enter address or contact information...
+Enter billing and registered tax address...
+Enter card number or license plate (Press Enter for multiple entries)
+Enter complete facility address for receipts and invoices...
+Enter current password to verify
+Enter full name or display name
+Enter guest full name
+Enter individual or company name
+Enter installation location or notes...
+Enter license plate or wait for LPR camera capture
+Enter member user or account name above and click Lookup
+Enter new Product Key or 'demo'...
+Enter new password
+Enter notes or installation location...
+Enter plate / scan card to process...
+Enter plate e.g. 0000 and press Enter
+Enter plate number / scan card...
+Enter plate number to test:
+Enter terminal location or additional notes...
+Enter the
+Enter the guest name and optional remarks or special requests.
+Enter user name
+Enter username or member name...
+Enter visitor full name
+Enter your member username
+Enter your username
+Entrance
+Entrance (GATE IN)
+Entrance Fee:
+Entrance Gate
+Entrance Gates (Gate IN & IN SUB)
+Entrance admission fee
+Entrance:
+Entries
+Entries Processed
+Entries Today
+Entry
+Entry & Exit Transaction History
+Entry (IN)
+Entry Camera Capture
+Entry Capture Image
+Entry Date & Time
+Entry Date/Time
+Entry DateTime
+Entry E-Slip Thermal Preview
+Entry Fee
+Entry Fee:
+Entry Gate
+Entry Gate:
+Entry Image
+Entry LPR
+Entry Operator (IN)
+Entry Operator:
+Entry Tariff Profile
+Entry Time
+Entry Time ≤ Payment Time ≤ Exit Time
+Entry Time:
+Entry Timestamp
+Entry Timestamp (Entry Time)
+Entry Traffic Breakdown
+Entry Transaction
+Entry denied: Access restricted for this zone/category.
+Entry log ID
+Entry recorded successfully with applicable tariff applied
+Entry/Exit Control
+Error
+Estamp
+Estamp Device:
+Evaluated case-insensitively with automatic whitespace trimming
+Evaluation / Demo Period
+Evaluation / Demo Version
+Event
+Event / Activity Name
+Event Calandars
+Event Calendar & Special Schedule
+Event Calendar Configuration Guide
+Event Calendar Name
+Event Calendars
+Event Description
+Event Duration & Schedule
+Event Information & Status
+Event Log Matrix
+Event Schedule
+Event Timeline
+Event log category
+Event timestamp
+Events
+Everyday
+Example
+Example Syntax
+Excel / CSV
+Execute Purge Operation
+Exit
+Exit (GATE OUT)
+Exit (OUT)
+Exit E-Receipt Thermal Preview
+Exit Gate
+Exit Gates (Gate OUT & OUT SUB)
+Exit Grace Period After Payment (Exit Grace Period After Pay)
+Exit Image
+Exit Lane Snapshot
+Exit Operator (OUT)
+Exit Time
+Exit Time:
+Exit Traffic Breakdown
+Exit Transaction
+Exit log ID
+Exit-to-Entry Anti-Passback Buffer Delay
+Exits
+Exits Processed
+Exits Today
+Expire Date
+Expired
+Expires:
+Expiry
+Expiry Date
+Expiry Date / Time
+Expiry Date After Renewal
+Expiry date
+Expiry:
+Export
+Export CSV Data
+Export DB
+Export audit logs and revenue reports to Excel / PDF format
+Extend Card Validity & Payment
+Extender
+Extension API / Server Endpoints
+Extension Duration:
+External Data Reference
+External Webhook
+External Webhook Event Transaction
+Extra Header
+Extracting text data from ID card image, please wait...
+FACILITY SERVICES
+FF0000 (Red)
+FF00FF (Magenta)
+FFFF00 (Yellow)
+FFFFFF (White)
+FK → gateway.id
+FK → log_transaction.id
+FK → member_user_permission.id
+FK → parking_lot.id
+FK → service_fees.id
+FK → system_users.id
+FK → transaction_record.id
+FORBIDDEN
+Facebook Page
+Facility / Project Name
+Facility Cover Photo (Site Cover)
+Fast Checkout
+FastAPI Backend Architecture
+FastAPI framework, high performance, ready for production
+Fee
+Fee :
+Fee Amount
+Fee Amount / Rule
+Fee Formula
+Fee Profile
+Fee Profile & Visit Purpose
+Fee Rate:
+Fee Structure
+Fees & Billing Settings
+Field Name
+File Import Processing Status
+Fill Test Data
+Fill in the guest name and optional remarks or special requests.
+Fill in visitor details & verify selected tariff profile
+Filter
+Filter:
+Financial & account reports categorized by payment type, daily, monthly, and member renewals
+Fine
+Fine / penalty amount
+Fines
+Fines / Lost Card
+Fixed Brightness,
+Flexible Expiry & Custom Rate Extension via Cashier POS
+Floor
+Floor / Room No.
+For evaluation/demo mode, enter
+Founder Dev
+Founding Developer • System Architecture
+Free
+Free Parking Allowance
+Free Parking Period
+Frequently Asked Questions & Troubleshooting (FAQ)
+Fri
+Front Overview
+Fuel & Energy Type
+Fuel / Energy Type
+Fuel = LPG / NGV
+Fuel Type
+Fuel Type Description
+Fuel Type Information
+Fuel and energy type specifications
+Fuel: Gasoline
+Fuel_Type
+Full Name / Display Name
+Fullscreen
+Fuzzy Matching Configuration
+GATE
+GATE READER
+GATE-IN-NAME
+GATEWAY
+GATEWAY_IDENTIFIER
+GATE_TAG
+GENERAL
+GET / POST
+Gate
+Gate & Anti-Passback
+Gate & Zone
+Gate / Lane Name
+Gate Controllers
+Gate IN Default Tariff (Default Service Fee)
+Gate IN Station
+Gate IN/OUT Type
+Gate Lane Name
+Gate Lane:
+Gate Lanes Anti-Passback Control
+Gate Management
+Gate Manager
+Gate Name
+Gate OUT Station
+Gate Reader Diagnostics
+Gate Readers List
+Gate Status
+Gate Throughput & Performance Breakdown
+Gate Type
+Gate barrier will open automatically. Please exit safely.
+Gate direction (IN, OUT)
+Gate name (e.g., Gate In 1, Gate Out 2)
+Gate-IN (Entry)
+Gate-OUT (Exit)
+Gate-Out (OUT)
+Gate-out
+GateWay (Entrance/Exit Gateways Table)
+Gateway
+Gateway / barrier ID
+Gateway Actions:
+Gateway Barrier & Hardware Configuration
+Gateway Lane Name
+Gatteway Config
+General & Network Configuration
+General Facility Info & Address
+Generate PromptPay QR Code to test payment transaction
+Generate QR
+Generate QR Payment
+Generate Test QR Code
+Generates dynamic QR Code for E-Payment or card identifier
+Get Card
+Get Started
+Glassmorphism Core
+Global
+Global E-Stamp Control
+Global E-Stamp System Disable (Global Disable)
+Global Notification Master Toggle (Notify Enable)
+Global Server Configuration
+Gmail Sender Account (Sender Email)
+Gmail Sender Account (e.g. example@gmail.com)
+Go Back
+Go to
+Google App Password
+Google App Password (16-Digit App Password)
+Google Client ID (Google Sign-In)
+Got it, Close
+Goto Home
+Grace Period Free Minutes
+Grace period / free parking time
+Grand Total
+Grand Total:
+Gross Charge Amount (Charged to Customer)
+Gross Charge:
+Gross Total Amount:
+Gross total amount
+Gross-Up Denominator (1 - Fee Rate):
+Gross-Up Formula:
+Group
+Group & Division Configuration
+Group / Division
+Group / Division Name
+Group = Visitors Only
+Group Division
+Group/Division
+Guest & Visitor Management
+Guest Check-In Registration (Check-In [])
+Guest Check-Out & Extension (Check-Out/Extend Guest)
+Guest Identity
+Guest Name
+Guidance and solutions for common operational issues at gate lanes
+HANDHELD
+HANDHELD ALL
+HH:MM
+HH:mm-HH:mm
+HOTEL100
+Handheld AUTO GATEWAY
+Hardware
+Hardware Daemon
+Hardware Integration & Relay Controller
+Hardware Ready
+Hardware Triggers & Camera Integration
+Hardware connections, access zones, and device operation status
+Heartbeat
+Help Guide
+High (100% Exact Match)
+High (Strict)
+High Tolerance:
+High-contrast large numeric counter display with dynamic threshold warning colors.
+High-performance transaction processing engine designed for sub-second recognition latency.
+Historical Aggregation
+History
+Hold your phone camera steadily at the QR code
+Home
+Home-Item Widgets
+Host
+Host Approval & Authorization Workflow
+Host Member / Tenant
+Host resident or operator records vehicle plate and validity window
+Hotel guests
+Hour Rounding Threshold
+Hourly Statistics (By Hour)
+Hourly Traffic Flow Analytics Today
+Hourly, Flat-Rate, and Tiered Tariff Profiles
+Hours
+House / Unit No.
+How Restriction Rules Work:
+How To Use
+How to Use
+How to park your visitor at your garage?
+ID
+ID Card OCR
+ID:
+ID:Group/Division
+IN
+IN + OUT Traffic
+IN-01
+IN-02
+IP Address
+Identity
+Identity & Organization Details
+Identity verification and user account management
+Idle State
+If Visitor: Thermal kiosk prints entry barcode slip (Gate-In Slip)
+If the member type is configured with Auto-Delete, the expired record is purged
+If you have any questions regarding these Terms, please contact our support team
+Image
+Image Record
+Immediately trigger barrier gate emergency open.
+Import
+Import Cards (Excel/CSV)
+Import Excel / CSV
+Import Execution Progress
+Import Member Cards & Plates from Excel/CSV
+Import Member Users from Excel/CSV
+Import Users (Excel/CSV)
+Import from Active Visitors
+Import plate correction dataset from spreadsheet file
+Important Note on Auto-Delete Policy:
+Important Notes
+In case of overlapping event schedules, the item with higher priority will take precedence.
+In the transaction type selector, choose
+Inactive
+Income
+Income By Day
+Income By Month
+Income By Year
+Income Report
+Income Summary
+Info
+Info Option Setting
+Info Option Settings
+Information
+Infrastructure & Devices Overview
+Infrastructure Monitor
+Infrastructure Resilience
+Infrastructure SQL Engine
+Initial Admission Fee (THB)
+Initializing connection...
+Input
+Inspection
+Installation Progress
+Insufficient Permissions
+Integration
+Interface
+Interval
+Invalid
+Invalid & Blocked Plate Patterns
+Invalid License Plates Blacklist Manager
+Invalid PIN. Please try again.
+Invoice
+Invoice Customer
+Invoice Customer Record Details
+Invoice Items
+Invoice Preview / Items
+Invoice Status
+Invoice Status:
+Issuance / Cycle Fee
+Issuance / Cycle Fee (THB)
+Issuance Date
+Issuance Service Fee
+Issue
+Issue Date
+Issued
+Issued By
+Issued Date
+Issuer / Seller
+Issuer Details
+Item
+Item Description
+JCB
+JP
+JSON / Script Config
+JT Proxy Module Payment
+JT Proxy Payment Gateway API Specs & Handlers Configuration
+JT Proxy Server API URL
+Jan 1st - Feb 1st
+Job title, work shift, or additional notes...
+Joined
+K PLUS
+K Payment Gateway
+KIOSK SERVICE
+KIOSK-GATE-IN-01
+Kasikornbank Gateway Settings
+Keep me signed in
+Keep username saved on this device
+Key
+Key / Code
+Keyboard Shortcuts
+Kiosk
+Kiosk & Auto Module Configuration
+Kiosk & Terminal
+Kiosk Check-In
+Kiosk Diagnostics & Settings
+Kiosk Screensaver PR
+Kiosk Station & Terminal Configuration
+LA
+LED Display Message Settings
+LED Matrix Display
+LINE & Email Automated Notifications
+LINE API (Messaging API)
+LINE API LIFF (LINE Login)
+LINE ID:
+LINE LIFF
+LINE Member Profile & Notification
+LINE OA
+LINE Official Account Linking
+LIVE
+LIVE STREAM
+LPR
+LPR (Standard)
+LPR AUTO
+LPR AUTO MANAGEMENT
+LPR Auto Detection
+LPR Auto Gateway
+LPR Auto Map
+LPR Auto Mode (Auto process when LPR reads plate)
+LPR CAPTURE
+LPR Camera
+LPR Camera & OCR Engine Configuration
+LPR Camera Captures (Vehicle snapshots, entry/exit timestamps)
+LPR Camera Configuration
+LPR Camera Detection & OCR Module
+LPR Camera Diagnostics
+LPR Cameras
+LPR Cameras List
+LPR Capture Buffer
+LPR Capture Log
+LPR Confidence Threshold Ratio
+LPR Devices
+LPR Diagnostics
+LPR Engine
+LPR Engine & AI
+LPR KIOSK
+LPR Kiosk
+LPR License Plate Mapping
+LPR Map Engine
+LPR Pattern Rule
+LPR READY
+LPR Snap
+LPR VERIFIED
+LPR WF1 Config 485
+LPR camera detects registered plate and records successful entry
+LPR recognition models trained on multi-environment datasets for superior accuracy levels.
+LPR-1
+LPR-Dahua
+LPR-HIP
+LPR-HIP (All-In-One)
+LPR-HIP (Open API Trigger)
+LPR-LED (1-Panel LED Display)
+LPR-LED (2-Panel LED Display)
+LPR-UNV-4M (Uniview)
+LPR-ZK (ZKTeco)
+Lane
+Lane Direction
+Last Heartbeat
+Last Received Message
+Last Update:
+Lasted Transaction
+Latest Exit Transaction
+Latest In
+Latest Transaction
+Launch Restore Protocol
+Layout
+Leave blank to keep existing password
+Ledger Maintenance (Purge)
+Level
+Level 1 - 3
+License
+License Plate
+License Plate (LPR)
+License Plate (No Record)
+License Plate (e.g. 1AB 1234)
+License Plate / Card ID
+License Plate Blacklist & Alert
+License Plate Example
+License Plate Management
+License Plate Manager
+License Plate Manager - PK Management LPR V5
+License Plate OCR Correction Mapping (LPR-MAP-PLATE)
+License Plate Preview Mockup
+License Plate Recognition (LPR Camera)
+License Plate Statistics (By License)
+License Plate Validity & Expiration Engine
+License Plate in System
+License Plate:
+Likes
+Limit
+Line 01
+Line 01-04
+Line CHANNEL_HANDLER
+Line CHANNEL_TOKEN
+Line Chart
+Line LIFF ID
+Line LIFF URL
+Line Name
+Line Official Account
+Line indices range from 01 to 04. The examples below reference
+Line-Profile
+Linked Customer
+Linked Customer / Tenant
+Linked LPR Camera IP address
+Linked Member User Accounts
+Linked Profile & Customer Account
+Linked Service Fee Profile
+Linked Service Fees
+Linked transaction ID
+Live
+Live Analysis
+Live Available Slots Sign
+Live Displays
+Live Inventory
+Live Occupancy
+Live Render Preview
+Live Traffic (In/Out)
+Live Traffic Stream
+Loading data, please wait...
+Loading data...
+Loading...
+Localized Infrastructure Node
+Location
+Lock
+Log
+Log id
+Log_Notification id
+Log_Transaction (LPR Camera Event Logs Table)
+Login Name
+Login Username
+Login name
+Logout
+Logs
+Loop Sensor
+Lost
+Lost Card
+Lost Card Fine
+Lost Ticket Fine :
+Lost Ticket Penalty
+Low (80-94%)
+Low (Lenient)
+Lower runs first
+MAC / Serial
+MEM:
+MEMBER
+MEMBER IN
+MEMBER OUT
+MGMT
+MY
+Main Menu
+Maintain 10-15 cm distance for optimal camera focus
+Make / Model
+Manage Customer Member/Card
+Manage Gate Way
+Manage Line Member
+Manage RFID readers, door controllers, and zone access permissions
+Manage Service Fee Code
+Manage VIP/Monthly memberships, subscriptions, and revenue summaries
+Manage customer accounts, billing profiles, and invoice records
+Manage entry and exit barrier gate lanes for this parking lot
+Manage guest check-out and stay period extensions
+Manage member accounts, vehicle cards, and subscription access
+Manage member profiles and vehicle access
+Manage network connections and integrated LED displays for LPR cameras
+Manage system updates, licenses, and patches
+Manage visit objectives and access authorization purposes
+Manage visitor reservations and parking permissions
+Management
+Management System
+Manager
+Manual
+Manual & Help Center
+Map zone access permissions to user privilege groups
+Mapped Entrance & Exit Gateways:
+Mastercard
+Match Criteria
+Matches entry transaction & billing records
+Matches member access permission automatically
+Matching Rules & Tolerance Matrix
+Max 1M
+Max 500K
+Max Capacity
+Max Capacity (Slots)
+Max Cards Allowed
+Max Members
+Max: 128
+Max: 16
+Max: 32
+Max: 64
+Maximum total available parking bays
+Medium (95-99% Recommended)
+Medium (Balanced)
+Member
+Member & User
+Member / Card / License Plate
+Member / Unit / Cardholder
+Member Account Settings
+Member Card
+Member Card & Identity Profile
+Member Card Detected
+Member Card Expired
+Member Card Type
+Member Card Type & Pricing Policy
+Member Exit - No Entry Record
+Member Full Name
+Member Gate Monitor
+Member Gate-IN
+Member Gate-OUT
+Member Groups & Divisions
+Member ID
+Member Information Management
+Member Line Management
+Member Management
+Member Manager
+Member Name
+Member Pass
+Member Privilege Authorization Information
+Member Privilege Configuration
+Member Privilege List
+Member Privilege Role
+Member Profile, Booking Privileges & Door Access
+Member Records
+Member Service
+Member Tier Management & Quotas
+Member Type
+Member Type Role
+Member User
+Member User Account & Credentials
+Member User Info
+Member User Management
+Member User Name
+Member User Payment
+Member User Permission
+Member User Profile Information
+Member User Renewal Fee
+Member Visitor Booking & Pre-Registration
+Member address & contact
+Member full name
+Member name
+Member/User Info
+Member_User (Cardholder Members Table)
+Members
+Members Only
+Membership Renewal
+Membership Renewal History
+Membership expiration date
+Membership status (NORMAL, EXPIRED)
+Memory
+Menu
+Menu Name
+Merchant ID
+Merchant scans QR code on ticket via Web E-Stamp Terminal
+Message
+Message automatically displayed when no vehicle transaction is active
+Method
+Method:
+Minimum 8 characters
+Minimum Parking Duration Required (Min Parked Duration)
+Mins
+Minutes
+Mode
+Model
+Model & Operation Mode
+Model & Service Profile
+Model / Mode
+Modern
+Module
+Modules
+Mon
+Monitor
+Monitor Gateway/LPR connectivity and live vehicle queues via SSE stream
+Month
+Monthly Quota (E-Stamp)
+Monthly Renewal (1 Cycle)
+Monthly Statistics (By Month)
+Motorcycle
+My Account
+N/A
+NO VEHICLE
+NO-PLATE
+NONE
+NORMAL
+NO_PLATE
+NULL
+Name
+Name displayed across system
+Name:
+Need Help?
+Need help?
+Net Amount
+Net Amount:
+Net Settlement
+Net Target Remaining:
+Net Total Due
+Network
+Network & Hardware Configuration
+New
+New Booking
+New Discounted Fee
+New Entries
+New Expiry Date
+New Expiry Date & Time
+New PIN
+New Password
+New Registration
+New Rule
+Next
+Next-Generation Infrastructure
+Nighttime start hour (e.g.
+No
+No Active Key
+No Booking Quota
+No Car
+No Discount Applied
+No Gateways Connected
+No Receipt Needed (Close)
+No Receipt Needed : Close
+No description
+No entry transaction found. Confirm member exit and open gate?
+No record
+No records
+No records found
+No remarks
+No-Code
+No.
+None
+None / Unassigned
+None / Unlimited Access
+Normal
+Normal Operation Mode
+Not Allow (Decline Stamp)
+Not Found
+Not Null
+Not Show Home Item
+Not specified
+Note
+Note:
+Notes
+Notification
+Notification & Line Config
+Notification Broadcast
+Notification Log
+Notification Stream (Toast)
+Notification Type
+Notify Settings (Line & Telegram)
+Nullable
+Number
+Number of simultaneous text lines displayed on the panel
+Number of vehicles currently parked
+OK
+OK (Confirm)
+ONLINE
+ONLINE DISPLAY
+OPERATOR
+OPTIMIZED
+OPTION 01
+OPTION 02
+OPTION 03
+OR SEARCH CODE
+ORIGINAL
+OTHER
+OUT
+OVERDUE
+OVERRIDDEN
+Objective
+Objective = Delivery
+Objective Information
+Objective Name
+Objective, Fuel, Vehicle, or Member type
+Occupancy Rate
+Occupied / Status
+Official Contact Channels
+Offline
+Oldest
+On Access Denied (Denied Action)
+On Access Granted (Allow Action)
+On Denied / Warning (Denied Action)
+On arrival, LPR camera captures plate, opens barrier automatically or prompts guard
+Online
+Online Discount
+Online E-Stamp Discount Module
+Online Payment Gateway (Beam / PromptPay)
+Open
+Open Banking App
+Open Counter
+Open Display
+Open Mobile Banking App
+Open the
+Open your mobile banking application
+Operation
+Operation Mode
+Operation Status
+Operation Successful
+Operation could not be completed. Please try again.
+Operational Behavior & Operating Modes
+Operational Status
+Operator
+Operator Staff Name
+Operator User
+Operator user ID
+Operator:
+Optional
+Optional notes about why this policy is enforced...
+Optional[int]
+Options
+Order
+Organization
+Organization / Company
+Original Fee
+Original Fee:
+Our commitment is to provide a seamless, secure, and intelligent parking experience through continuous innovation and robust engineering standards.
+Output
+Output Log
+Outstanding Balance
+Overdue / lost card fine
+Overnight
+Overnight Parking Penalty
+Override
+Override Reason
+Overview
+Overview display dashboard designed for entrance LED screens and informational kiosks.
+Owner
+Owner Profile
+P10
+P3000-IP (Entrance LED Display)
+P3000-IP (Exit LED Display)
+P8
+P9
+PAID
+PARKED
+PARKING AUTO MANAGEMENT
+PARKING DISPLAY TERMINAL
+PARKING LOT BREAKDOWN
+PARKING01
+PARTIAL
+PDF Document Preview
+PIN Code
+PK
+PK SOFTTECH
+PKS LPR & Parking Management System
+PKS Smart Parking & LPR Auto System
+PKS-PARKING
+PKS-PAYMENT
+POS
+POS Cashier Tariff Settlement Terminal
+POS High-Speed Keyboard Guide
+POS Station
+POS Terminal
+POS Terminal:
+POS terminal identifier
+POST
+PR & ADVERTISEMENT BROADCAST
+PR NEWS
+PROMPTPAY
+Package
+Page not found
+Page:
+Paid
+Paid amount received
+Parked
+Parked Duration
+Parked Duration (hh:mm:ss)
+Parked Duration:
+Parked Info
+Parked Inventory Matrix
+Parked Monitor (LPR Live)
+Parked Status
+Parked Vehicles
+Parked View
+Parked duration (hh:mm:ss or days/hours/mins)
+Parked duration (seconds)
+Parking
+Parking 02
+Parking Access Restriction Rule
+Parking Auto Management
+Parking Auto Management (V5) represents the pinnacle of localized parking infrastructure solutions, combining advanced computer vision (LPR) with high-performance edge computing.
+Parking Availability Display
+Parking Capacity
+Parking Detail
+Parking Fee
+Parking Fee :
+Parking Fee Amount
+Parking Information
+Parking Lot
+Parking Lot & Zone Profile
+Parking Lot / Zone
+Parking Lot / Zone Name
+Parking Lot Access & Restriction Rules
+Parking Lot Database
+Parking Lot Management
+Parking Lot Manager
+Parking Lot Manager - PK Management LPR V5
+Parking Lot Name
+Parking Management & Financial Transaction System
+Parking Management System
+Parking Name & Detail
+Parking Payment Details
+Parking Payment Summary
+Parking Service
+Parking Service Fee
+Parking Service Payment
+Parking Status VMS Display
+Parking Time
+Parking lot
+Parking privilege allocation and barrier gate access control
+Parking_Lot
+Partition physical security zones and access checkpoints
+Partner ID
+Partner Secret
+Pass
+Pass / OK
+Password
+Past entry/exit logs can be tracked in the Transaction Reports module.
+Pattern Regex:
+Pay
+Pay Fee
+Pay Now
+Pay Type
+Pay parking fee using any Banking App
+Pay parking fees and check transaction history
+Pay via Online Gateway
+Pay via PromptPay QR
+Pay via QR Code
+Pay with Mobile Banking App
+Payable by Visitor
+Payer Name
+Payment
+Payment & Finance
+Payment Category
+Payment Channel
+Payment Completed
+Payment Devices Manager
+Payment Fee
+Payment Fees
+Payment Gateway
+Payment Method
+Payment Method:
+Payment Methods Config
+Payment Outstanding
+Payment Portal
+Payment Processing
+Payment Receipt
+Payment Receipt - E-Payment
+Payment Record Log
+Payment Service
+Payment Settlement
+Payment Status
+Payment Successful!
+Payment Term:
+Payment Time
+Payment Time:
+Payment Type
+Payment Type:
+Payment Types
+Payment Types Management
+Payment grace period has expired
+Payment method (CASH, QR, CARD)
+Payment remark
+Payment status (NORMAL, CANCEL)
+Payment timestamp
+Payment:
+Payment_Record id
+Peak Traffic Period
+Pending
+Performance
+Period
+Peripheral connectivity status
+Permission
+Permission Allow
+Permission Condition / Allow Rule
+Permission Config
+Permission Detail
+Permission Role
+Permission Rule Name
+Permission Status
+Permission Type
+Permissions & Expiry Policy
+Persistence Layer & Registry Management
+Phone
+Phone Number
+Photo
+Photo & Device Info
+Photo & General Info
+Physical Location
+Pick your Type
+Plate
+Plate (Original OCR)
+Plate / Card ID
+Plate Close-up
+Plate Corrected (Fix)
+Plate Map
+Plate Mapping Configuration
+Plate Mapping Table
+Plate Number
+Plate Recognition & LPR Image Archiving
+Plate Syntax Strict Validation Mode
+Plate View
+Please complete payment within the time limit
+Please enter your vehicle's license plate number
+Please exit the parking lot before:
+Please keep transfer receipt after payment
+Please proceed to payment
+Please verify all data before proceeding.
+Please verify details and confirm entry transaction
+Please verify your destination room/unit number before confirming
+Policy Rule
+Polling Status:
+Popular Color Presets Palette:
+Port
+Port 8080 Active
+Pos Terminal
+Pre-registration for visitor access privileges and LPR gate opening
+Premise security, incident auditing, and fraud prevention
+Press Enter immediately to submit and open the barrier gate.
+Press here to retrieve card or cancel transaction
+Press the green button to print or close if not needed
+Price
+Pricing Condition Range
+Pricing Conditions
+Primary key
+Primary key auto-increment
+Primary supervisor name or phone
+Print
+Print Receipt
+Print Receipt / Slip
+Print Shift Slip
+Print Thermal Receipt
+Printer
+Printer Connected
+Printer Ready
+Printing...
+Priority
+Priority Order:
+Priority:
+Privacy Policy
+Privacy Policy - Parking Auto Management
+Privilege
+Privilege / Stamp:
+Privilege Profile
+Privilege Quota & Access Limits
+Privilege Role
+Privilege Role Name
+Process
+Process Gate-In Entry
+Process Gate-In Entry (IN)
+Process Gate-Out Exit
+Process Manager
+Process Payment
+Process Terminal
+Process Timeline
+Processing
+Processing Fee
+Processing Fee Rate
+Processing OCR Recognition...
+Processing status log...
+Processing:
+Product Key Management (Software License)
+Profile
+Profile Identity & Tariff Type
+Profile Picture
+Progress
+Prohibited from attempting unauthorized intrusion or compromising hardware/software security
+Prohibited from fraudulent actions to bypass parking tariffs or Anti-Passback rules
+Prohibits gas-equipped vehicles from entering basement parking.
+PromptPay QR Code
+Protocol
+Protocol & Operation Mode
+Protocol State
+Protocol error
+Protocol/IP
+Provider Service
+Publishable API Key
+Purpose
+Purpose of Visit
+Purpose:
+QR Code Preview
+QR-CODE
+QR-CODE / Mae Manee
+QR_CODE
+Qty
+Quantity
+Query
+Questions About Privacy Policy?
+Quick Guide
+Quick Workflow Tips
+Quick add common invalid keywords:
+Quota
+RAM
+READER-1
+READER-P3000 (Standard)
+READER-P3000-LED (LED Display Integration)
+REAL-TIME
+RECEIPT / TAX INVOICE
+REGISTER
+REST API Connected
+RESTING
+RESTRICTION_RULE
+RFID
+RFID & Relay Control
+RFID Card Reader & Controller (Reader-P3000)
+RFID card readers and barrier relay controllers
+RFID credential access audit trail and security checkpoint logs
+ROOT
+RS485 Protocol
+Range
+Rate
+Re-enter new password
+Reader
+Reader Access Diagnostics
+Reader Capture Log
+Reader P3000
+Reader-P3000 Device Configuration
+Reader-P3000 Settings
+Ready
+Real-time Parking Space Availability Monitor
+Real-time SSE
+Real-time infrastructure monitoring
+Real-time log of vehicles denied entry by Blacklist, Restriction Rules, or Overcapacity.
+Real-time occupancy visual gauges, slot status, and associated entrance/exit barrier gates.
+Real-time payment status verification inquiry
+Realtime Event Streaming (SSE)
+Realtime List
+Realtime Parking Lot Status & Space Availability
+Realtime Parking Status (VMS)
+Reason & Detail
+Reason / Fee Details / Alert Description
+Reason for visit
+Reboot Server
+Receipt
+Receipt / Tax Invoice
+Receipt Details
+Receipt No.
+Receipt No:
+Receipt Preview
+Receipt Reference Number (Receipt No.)
+Receipt Service
+Receipt reference number (TEX.No)
+Receipt.No
+Received
+Recent
+Recent Entry Record Summary
+Recent Entry Slip
+Recent Exit Record Summary
+Recent Gate-In Event Logs
+Recent Gate-Out Event Logs
+Recent LPR Plate Recognition Logs
+Recent Receipt Simulation
+Recent Transactions & Receipts
+Recent entry and exit events captured by LPR cameras
+Recipient Email Addresses (Comma-separated ,)
+Recipient emails, e.g. admin@company.com, manager@company.com
+Recognized license plate
+Recommended:
+Record
+Record Count
+Record ID
+Record Table
+Records
+Ref ID:
+Ref No.: \"\"
+Ref: RN-20260801-001
+Refash
+Reference No:
+Refresh
+Refresh Cards
+Refresh Data
+Refresh Info
+Refresh Logs
+Refresh State
+Refresh Summary
+Register
+Register New License Key
+Register guest vehicles for automated LPR barrier access (Supports multiple vehicles per room)
+Register vehicle on security blacklist / watchlist
+Registered Cards
+Registered E-Stamp Terminals
+Registered License Plates
+Registered Member Card Detected
+Registration
+Registration & Member Assignment
+Registration Date
+Registry Identification
+Registry Migration
+Registry Snapshots & Recovery points
+Reject Entry
+Reject Entry (Keep Barrier Closed)
+Reject barrier open, log denial, display message
+Relay
+Relay Open
+Relay P3000 / LPR HTTP Command
+Relay Trigger
+Release
+Reload Page & Clear Cache
+Reload System
+Remain
+Remaining
+Remaining Days
+Remaining Validity
+Remark
+Remark / Notes
+Remark:
+Remarks
+Remarks & Description
+Remarks & Incident Log
+Remarks (optional)...
+Remarks / Additional Notes (Remark)
+Remarks / Description
+Remarks / Internal Notes
+Remarks / Location Notes
+Remarks / Notes
+Remarks:
+Remember my session
+Remember username
+Remote
+Remove
+Render Preview
+Rendered in thermal paper scale (Click image to view full size)
+Renew
+Renew / Extend Card Validity
+Renew Card
+Renew Card Subscription
+Renew Subscription
+Renew subscription to continue
+Renewal
+Renewal Billing Cycle
+Renewal Fee
+Renewal Fee (THB)
+Renewal History
+Renewal Member Report
+Renewal Member User Report
+Renewal Plan
+Renewal fee
+Report
+Report Date Range
+Report Vehicle Info
+Reporting Date Range
+Reports
+Reprint Entry Slip
+Reprint Exit Receipt
+Reprint Receipt
+Reprint Slip
+Request
+Required
+Required Headers:
+Required Parameters
+Required for use *null for not use
+Reset
+Reset calculation loop back to 00:00 when exceeding 24:00
+Resident / Condominium
+Resident / Condominium Visit
+Resolved
+Restart
+Restricted
+Restricted Criteria
+Restricted Fuel Type
+Restricted Member Type
+Restricted Objective
+Restricted Vehicle Type
+Restriction Criteria
+Restriction Rule Profile
+Restricts delivery vehicles from parking in customer lots.
+Restricts non-VIP visitors and general members from VIP zone.
+Result
+Retake Photo
+Return to Infrastructure
+Revenue
+Revenue & Financial Analytics Reports
+Review & Export (A4)
+Review and filter past card scan events
+Review historical snapshots and OCR capture logs to verify disputed transactions
+Review transaction breakdown and proceed to payment
+Role
+Role & Permissions
+Role Configuration & Granular Access Control
+Role Description & Privilege Scope
+Role Permissions
+Role Type Name
+Role scope and responsibilities...
+Roles
+Rollback system to specific archive point
+Room / Floor
+Room Number
+Root
+Rounding Rule
+Rule
+Rule Active
+Rule Name
+Rule Name & Description
+Rules
+SAFETY & GUIDELINES
+SCAN QR CODE
+SCB EASY
+SLIP-001
+SMART ACCESS SYSTEM
+SMART COMMUNITY
+SMART GATE SYSTEM
+STEP 01
+STEP 02
+STEP 03
+STEP 04
+SU25
+SU2U
+SUCCESS
+SUS2
+Sample Items
+Sat
+Save
+Save Changes
+Save Document Number Formats
+Save Entry/Exit Control Settings
+Save Extension Server Settings
+Save Fee
+Save Fuzzy Matching Settings
+Save Gate IN
+Save Gate OUT
+Save QR Code Image
+Save Settings
+Save Site Information
+Save Tax Profile
+Save Template
+Scan
+Scan Card / Search Entry
+Scan QR / Enter Transaction ID
+Scan QR Code
+Scan QR Code to Pay
+Scan QR to Pay
+Scan QR to Pay (QR Payment)
+Scan and pay with any Mobile Banking App
+Scan slip QR code or enter transaction ID to fetch active parking session
+Scan ticket QR or search plate; system automatically computes parked duration
+Scan to Pay
+Scanned card ID / barcode
+Scanner
+Scanning Instructions
+Scenario 1: Vehicle currently parked inside (Active CHECK_IN)
+Scenario 2: Vehicle is not parked inside
+Schedule
+Schedule & Time Window
+Schedule & Window
+Schedule pre-registered visitor access privileges and LPR gate permissions
+Scheduled Auto Brightness
+Scope
+Score Threshold
+Search
+Search Active Entries
+Search Active Parked Vehicles
+Search Entry Records
+Search Entry Transactions
+Search License Plate
+Search Member ID / Full Name...
+Search Profile
+Search active vehicles and entry history.
+Search by License Plate / Card ID...
+Search operation...
+Search or select member user...
+Search plate or card ID (e.g. M-1234) and press Enter
+Search service / CODE...
+Search tariff profiles...
+Search...
+Sec / Min
+Seconds
+Secret API Key
+Section
+Secure Payment System
+Security
+Security & Password
+Security Active
+Security Guard Override
+Security PIN
+Security PIN (6 Digits)
+Security Protocol
+Security Role
+Security Zone & Gate Partition
+Select
+Select All
+Select Allowed Tariff / Discount Profiles
+Select Authorized Users
+Select Camera
+Select Check Out
+Select Customer
+Select Date Range
+Select Estamp Terminal and review current applicable tariff profile
+Select Gate IN For Operation
+Select Gate Lane
+Select Gate Out For Operation
+Select Gateway (IN)
+Select Gateway (OUT)
+Select Host Resident / Unit
+Select LPR-WF1 Camera/Device:
+Select Language
+Select Member User
+Select Operation...
+Select QR from Photo Gallery
+Select Report Year
+Select Room
+Select Room Number
+Select This CODE
+Select Vehicle Transaction
+Select Year & Month
+Select \"Estamp Terminal\" and review current applicable tariff profile
+Select applicable discount tariff profile based on store policy
+Select date and time range for report filtering
+Select discount stamp (E-Stamp) approval for this transaction
+Select relay output for alarm/siren or red light indicator when denied
+Select relay output to trigger barrier opening when access is granted
+Select retention boundary...
+Select the
+Select the item you wish to process.
+Select the transaction matching your vehicle
+Select your parking transaction
+Selected
+Selected Target Device
+Selecting a channel will reload the gate interface!
+Self-Service Kiosk & QR Ticket Integration
+Send E-Mail Notification
+Sensitivity & Tolerance Level
+Sensor
+Sensors 1 & 2
+Sequential Running Counter based on # symbols
+Serial
+Serial Number
+Server
+Server Backend
+Server Status
+Server URL 🌐
+Service
+Service Fee
+Service Fee / Renew Membership
+Service Fee :
+Service Fee Calculation Table
+Service Fee Calculation Test
+Service Fee ID:
+Service Fee Management
+Service Fee Name
+Service Fee Profile * (Verify before submitting)
+Service Fee Profile Settings
+Service Fee Type
+Service Fee Voucher & Discount Code
+Service Fees
+Service Fees & Tariff Engine Configuration
+Service Fees Manager
+Service Logic
+Service Name
+Service_Fees (Tariff Profiles Table)
+Session
+Set Card Usage Limit
+Set Expiry Date
+Set display brightness percentage for daytime operation
+Set display brightness percentage for nighttime operation
+Set flat fee of 10 THB billed to linked customer when exceeding 01:00
+Set flat fee of 10 THB when parked duration exceeds 01:00
+Set static display brightness percentage (active only when Auto Brightness is disabled)
+Set the exact
+Set up Gateways, relay outputs, and LPR cameras in Device Management
+Set up Gateways, relay outputs, and LPR cameras in \"Device Management\"
+Setting
+Settings
+Settle tariff via Dynamic PromptPay QR or Cash payment
+Severity Level
+Share Ratio
+Shift
+Shift Settlement Details
+Shift Transaction Audit Trail
+Shift Working Period (Shift Period)
+Shortcuts Guide
+Show Home Item
+Showing
+Side-Menu Access
+Sidebar navigation and dashboard widget permissions for user roles
+Sign In
+Sign Out
+Signal warning
+Simulate Parked Time:
+Simulate fee addition to receive exact target net amount
+Simulated Duration:
+Simulation Timestamps (Select Date & Time)
+Simulator
+Simulator Help
+Simulator Sandbox
+Site Contact (Primary Contact Person)
+Site Information
+Site Name
+Site information
+Slip
+Slip & Document Designer
+Slip & Document Designer - PK Management LPR V5
+Slip Data Dictionary (Special & Calculated Variables)
+Slip Management
+Slip Preview
+Slip Printer Connected
+Slot
+Slots
+Smart Gate
+Smart Gate System
+Smart Park Co., Ltd.
+Smart Parking
+Smart Parking Management System &copy; 2026
+Snap Photo
+Snapshot
+Socket Status
+Software License Information
+Software Update
+Software Update System
+Solutions.
+Space
+Special
+Special Event Calendar Management
+Special Holiday Surcharge Profile
+Special calculated variables provided for thermal slip coordinates layout
+Special terms, conditions, or notes...
+Specify a unique parking lot or zone identifier
+Specify fuel
+Specify the
+Specify type
+Staff / Active Cashier
+Stamp
+Stamp / Privilege:
+Stamp-Name
+Standalone command (no = sign)
+Standard
+Standard Operating Procedures for Guest Check-In & Automated LPR Access
+Standard Operating Procedures for Guest Check-In & Check-Out
+Standard data flow and sequence in the parking access control system
+Standby Message (Idle Display)
+Start
+Start Date
+Start Date & Time
+Start Date / Time
+Start Date Time
+Start Time
+Start:
+State
+Static Text,
+Station
+Station Name
+Station Terminal
+Statistical analysis reports on vehicle entry and exit traffic
+Statistics
+Statistics Report
+Status
+Status & Audit
+Status (CHECK_IN, CHECK_OUT, SUCCESS)
+Status / Channel
+Status Filter
+Status REGISTER, ready for vehicle arrival
+Status becomes REGISTER, ready for arrival
+Status:
+Status: Active
+Status: NORMAL
+Status: Optimized
+Status: Verified
+Stay Duration
+Step 1
+Step 2
+Step 3
+Step Rules
+Still Parked
+Stop
+Stop Polling
+Storage
+Stream
+Street
+Street address, building, subdistrict, district, province, postal code...
+Strict
+Strict Exact Match:
+Strict License Plate Validation (Strict Plate Validation)
+String Text
+Stripe Payment
+Stripe Payment Gateway Configuration
+Submit / Confirm
+Subtotal
+Success
+Summary
+Summary Report
+Summary Report Preview
+Summary by Gate Lanes (By Gates)
+Summary by Parking Lots (By Parking Lot)
+Summary by Staff Operators (By Operators)
+Summary by Vehicle / Member Type (By Type)
+Sun
+Supported Document Numbering Tokens:
+Supported Dynamic Template Variables
+Supported Formats: Excel (.xlsx) and CSV
+Supports JPG, PNG formats up to 2MB
+Supports all Mobile Banking Apps (PromptPay QR)
+Supports all Thai Mobile Banking apps & e-Wallets
+Swagger Docs
+Switch
+Sync Data
+Synchronizing physical inventory...
+Syntax & Coordinate Cheat Sheet
+Syntax & Formatting Guide
+System
+System Admin
+System Architecture & Data Flows
+System Audit & LPR Report
+System Config
+System Configuration
+System Core
+System Dashboard
+System Diagnostics & Permission Tools
+System Diagnostics & Tools
+System Dialog Protocol
+System Error
+System Error Log
+System Integration & Domain URL
+System Latency
+System Log
+System Menu Configuration
+System Message
+System Module
+System Operational
+System Parking Setting
+System Report
+System Root
+System Service
+System Settings
+System Summary Dashboard
+System SuperAdmin
+System Theme
+System Tools
+System User
+System User / Operator
+System User Profile Management
+System User Type Management
+System User Types
+System Users Management
+System automatically dispatches daily PDF/Excel reports to designated recipients at the scheduled time
+System computes total duration and deducts E-Stamp discount automatically
+System evaluates active member privileges (instantly opens barrier if valid)
+System immediately revokes LPR barrier access
+System logs Remark:
+System preserves the card/plate record
+System username
+System-Menu Access
+TAG
+TC 1234
+TERMINAL ALL
+TERMINAL IN
+TERMINAL OUT
+TEST
+TH
+THAI QR
+THAI QR PAYMENT
+THAILAND
+THAILAND LICENSE PLATE
+THB
+THB / item
+THB 0
+THB/USD
+TOTAL
+TOTAL AMOUNT DUE
+TOTAL AVAILABLE SLOTS
+TOTAL AVAILABLE SPACES
+TOUCH NUMPAD
+TRANSFER
+Table
+Tag
+Tag / Category
+Tags
+Tailwind CSS v4.0 + DaisyUI v5.0.0
+Tailwind V4 + DaisyUI V5
+Tailwind V4.0
+Take Photo
+Tap
+Tap Card / Enter License Plate
+Tap to Scan
+Target Gateway
+Target Group
+Target Net
+Target Net Amount:
+Target Parking Lot
+Target Tariff Profile
+Tariff
+Tariff / Renewal Rate
+Tariff / Service Fee Profile
+Tariff Calculation & Parking Rates
+Tariff Calculation Breakdown
+Tariff Calculation Model
+Tariff Calculation Strategy Matrix
+Tariff Engine
+Tariff Profile
+Tariff Profile & Parking Rate Configuration
+Tariff Profile (Service Fee)
+Tariff Profile (Service Fees)
+Tariff Profile :
+Tariff Profile Details
+Tariff Profile:
+Tariff Rate
+Tariff Type
+Tariff profile ID
+Tariff profile name
+Tariff rate category
+Tax
+Tax Billing Address
+Tax ID
+Tax ID (13 Digits)
+Tax ID (Tax Identification Number)
+Tax ID:
+Tax information has been locked and cannot be edited.
+Technical Data (IP address, system audit logs)
+Tel:
+Telegram Bot Token
+Telegram Chat ID
+Telegram Notify
+Telegram Notify Token / Chat ID
+Telephone (Phone Number)
+Template Background Image — Click to view/replace
+Template Coordinates Configuration
+Template Engine
+Temporal Purge Limit
+Temporal State Restoration
+Temporarily suspend all discount stamps across all hardware and web E-Stamp stations
+Term (Days)
+Terminal
+Terminal / Lane
+Terminal Engine
+Terms of Service
+Terms of Service - Parking Auto Management
+Test
+Test Gross-Up Calculation
+Test Notification
+Test Open Barrier Relay 1
+Test Payment
+Test Payment Amount
+Test Print Sample
+Test Print Slip Sample
+Testing Guide & Scenarios
+Text scrolling speed (Lower value = slower, higher value = faster)
+The architecture behind the system
+The engine evaluates conditions by Priority order (lowest number first). If entry time matches, its pricing step table is applied.
+The system automatically retrieves guest data and registered license plates.
+The system calculates and displays the real-time
+The system is not liable for unauthorized access resulting from user credential disclosures
+The system only purges expired records that
+Themes
+Thermal Printer
+Thermal Receipt / Document Logo (Logo)
+Thermal Slip
+Thermal Slip & E-Receipt Printing at Exit
+Thu
+Tiered Hourly Parking Fee Table
+Time
+Time & Fee Calculation Rules
+Time & Priority Rules
+Time Range
+Time Range Condition & Priority Rules
+Time Range YYYY/MM/DD HH:MM - YYYY/MM/DD HH:MM
+Time Remaining
+Time Variables:
+Time-Based Pricing Condition
+Time-Window Access Permissions by Card Type
+Time:
+Timeout
+Timeout:
+Timestamp:
+Timing Details
+Tip:
+To extend stay, use
+Today
+Today Inbound
+Today Outbound
+Today Revenue
+Today Traffic
+Today's hourly report
+Toggle allowed vehicle plate syntax formats
+Tolerated Char Errors
+Tolerates 1 character error among similar font glyphs with automatic correction.
+Total
+Total (THB)
+Total :
+Total Amount
+Total Amount (THB)
+Total Amount Due
+Total Amount Paid
+Total Capacity
+Total Capacity:
+Total Cards
+Total Cards/Plates:
+Total Discounts
+Total Due :
+Total Duration
+Total Entries (Entries)
+Total Exits (Exits)
+Total Fines
+Total Lots
+Total Paid
+Total Parking Lots
+Total Payment Amount
+Total Renewal Amount
+Total Revenue (Revenue)
+Total Traffic Count
+Total VAT Include
+Total amount
+Total collected revenue (Visitor + Member) today
+Total entries since 00:00 today
+Total exits since 00:00 today
+Total in System
+Total:
+Touch Screen
+Touch and Go Card
+Touch numbers to enter
+Touch to select
+Traffic & Revenue Analytics
+Traffic & Revenue Analytics (Charts)
+Traffic Analytics Stream
+Traffic Trend Analysis
+Transaction
+Transaction Date
+Transaction Details
+Transaction Edit
+Transaction Edit Tool
+Transaction ID
+Transaction Log Details
+Transaction Mode:
+Transaction No.
+Transaction Parked
+Transaction Record
+Transaction Report
+Transaction Report By Gateway
+Transaction Report By Operator
+Transaction Status:
+Transaction Summary
+Transaction Time
+Transaction Timestamp
+Transaction Type
+Transaction recorded successfully ➡️ Signal sent to open barrier gate
+Transaction type (VISITOR, MEMBER, VIP)
+Transaction_Record (Parking Transactions Table)
+Transaction_Record.id
+Transactions
+Trigger Emergency Open (Manual Override) remotely from terminal
+Trigger Schedule
+Truck
+Tue
+Type
+Type :
+Type numbers & letters without space, e.g., 1AB1234
+Type:
+UI Laboratory
+UID
+UNKNOWN
+UNPAID
+UNREAD
+UPDATING REALTIME OCCUPANCY DATA...
+URL
+URL Beam Server
+URL JT Proxy Server
+US
+USER GUIDE
+USER NAME
+USER_1_YEAR
+USER_3_MONTH
+USER_6_MONTH
+Unassigned / Not Set
+Unauthorized
+UnionPay
+Unique, Not Null
+Unit
+Unit / Destination
+Unit No.
+Unit No. / Resident Host
+Unit Price
+Unlock
+Unlock Settings
+Unmute
+Unspecified
+Unspecified Routing
+Up to 10
+Upcoming
+Update
+Update Invoice Status
+Update Source Channel
+Upload
+Upload Config
+Upload Image
+Upload Logo
+Upload Wallpaper
+Upload member user list spreadsheet
+Upload spreadsheet file with standard column mapping
+Upload template background image or header logo (Recommended width: 480px, JPG/PNG)
+Upon successful check-out, all associated vehicle license plates are immediately revoked from LPR gates.
+Uptime
+Url:
+Usage
+Usage Format
+Usage Rights
+Usage status
+Use This Photo
+Use any Mobile Banking App to scan
+User
+User & Service Profile
+User Account
+User Account & Password Settings
+User Account & Permission Management
+User Account & Security
+User Group / Type
+User Identity Details
+User Management
+User Manual
+User Manual - Parking Auto Management
+User Password
+User Profile
+User Role & Access Permissions
+User Role Details
+User Type
+User Types
+User account credentials and security role assignment
+Username
+Username / Name
+Users
+Users Import
+Users are strictly responsible for maintaining the confidentiality of their PIN credentials
+Utilities
+VAT
+VAT (7%):
+VEHICLE LOOP
+VEHICLE TYPE
+VERIFIED
+VIEWER
+VIP & Monthly Member Subscription Billing
+VIP Lot
+VISA
+VISITOR
+VISITOR-CARD
+VISITOR_ONLY
+VMS
+VST:
+Valid
+Valid Until
+Validation
+Validation License Plate Config
+Validity
+Validity (Days)
+Validity Duration (Days)
+Validity Window & Conditions
+Validity Window & Expiry
+Value
+Value Added Tax
+Variable Key
+Veh: Truck
+Vehicle
+Vehicle & Identity Details
+Vehicle & Membership Data (License plate, model, color)
+Vehicle / Fuel
+Vehicle / Member Type
+Vehicle = TRUCK / BUS
+Vehicle Blacklist & Watchlist Enforcement
+Vehicle Classification
+Vehicle Classification (Optional)
+Vehicle Color
+Vehicle Entry Details (Vehicle Details)
+Vehicle Entry Processing
+Vehicle Entry Snapshot
+Vehicle Exit Processing
+Vehicle Exit Snapshot
+Vehicle Front
+Vehicle License Plate
+Vehicle Loop
+Vehicle Permission / Allow Rules
+Vehicle Records
+Vehicle Report
+Vehicle Specifications
+Vehicle Specifications (Optional)
+Vehicle Traffic & Volume Distribution
+Vehicle Type
+Vehicle Type Description
+Vehicle Type Distribution
+Vehicle Type Information
+Vehicle Type Name
+Vehicle Type:
+Vehicle View
+Vehicle approaches exit barrier ➡️ LPR camera captures plate
+Vehicle arrives at camera zone ➡️ LPR captures plate and snapshot
+Vehicle classification and category rules
+Vehicle exit completed; booking pass is finalized/archived
+Vehicle inside parking area, awaiting exit and tariff settlement
+Vehicle settles overtime tariff at the exit gate or extends stay at Cashier POS
+Vehicle type (Car, Motorcycle, etc.)
+Vehicle_Type
+Vehicles
+Vehicles currently inside parking lot
+Vehicles in this list have automatic LPR access permission for the duration of stay
+Verified
+Verified Transaction Record
+Verifies member plate to open exit barrier
+Verify & Confirm Payment
+Verify & View Receipt
+Verify and configure the exact
+Verify applied E-Stamps and collect parking fees / lost ticket fines
+Verify days of week and active time range
+Verify detected LPR plate and enter visitor contact info
+Version
+View
+View and export vehicle entry/exit logs and operator transactions
+Vision Module
+Vision Storage
+Visit purpose / objective
+Visiting Objective Definition
+Visitor
+Visitor & Contractor Profile Information
+Visitor & Contractor Registration
+Visitor & Plate Details
+Visitor Address
+Visitor Booking Quota
+Visitor Booking Quota Limit
+Visitor Contact
+Visitor Full Name
+Visitor Gate-OUT
+Visitor Info
+Visitor Information
+Visitor Lobby Manager
+Visitor Lobby Register
+Visitor Management
+Visitor Name
+Visitor Pass
+Visitor Pass & Advance Booking Reservation
+Visitor Pass & Pre-Booking Registration
+Visitor Pre-Booking & Access Management System
+Visitor Profile & Blacklist Status
+Visitor Type Code
+Visitor full name
+Visitor name
+Visitor presents barcode ticket to merchant / host office
+Visitors
+Visitors Only
+Visual graphical analytics of traffic flow, revenue trends, and peak occupancy
+Volume (Vehicles)
+Voucher / Code
+Voucher / Promo Code
+Voucher Code & Discount Mapping
+WF1 Command Script Editor
+WND 1234
+WND 1234, SBA1234A
+Waiting
+Waiting for payment confirmation...
+Warning
+Warning: Restoration operations overwrite current active registry states.
+Warranty & Support Period
+Warranty Period
+Webhook
+Webhook / API Integration
+Webhook Manager
+Webhook Setting
+Wed
+Welcome Back
+Welcome to
+When the scheduled check-out time is reached, the worker daemon automatically revokes gate access without requiring manual check-out.
+When using Gmail with 2FA enabled, generate an App Password from
+Whitelist
+Window
+Would you like to print a receipt?
+XXXX
+YYMMDD
+YYYY-MM-DDTHH:MM:SS
+YYYY/MM/DD
+YYYY/MM/DD - YYYY/MM/DD
+YYYY/MM/DD HH:MM - YYYY/MM/DD HH:MM
+YYYY/MM/DD HH:mm
+YYYY/MM/DD HH:mm (Optional)
+YYYYMMDD
+Year
+Yes
+You may reach our Data Protection Officer through these official support channels.
+Your information has been successfully processed and saved.
+Z Sleep hotel
+ZH
+Zone
+Zone Actions:
+Zone Allowed
+Zone Config
+Zone Description & Boundary Rules
+Zone Name
+Zone Overview & Live Status
+Zone Profile, Capacity Limits & Occupancy
+Zone description, security restrictions, authorized supervisor...
+Zones
+accept_handler
+address
+allow_data
+amount
+amount_paid
+and
+and click Update
+and select the saved QR image
+app_name
+app_subtitle
+app_version
+auto_brightness=
+auto_cancel_desc
+auto_cycle=
+auto_cycle=1
+billing@company.com
+billing@example.com
+body json[field:data(type:string)]
+bookings
+brightness = 50
+brightness=
+brightness=50
+brightness=50&#10;line01_color=FFFFFF&#10;line_01=WELCOME TO PKS SYSTEM
+brightness=80
+btn_cancel
+btn_cancel_subtitle
+btn_cancel_title
+btn_check_pay
+btn_close
+btn_confirm
+btn_no_receipt
+btn_pay_online
+btn_pay_promptpay
+btn_print_receipt
+btn_search_plate
+btn_touch_keypad
+button or take a screenshot
+button.
+cam01_front
+cam02_plate
+cam03_driver
+cam04_rear
+camera_photographed_hint
+cancel_payment_btn
+card_id
+card_plate_no
+cashier
+channels_4_badge
+check_service_fee
+click image to preview
+close
+code
+col id[int]
+confirm_cancel_btn
+confirm_closeup_badge
+confirm_datetime
+confirm_destination
+confirm_lane
+confirm_license
+confirm_objective
+confirm_overview_badge
+confirm_print_btn
+confirm_purpose
+confirm_subtitle
+confirm_title
+confirm_unit
+confirm_vehicle_type
+confirm_visitor_badge
+confirm_warning
+contact
+create_id
+currency
+customer
+cycle_interval=
+cycle_interval=5
+data
+database_name.db
+date
+date time range
+date_time
+datetime
+day_brightness=
+day_start_hour=
+demo
+description
+dialog_pay_subtitle
+dialog_pay_title
+dialog_select_subtitle
+dialog_select_title
+discount
+display_lines=
+display_name
+do not have an active parking session inside
+e.g. +66 2 xxx xxxx or +66 8x xxx xxxx
+e.g. 00:15 or 30 or AFTER_STAMP 30
+e.g. 08:00
+e.g. 08:00-18:00
+e.g. 1
+e.g. 15 (Exceeding 15m charges 1h)
+e.g. 192.168.1.112
+e.g. 192.168.1.123
+e.g. 192.168.1.150
+e.g. 1AB1234
+e.g. 1AB1234 or CARD001
+e.g. 1AB1234 or Pass Card ID
+e.g. 1AB1234 or WND 1234
+e.g. 1CD1234
+e.g. 20
+e.g. 30
+e.g. 300
+e.g. ADMIN, STAFF, RESIDENT
+e.g. Administrator, Cashier, Technician
+e.g. Authorized by manager, special visitor pass granted...
+e.g. Business Meeting, Document Delivery, Maintenance
+e.g. CUST-001
+e.g. Car = 1
+e.g. Car, Motorcycle, Truck, Van
+e.g. Car=1, Motorcycle=1
+e.g. DLV / FOOD / SERVICE
+e.g. Daytime 08:00-18:00
+e.g. Delivery vehicles restricted from Customer Zone
+e.g. Diesel, Gasoline 95, 100% Electric EV
+e.g. Door Scanner A1
+e.g. EMP-001 or UID
+e.g. ESTAMP-01
+e.g. EXT-260604-...
+e.g. Entrance Gate 01
+e.g. Express Delivery Co., Grab, General Visitor
+e.g. Grand Opening, Live Concert
+e.g. Guest Access, VIP Lane
+e.g. Info Counter / Store A
+e.g. John Doe
+e.g. John Doe (Visitor)
+e.g. John Doe, Cashier Team
+e.g. Kiosk Entry 01
+e.g. LPR Camera IN 01
+e.g. Main building basement B1, visitor parking near gate 1...
+e.g. Management, IT Department, Legal
+e.g. PARK_FREE_30MIN
+e.g. PK Softtech Co., Ltd.
+e.g. PKS-AC200
+e.g. PROMO, DISCOUNT, SPECIAL
+e.g. PROMO, DISCOUNT, VIP
+e.g. Reader Gate 01
+e.g. Standard 20 THB/hr, VIP Member
+e.g. Toyota Camry
+e.g. Toyota Camry, Honda Civic
+e.g. VIP / Monthly
+e.g. VIP Member, Resident
+e.g. VIP, Special parking floor request
+e.g. Vehicle Seized / Access Denied
+e.g. Welcome {time}
+e.g. White, Black, Silver
+e.g. Zone A, Floor 3, Indoor Parking
+e.g. Zone A, Parking Building B1, Outdoor Lot
+e.g. ^[A-Z]{3}-\d{4}$ (Leave blank if unused)
+e.g. admin, cashier01
+e.g. https://payment.example.com
+e.g. ocr.jteasyflow.com or 127.0.0.1:8888
+e.g. parking.jteasyflow.com
+email
+enter_license_plate_to_pay
+enter_plate_desc
+enter_plate_warning
+entrance_fee
+entrance_gate
+entry_camera_capture
+entry_datetime
+entry_snapshot_badge
+entry_time
+expire_date_time
+facebook.com/page
+fine
+first_minutes_free
+float
+footer_card_reader
+footer_card_reader_sub
+for each vehicle.
+free_period_desc
+free_text
+free_time
+gate_reader.log
+gateway_id
+guide_badge
+guide_section_sub
+guide_section_title
+header: value
+help
+hourly_rate
+how_to_use
+id
+id:Transaction_Record.id
+images_path
+input_badge
+input_hint
+inquiry_payload
+int
+ip_cameras
+item_name
+items
+jteasyflow.com
+keypad_cancel
+keypad_clear
+keypad_del
+keypad_mgmt
+keypad_ok
+keypad_placeholder_unit
+keypad_title_default
+kiosk_hero_badge
+kiosk_hero_subtitle
+kiosk_hero_title
+license
+license_plate
+license_plate_label
+line01_color=
+line01_color=FF0000
+line01_speed=
+line01_speed=15
+line01_timeout=
+line_01=
+line_01=WELCOME TO PKS SYSTEM
+line_id
+log_in
+log_out
+loop_car_detected
+loop_no_car
+loop_sensor_title
+lost_card
+lost_card_warning
+lpr_auto
+lpr_auto_desc
+lpr_ready_badge
+mail@site.com
+manual_cam_sub
+manual_cam_title
+member@company.com
+member_entry
+member_entry_desc
+member_user_permission_id
+menu.
+minutes
+modal_confirm_subtitle
+modal_confirm_title
+mode at Cashier POS to specify new expiry and fee
+mon,tue,wed,thu,fri,sat,sun
+ms
+name
+night_brightness=
+night_start_hour=
+no
+no_fee_applied
+no_record_found
+not_found_plate
+objective
+option_01
+option_02
+option_03
+or
+output.log
+outstanding_balance
+outstanding_title
+parked
+parked_duration
+parking_id
+parking_information
+parking_payment_details
+parking_service_payment
+parking_time
+pay
+pay_now
+payload
+payment_channel
+payment_completed
+payment_success_desc
+payment_success_title
+pk_test_...
+pksofttech.org
+plate
+plate_corrected
+plate_example_hint
+plate_example_title
+plate_input_hint
+plate_num
+plate_subtext
+plate_waiting
+please_enter_plate
+pos_id
+printer_checking
+printer_test_btn
+proceed_pay_msg
+proceed_payment_hint
+processing_wait
+promptpay_badge
+purpose_contact
+purpose_contact_sub
+purpose_delivery
+purpose_delivery_sub
+purpose_delivery_title
+purpose_header
+purpose_mgmt_sub
+purpose_mgmt_title
+purpose_resident_sub
+purpose_resident_title
+purpose_service
+purpose_service_sub
+qr_id
+reader_access.log
+receipt_desc
+receipt_question
+records
+ref_no
+reload_tooltip
+remark
+round
+rule_keep_ticket
+rule_keep_ticket_desc
+rule_speed
+rule_speed_desc
+rule_valuable
+rule_valuable_desc
+safety_title
+scan_instruction_hint
+scan_qr_desc
+scan_qr_title
+screensaver_rate_title
+screensaver_rules_title
+screensaver_service_title
+screensaver_support_hint
+screensaver_welcome_badge
+screensaver_welcome_desc
+screensaver_welcome_title
+search_license_plate
+search_matched_hint
+seconds
+secure_payment_system
+select_language
+select_parking_transaction_desc
+select_purpose
+select_vehicle_transaction
+self_service_parking_payment
+server_status_title
+service_24h
+service_24h_desc
+service_cctv
+service_cctv_desc
+service_contactless
+service_contactless_desc
+service_fees_id
+services_badge
+set_time=
+set_time=2026-08-20T18:30:00
+settings
+settings_tooltip
+sk_test_...
+snapshot_cam1
+snapshot_cam2
+split_screen=
+starts at 06:00 AM)
+starts at 18:00 PM)
+status
+step1_desc
+step1_title
+step2_desc
+step2_title
+step3_desc
+step3_title
+step4_desc
+step4_title
+step_1
+step_2
+step_3
+step_enter_plate
+step_enter_plate_desc
+step_pay_and_exit
+step_pay_and_exit_desc
+step_select_vehicle
+step_select_vehicle_desc
+str
+success_handler
+system_title
+tab and choose the desired room number.
+tab and locate the room number.
+tab and search/choose the designated room number.
+tab to view vehicles currently granted LPR barrier access.
+table_card_id
+table_entry_gate
+table_entry_time
+table_license_plate
+table_parked_duration
+table_tariff_profile
+tariff_by_type
+tariff_profile
+tariff_title
+terminal and search for the member/guest account.
+test_print_tooltip
+thailand_license_plate
+tile_card_desc
+tile_card_title
+tile_lpr_desc
+tile_lpr_title
+tile_qr_desc
+tile_qr_title
+time_remaining
+timer_desc
+timestamp
+to
+to Make a Payment
+to activate gate permissions.
+to charge (A non-zero fee is required to confirm).
+to collect funds, print a thermal receipt, and instantly renew gate access.
+to process.
+to verify if the camera network state is ONLINE.
+total_amount_title
+total_service_fee
+touch_screen_badge
+touch_screen_to_start
+touch_to_select
+trans_id
+transaction_details_title
+transaction_record_id
+type
+type_and_search_hint
+v3.0
+vehicle_front
+vehicle_type
+vehicle_type_label
+visitor_entry
+visitor_entry_desc
+visitor_name
+xx-xxxx
+xxxxxxxxxx
+xxxxxxxxxxxx.apps.googleusercontent.com

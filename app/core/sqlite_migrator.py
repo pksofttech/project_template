@@ -68,8 +68,7 @@ async def sqlite_auto_migrate_async(conn: AsyncConnection, table):
 
         # DROP COLUMNS
         if drop_cols:
-            for _ in drop_cols:
-                await rebuild_table_to_match_model(conn, table)
+            await rebuild_table_to_match_model(conn, table)
     else:
         print_debug(f"   ✔️ {table_name}: Columns up-to-date.")
 
@@ -100,12 +99,48 @@ async def rebuild_table_to_match_model(conn: AsyncConnection, table):
 
     await conn.execute(text(ddl))
 
-    # 3) copy data เฉพาะคอลัมน์ที่มีจริง
+    # 3) copy data เฉพาะคอลัมน์ที่มีจริง โดยใส่ COALESCE เผื่อคอลัมน์ NOT NULL ที่ข้อมูลเดิมเป็น NULL
     if copy_cols:
+        select_exprs = []
+        for c in copy_cols:
+            col_obj = table.columns.get(c)
+            if col_obj is not None and not col_obj.nullable and not col_obj.primary_key:
+                fallback = ""
+                if col_obj.default is not None:
+                    try:
+                        d_val = col_obj.default.arg
+                        if callable(d_val):
+                            d_val = d_val()
+                        default_str = format_sqlite_default(d_val)
+                        if default_str.startswith(" DEFAULT "):
+                            fallback = default_str[9:].strip()
+                    except Exception:
+                        fallback = ""
+
+                if not fallback:
+                    if any(t in str(col_obj.type).upper() for t in ["INT", "REAL", "FLOAT", "NUMERIC"]):
+                        fallback = "1" if "id" in c.lower() else "0"
+                    elif any(k in c.lower() for k in ["date", "time"]) or "TIME" in str(col_obj.type).upper():
+                        from app.stdio import time_now
+                        fallback = f"'{time_now().isoformat()}'"
+                    elif any(t in str(col_obj.type).upper() for t in ["BOOL", "BOOLEAN"]):
+                        fallback = "1"
+                    else:
+                        fallback = "''"
+
+                # Check if old table has a legacy column name (e.g. created_at for createDate)
+                if c == "createDate" and "created_at" in existing_cols:
+                    select_exprs.append(f'COALESCE("{c}", "created_at", {fallback}) AS "{c}"')
+                else:
+                    select_exprs.append(f'COALESCE("{c}", {fallback}) AS "{c}"')
+            else:
+                select_exprs.append(f'"{c}"')
+
         cols_csv = ", ".join([f'"{c}"' for c in copy_cols])
+        select_csv = ", ".join(select_exprs)
         await conn.execute(
             text(
-                f'INSERT INTO "{tmp}" ({cols_csv}) SELECT {cols_csv} FROM "{table_name}";'
+                f'INSERT INTO "{tmp}" ({cols_csv}) SELECT {select_csv} FROM "{table_name}";'
             )
         )
 
@@ -172,6 +207,15 @@ def format_sqlite_default(value):
     if value is None:
         return ""
 
+    if callable(value):
+        try:
+            value = value()
+        except Exception:
+            return ""
+
+    if hasattr(value, "isoformat"):
+        return f" DEFAULT '{value.isoformat()}'"
+
     # Boolean → 0/1
     if isinstance(value, bool):
         return f" DEFAULT {1 if value else 0}"
@@ -213,6 +257,14 @@ async def add_missing_columns_async(
                 )  # ต้องคืนค่าเป็น " DEFAULT ..."
             except Exception:
                 default = ""
+        if not default and not col_obj.nullable:
+            if any(t in col_type for t in ["INT", "REAL", "FLOAT", "NUMERIC"]):
+                default = " DEFAULT 1" if "id" in col.lower() else " DEFAULT 0"
+            elif any(k in col.lower() for k in ["date", "time"]):
+                from app.stdio import time_now
+                default = f" DEFAULT '{time_now().isoformat()}'"
+            else:
+                default = " DEFAULT ''"
 
         # 3) Build SQL (quote identifiers)
         sql = f'ALTER TABLE "{table_name}" ADD COLUMN "{col}" {col_type}{default}'

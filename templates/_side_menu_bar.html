@@ -16,37 +16,37 @@
 
             <!-- Navigation Links -->
             <ul class="menu menu-md p-0 gap-1">
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2">Main Menu</li>
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2" data-i18n="Main Menu">Main Menu</li>
                 <li>
                     <a href="/home" class="{% if active_page == 'home' %}active font-semibold{% endif %}">
                         <i class="fa-solid fa-house w-5 text-center"></i>
-                        <span>Home</span>
+                        <span data-i18n="Home">Home</span>
                     </a>
                 </li>
                 <li>
                     <a href="/dashboard" class="{% if active_page == 'dashboard' %}active font-semibold{% endif %}">
                         <i class="fa-solid fa-gauge-high w-5 text-center"></i>
-                        <span>Dashboard</span>
+                        <span data-i18n="Dashboard">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="/sample" class="{% if active_page == 'sample' %}active font-semibold{% endif %}">
                         <i class="fa-solid fa-box-archive w-5 text-center"></i>
-                        <span>Sample Items</span>
+                        <span data-i18n="Sample Items">Sample Items</span>
                     </a>
                 </li>
 
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4">System</li>
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4" data-i18n="System">System</li>
                 <li>
                     <a href="/system_config" class="{% if active_page == 'system_config' %}active font-semibold{% endif %}">
                         <i class="fa-solid fa-sliders w-5 text-center"></i>
-                        <span>Settings</span>
+                        <span data-i18n="Settings">Settings</span>
                     </a>
                 </li>
                 <li>
                     <a href="/docs" target="_blank">
                         <i class="fa-solid fa-code w-5 text-center"></i>
-                        <span>Swagger Docs</span>
+                        <span data-i18n="Swagger Docs">Swagger Docs</span>
                         <span class="badge badge-xs badge-info">API</span>
                     </a>
                 </li>
@@ -56,9 +56,9 @@
         <!-- Sidebar Footer Info -->
         <div class="p-3 bg-base-200/50 rounded-xl border border-base-content/5 text-xs text-base-content/60">
             <div class="flex items-center justify-between">
-                <span>Status</span>
+                <span data-i18n="Status">Status</span>
                 <span class="badge badge-success badge-xs gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Online
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> <span data-i18n="Online">Online</span>
                 </span>
             </div>
             <div class="mt-2 text-[10px] text-center text-base-content/40">

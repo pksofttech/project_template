@@ -103,9 +103,14 @@ python3 start_server.py --port 8000 --workers 1
 
 - **URL เข้าใช้งาน**: `http://localhost:8000`
 - **Interactive API Documentation (Swagger)**: `http://localhost:8000/docs`
-- **บัญชีเข้าสู่ระบบเริ่มต้น**:
-  - Username: `ssystem` (หรือ `system`)
-  - Password: `12341234`
+- **บัญชีเข้าสู่ระบบเริ่มต้น (Default User Accounts)**:
+  - รหัสผ่านเริ่มต้นสำหรับทุกบัญชี: `12341234`
+  - `system` : สิทธิ์ **ROOT** (สิทธิสูงสุด เข้าถึงได้ทุกส่วน)
+  - `admin` : สิทธิ์ **ADMIN** (ผู้ดูแลระบบทั่วไป)
+  - `account` : สิทธิ์ **ACCOUNT** (ฝ่ายบัญชี / การเงิน)
+  - `operator` : สิทธิ์ **OPERATOR** (เจ้าหน้าที่ปฏิบัติการ)
+  - `devices` : สิทธิ์ **DEVICES** (ผู้ดูแลอุปกรณ์และฮาร์ดแวร์)
+  - `viewer` : สิทธิ์ **VIEWER** (ดูข้อมูลอย่างเดียว Read-Only)
 
 ---
 

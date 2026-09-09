@@ -33,17 +33,17 @@
         <ul class="menu menu-horizontal px-1 gap-1">
             <li>
                 <a href="/dashboard" class="rounded-lg {% if active_page == 'dashboard' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-gauge-high"></i> Dashboard
+                    <i class="fa-solid fa-gauge-high"></i> <span data-i18n="Dashboard">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="/sample" class="rounded-lg {% if active_page == 'sample' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-box-archive"></i> Sample Items
+                    <i class="fa-solid fa-box-archive"></i> <span data-i18n="Sample Items">Sample Items</span>
                 </a>
             </li>
             <li>
                 <a href="/system_config" class="rounded-lg {% if active_page == 'system_config' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-sliders"></i> Settings
+                    <i class="fa-solid fa-sliders"></i> <span data-i18n="Settings">Settings</span>
                 </a>
             </li>
         </ul>
@@ -54,12 +54,12 @@
         <!-- Toolbar Actions -->
         <div class="flex items-center gap-0.5 md:gap-1">
             <!-- 🎨 Theme Palette Selector Button -->
-            <button class="btn btn-ghost btn-circle btn-sm hover:bg-primary/10 hover:text-primary transition-colors" onclick="theme_modal.showModal()" title="Themes">
+            <button class="btn btn-ghost btn-circle btn-sm hover:bg-primary/10 hover:text-primary transition-colors" onclick="theme_modal.showModal()" title="Themes" data-i18n-title="Themes">
                 <i class="fa-solid fa-palette text-sm"></i>
             </button>
 
             <!-- 🔄 Reload System Button -->
-            <button class="btn btn-ghost btn-circle btn-sm hover:bg-info/10 hover:text-info transition-all active:rotate-180" onclick="window.location.reload()" title="Reload System">
+            <button class="btn btn-ghost btn-circle btn-sm hover:bg-info/10 hover:text-info transition-all active:rotate-180" onclick="window.location.reload()" title="Reload System" data-i18n-title="Reload System">
                 <i class="fa-solid fa-rotate-right text-sm"></i>
             </button>
 
@@ -74,7 +74,7 @@
                 </div>
                 <div class="hidden lg:flex flex-col items-start leading-none">
                     <span class="text-[11px] font-bold text-base-content/80 group-hover:text-primary transition-colors">{{ user.username }}</span>
-                    <span class="text-[9px] font-medium text-base-content/40 uppercase tracking-tighter">Profile</span>
+                    <span class="text-[9px] font-medium text-base-content/40 uppercase tracking-tighter" data-i18n="Profile">Profile</span>
                 </div>
             </button>
 
@@ -98,7 +98,7 @@
                     <i class="fa-solid fa-palette"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-black tracking-tight text-base-content">System Theme</h3>
+                    <h3 class="text-base font-black tracking-tight text-base-content" data-i18n="System Theme">System Theme</h3>
                     <p class="text-xs text-base-content/60 font-medium">Customize system theme and interface color palette</p>
                 </div>
             </div>
@@ -193,7 +193,7 @@
                 </a>
                 <a href="/logout" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2">
                     <i class="fa-solid fa-power-off"></i>
-                    <span>Sign Out</span>
+                    <span data-i18n="Sign Out">Sign Out</span>
                 </a>
             </div>
         </div>

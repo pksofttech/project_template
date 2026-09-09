@@ -1,37 +1,100 @@
-# Python bytecode / C extensions
+# =============================================================================
+# 🐍 Python Bytecode & Cache
+# =============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.Python
+/build/
+develop-eggs/
+/dist/
+downloads/
+eggs/
+.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
-# Environments
+# =============================================================================
+# 📦 Virtual Environments
+# =============================================================================
 venv/
 .venv/
 env/
-.env
+ENV/
+env.bak/
+venv.bak/
 
-# Database & SQLite files
+# =============================================================================
+# 🔑 Environment Variables & Secrets
+# =============================================================================
+.env
+.env.*
+!.env.example
+
+# =============================================================================
+# 🗄️ Database, SQLite WAL & Backups
+# =============================================================================
 *.db
 *.db-journal
 *.db-wal
 *.db-shm
+*.db.gz
+*.sqlite
+*.sqlite3
 database/*.db
 database/*.db-wal
 database/*.db-shm
 database/*.db-journal
+database/*.db.gz
+database/backups/*
+!database/backups/.gitkeep
+database/migration_backup/*
+!database/migration_backup/.gitkeep
+!database/.gitkeep
 
-# Logs
-logs/
+# =============================================================================
+# 📝 Logs & Diagnostics
+# =============================================================================
+logs/*
+!logs/.gitkeep
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Temp & Uploads
-static/uploads/
-static/tmp/
+# =============================================================================
+# 📂 Temporary Files & Static Uploads
+# =============================================================================
+static/uploads/*
+!static/uploads/.gitkeep
+static/tmp/*
+!static/tmp/.gitkeep
+tmp/
+temp/
+*.tmp
 
-# VS Code & Editors
-.vscode/
-!.vscode/extensions.json
+# =============================================================================
+# 💻 IDE & OS Files
+# =============================================================================
+.vscode/*
 !.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
 .idea/
+*.sublime-workspace
+*.sublime-project
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini

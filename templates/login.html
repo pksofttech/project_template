@@ -168,7 +168,7 @@
                                     id="username" 
                                     class="w-full bg-slate-950/70 border border-slate-800 hover:border-slate-700 focus:border-cyan-400/80 focus:ring-3 focus:ring-cyan-400/15 text-slate-100 placeholder:text-slate-600 text-sm rounded-xl pl-11 pr-4 py-3 transition-all outline-hidden font-medium" 
                                     placeholder="Enter your username" 
-                                    value="ssystem" 
+                                    value="system" 
                                     required 
                                     autocomplete="username"
                                 />
@@ -228,7 +228,7 @@
                         <div class="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-key text-cyan-400"></i>
-                                <span>Default: <strong class="text-white font-mono">ssystem</strong> / <strong class="text-white font-mono">12341234</strong></span>
+                                <span>Default: <strong class="text-white font-mono">system</strong> / <strong class="text-white font-mono">12341234</strong></span>
                             </div>
                             <button 
                                 type="button" 
@@ -293,7 +293,7 @@
 
         // Quick auto-fill default credentials
         function autoFillDefault() {
-            document.getElementById("username").value = "ssystem";
+            document.getElementById("username").value = "system";
             document.getElementById("password").value = "12341234";
             if (typeof toastr !== "undefined") {
                 toastr.info("Auto-filled default credentials");
@@ -303,9 +303,9 @@
         // Forgot password notice
         function handleForgotPassword() {
             if (typeof toastr !== "undefined") {
-                toastr.info("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: ssystem / 12341234)");
+                toastr.info("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: system / 12341234)");
             } else {
-                alert("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: ssystem / 12341234)");
+                alert("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: system / 12341234)");
             }
         }
 

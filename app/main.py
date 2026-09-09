@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager
 from fastapi import Body, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse
 
@@ -16,7 +15,7 @@ from app.config_app import AppConfig
 from app.core.database import init_sqlite_pragmas
 from app.core.utility import broadcast_sse, sse_clients
 from app.routes import api_sample, api_system_config, api_system_user, views
-from app.stdio import print_debug, print_success, time_now
+from app.stdio import print_debug, time_now
 
 
 @asynccontextmanager
@@ -72,7 +71,7 @@ async def event_generator(request: Request, client_queue: asyncio.Queue):
             try:
                 data = await asyncio.wait_for(client_queue.get(), timeout=20.0)
                 yield {"event": "message", "data": json.dumps(data)}
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 # Keep-alive ping
                 yield {"event": "ping", "data": ""}
     finally:
@@ -90,7 +89,7 @@ async def sse_endpoint(request: Request):
 
 
 @app.post("/broadcast_sse", summary="Broadcast message to SSE clients", tags=["Real-time"])
-async def broadcast_sse_endpoint(payload: dict = Body(...)):
+async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
     """Broadcast an event payload to all active SSE subscribers."""
     broadcast_sse(payload)
     return {"success": True}
@@ -100,6 +99,7 @@ async def broadcast_sse_endpoint(payload: dict = Body(...)):
 # 🚏 ROUTE REGISTRATIONS
 # --------------------------------------------------------
 app.include_router(api_sample.router)
-app.include_router(api_system_user.router)
+app.include_router(api_system_user.router, prefix="/api/system_user")
+app.include_router(api_system_user.router, prefix="/api/systems_user")
 app.include_router(api_system_config.router)
 app.include_router(views.router)

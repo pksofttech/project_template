@@ -52,7 +52,7 @@ def decode_access_token(token: str) -> dict[str, Any] | None:
 
 async def authenticate_user(db: AsyncSession, username: str, password: str) -> System_Users | None:
     """Authenticate username and password against database."""
-    stmt = select(System_Users).where(System_Users.username == username, System_Users.is_active == True)
+    stmt = select(System_Users).where(System_Users.username == username, System_Users.status == "ENABLE")
     user = (await db.exec(stmt)).first()
     if not user:
         return None

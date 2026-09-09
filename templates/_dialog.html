@@ -1,15 +1,158 @@
-<!-- Universal DaisyUI Modal Dialogs -->
+<!-- Universal DaisyUI Modal Dialogs (PKS V5 Standard) -->
 
-<!-- 1. Alert Modal -->
-<dialog id="global_alert_modal" class="modal">
-    <div class="modal-box max-w-sm text-center">
-        <div id="global_alert_icon" class="text-4xl text-info mb-3">
-            <i class="fa-solid fa-circle-info"></i>
+<!-- 1. ✅ DIALOG INFO -->
+<dialog id="Dialog_Info" class="modal">
+    <div class="modal-box p-0 overflow-hidden border-none shadow-2xl rounded-box">
+        <div class="bg-primary p-8 flex justify-center relative">
+            <div class="animate-bounce">
+                <i class="fa-solid fa-circle-info text-7xl text-primary-content"></i>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-md btn-circle absolute right-4 top-4 border-none bg-white/10 hover:bg-white/20 transition-all duration-300 group">
+                    <i class="fa-solid fa-xmark text-xl text-primary-content transition-transform group-hover:rotate-90"></i>
+                </button>
+            </form>
         </div>
-        <h3 id="global_alert_title" class="font-bold text-lg">Notification</h3>
-        <p id="global_alert_msg" class="py-3 text-sm text-base-content/70">Message body</p>
-        <div class="modal-action justify-center">
-            <button class="btn btn-primary btn-sm px-6" onclick="global_alert_modal.close()">OK</button>
+
+        <div class="my-modal-content">
+            <div class="p-8 text-center">
+                <h3 class="text-2xl font-black text-base-content mb-2 tracking-tight" data-field="title">Information</h3>
+                <p class="text-base-content/70 leading-relaxed font-medium" data-field="msg">Additional information regarding the system.</p>
+            </div>
+        </div>
+
+        <div class="modal-action flex-col p-2">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-primary w-full rounded-btn text-lg font-bold shadow-lg shadow-primary/30 gap-2">
+                    <i class="fa-solid fa-check"></i> OK
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<!-- 2. ✅ DIALOG SUCCESS -->
+<dialog id="Dialog_Success" class="modal">
+    <div class="modal-box p-0 overflow-hidden border-none shadow-2xl rounded-box">
+        <div class="bg-success p-8 flex justify-center relative">
+            <div class="animate-bounce">
+                <i class="fa-solid fa-circle-check text-7xl text-success-content"></i>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-md btn-circle absolute right-4 top-4 border-none bg-white/10 hover:bg-white/20 transition-all duration-300 group">
+                    <i class="fa-solid fa-xmark text-xl text-success-content transition-transform group-hover:rotate-90"></i>
+                </button>
+            </form>
+        </div>
+        <div class="my-modal-content">
+            <div class="p-8 text-center">
+                <h3 class="text-2xl font-black text-success mb-2 tracking-tight" data-field="title">Operation Successful</h3>
+                <p class="text-base-content/70 leading-relaxed font-medium" data-field="msg">Your information has been successfully processed and saved.</p>
+            </div>
+        </div>
+        <div class="modal-action p-2 flex-col">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-success w-full rounded-btn text-lg font-bold shadow-lg shadow-success/30 gap-2 text-success-content">
+                    <i class="fa-solid fa-check"></i><span>Close</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<!-- 3. ✅ DIALOG WARNING -->
+<dialog id="Dialog_Warning" class="modal">
+    <div class="modal-box p-0 overflow-hidden border-none shadow-2xl rounded-box">
+        <div class="bg-warning p-8 flex justify-center relative">
+            <div class="animate-bounce">
+                <i class="fa-solid fa-triangle-exclamation text-7xl text-warning-content"></i>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-md btn-circle absolute right-4 top-4 border-none bg-white/10 hover:bg-white/20 transition-all duration-300 group">
+                    <i class="fa-solid fa-xmark text-xl text-warning-content transition-transform group-hover:rotate-90"></i>
+                </button>
+            </form>
+        </div>
+        <div class="my-modal-content">
+            <div class="p-8 text-center">
+                <h3 class="text-2xl font-black text-warning mb-2 tracking-tight" data-field="title">Warning</h3>
+                <p class="text-base-content/70 leading-relaxed font-medium" data-field="msg">Please verify all data before proceeding.</p>
+            </div>
+        </div>
+        <div class="modal-action p-2 flex-col">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-warning w-full rounded-btn text-lg font-bold shadow-lg shadow-warning/30 gap-2 text-warning-content">
+                    <i class="fa-solid fa-exclamation"></i><span>Close</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<!-- 4. ✅ DIALOG ERROR -->
+<dialog id="Dialog_Error" class="modal">
+    <div class="modal-box p-0 overflow-hidden border-none shadow-2xl rounded-box">
+        <div class="bg-error p-8 flex justify-center relative">
+            <div class="animate-bounce">
+                <i class="fa-solid fa-circle-xmark text-7xl text-error-content"></i>
+            </div>
+            <form method="dialog">
+                <button class="btn btn-md btn-circle absolute right-4 top-4 border-none bg-white/10 hover:bg-white/20 transition-all duration-300 group">
+                    <i class="fa-solid fa-xmark text-xl text-error-content transition-transform group-hover:rotate-90"></i>
+                </button>
+            </form>
+        </div>
+        <div class="my-modal-content">
+            <div class="p-8 text-center">
+                <h3 class="text-2xl font-black text-error mb-2 tracking-tight" data-field="title">System Error</h3>
+                <p class="text-base-content/70 leading-relaxed font-medium" data-field="msg">Operation could not be completed. Please try again.</p>
+            </div>
+        </div>
+        <div class="modal-action p-2 flex-col">
+            <form method="dialog" class="w-full">
+                <button class="btn btn-error w-full rounded-btn text-lg font-bold shadow-lg shadow-error/30 gap-2 text-error-content">
+                    <i class="fa-solid fa-rotate-right"></i><span>Close</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<!-- 5. ✅ DIALOG CONFIRM -->
+<dialog id="Dialog_Confirm" class="modal">
+    <div class="modal-box w-[92vw] max-w-lg bg-base-100 border border-primary/20 rounded-box shadow-2xl overflow-hidden">
+        <div class="flex flex-col items-center gap-3 text-center">
+            <div class="animate-bounce">
+                <i class="fa-solid fa-circle-question text-7xl text-info"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl font-black text-base-content tracking-tight" data-field="title">
+                    Confirm Action
+                </h3>
+                <p class="text-xs font-bold opacity-40 uppercase tracking-widest mt-0.5">Confirmation</p>
+            </div>
+        </div>
+
+        <div class="my-modal-content">
+            <div class="text-lg text-base-content/70 font-medium leading-relaxed my-6 px-4 text-center" data-field="content">
+                Are you sure you want to continue?
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <form method="dialog" class="flex flex-row w-full gap-3">
+                <button class="btn btn-outline btn-warning h-12 flex-1 rounded-box text-lg font-bold border-2 hover:bg-warning hover:text-warning-content transition-all active:scale-95" data-field="cancel_btn">
+                    <span>Cancel</span>
+                </button>
+
+                <button class="btn btn-primary h-12 flex-1 rounded-box text-lg font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all active:scale-95" data-field="confirm_btn">
+                    <span>Confirm</span>
+                </button>
+            </form>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop">
@@ -17,58 +160,48 @@
     </form>
 </dialog>
 
-<!-- 2. Confirm Modal -->
-<dialog id="global_confirm_modal" class="modal">
-    <div class="modal-box max-w-sm text-center">
-        <div class="text-4xl text-warning mb-3">
-            <i class="fa-solid fa-triangle-exclamation"></i>
+<!-- 6. ✅ DIALOG LOADING -->
+<dialog id="Dialog_Loading" class="modal">
+    <div class="modal-box min-w-80 min-h-40 p-6 border border-white/20 rounded-box shadow-xl flex flex-col justify-center items-center gap-4">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+        <div class="text-base font-medium text-center" data-field="msg">
+            Loading...
         </div>
-        <h3 id="global_confirm_title" class="font-bold text-lg">Are you sure?</h3>
-        <p id="global_confirm_msg" class="py-3 text-sm text-base-content/70">Do you wish to proceed?</p>
-        <div class="modal-action justify-center gap-2">
-            <button class="btn btn-ghost btn-sm" onclick="global_confirm_modal.close()">Cancel</button>
-            <button id="global_confirm_ok_btn" class="btn btn-error btn-sm px-6">Confirm</button>
-        </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
-</dialog>
-
-<!-- 3. Loading Spinner -->
-<dialog id="global_loading_modal" class="modal">
-    <div class="modal-box max-w-xs text-center py-8">
-        <span class="loading loading-spinner loading-lg text-primary"></span>
-        <p id="global_loading_text" class="mt-4 text-sm font-medium text-base-content/80">Processing, please wait...</p>
     </div>
 </dialog>
 
+<!-- 7. ✅ DIALOG PREVIEW IMAGE -->
+<dialog id="Dialog_Preview_Image" class="modal">
+    <div class="modal-box bg-base-100 border border-base-content/10 rounded-box shadow-2xl p-4 max-w-2xl w-full">
+        <img data-field="preview_image" class="mx-auto rounded-box max-h-[75vh] object-contain shadow-md" src="/static/image/Image_not_available.png" alt="Preview" />
+        <div class="flex justify-center mt-4">
+            <button class="btn btn-circle btn-error btn-sm shadow-xs hover:scale-105 transition-transform" onclick="Dialog_Preview_Image.close();">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
+<!-- Backward Compatibility Helpers -->
 <script>
     function showAlert(title, message, iconType = "info") {
-        document.getElementById("global_alert_title").innerText = title;
-        document.getElementById("global_alert_msg").innerText = message;
-        const iconEl = document.getElementById("global_alert_icon");
-        if (iconType === "success") {
-            iconEl.className = "text-4xl text-success mb-3";
-            iconEl.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-        } else if (iconType === "error") {
-            iconEl.className = "text-4xl text-error mb-3";
-            iconEl.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
-        } else {
-            iconEl.className = "text-4xl text-info mb-3";
-            iconEl.innerHTML = '<i class="fa-solid fa-circle-info"></i>';
+        if (iconType === "success" && typeof showDialogSuccess === "function") {
+            showDialogSuccess({ title, msg: message });
+        } else if (iconType === "error" && typeof showDialogError === "function") {
+            showDialogError({ title, msg: message });
+        } else if (iconType === "warning" && typeof showDialogWarning === "function") {
+            showDialogWarning({ title, msg: message });
+        } else if (typeof showDialogInfo === "function") {
+            showDialogInfo({ title, msg: message });
         }
-        document.getElementById("global_alert_modal").showModal();
     }
 
     function showConfirm(title, message, onConfirm) {
-        document.getElementById("global_confirm_title").innerText = title;
-        document.getElementById("global_confirm_msg").innerText = message;
-        const okBtn = document.getElementById("global_confirm_ok_btn");
-        okBtn.onclick = function() {
-            document.getElementById("global_confirm_modal").close();
-            if (typeof onConfirm === "function") onConfirm();
-        };
-        document.getElementById("global_confirm_modal").showModal();
+        if (typeof showDialogConfirm === "function") {
+            showDialogConfirm({ title, content: message }).then(res => {
+                if (res.confirm && typeof onConfirm === "function") onConfirm();
+            });
+        }
     }
 </script>
