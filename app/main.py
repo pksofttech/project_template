@@ -18,7 +18,7 @@ from app.config_app import AppConfig
 from app.core.database import init_sqlite_pragmas
 from app.core.database_init import database_init_default
 from app.core.utility import broadcast_sse, sse_clients
-from app.routes import api_sample, api_system_config, api_system_user, views
+from app.routes import api_health, api_sample, api_system_config, api_system_user, api_upload, views
 from app.stdio import print_debug, time_now
 
 
@@ -53,6 +53,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """Add standard enterprise security headers to all HTTP responses."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 # --------------------------------------------------------
 # 📁 STATIC ASSETS MOUNT
@@ -103,6 +114,8 @@ async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
 # --------------------------------------------------------
 # 🚏 ROUTE REGISTRATIONS
 # --------------------------------------------------------
+app.include_router(api_health.router)
+app.include_router(api_upload.router)
 app.include_router(api_sample.router)
 app.include_router(api_system_user.router, prefix="/api/system_user")
 app.include_router(api_system_user.router, prefix="/api/systems_user")

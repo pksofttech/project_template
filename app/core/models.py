@@ -138,16 +138,58 @@ class Sample_Item(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
 
 
-# Dynamic model mapping for generic DataTables queries
-MODEL_MAP = {
-    "App_Configurations": App_Configurations,
-    "System_User_Type": System_User_Type,
-    "system_user_type": System_User_Type,
-    "System_Users": System_Users,
-    "system_users": System_Users,
-    "Sample_Item": Sample_Item,
-    "sample_item": Sample_Item,
-}
+class _DynamicModelMap(dict):
+    """
+    Dynamic dictionary that automatically discovers any SQLModel table class
+    by ClassName, lowercase, and table_name on demand.
+    """
+
+    def _discover(self, key: str):
+        if not key or not isinstance(key, str):
+            return None
+        k_lower = key.lower()
+        for cls in SQLModel.__subclasses__():
+            t_name = getattr(cls, "__tablename__", None)
+            if t_name and (
+                key == cls.__name__
+                or k_lower == cls.__name__.lower()
+                or key == t_name
+                or k_lower == t_name.lower()
+            ):
+                self[cls.__name__] = cls
+                self[cls.__name__.lower()] = cls
+                self[t_name] = cls
+                self[t_name.lower()] = cls
+                return cls
+        return None
+
+    def get(self, key, default=None):
+        if super().__contains__(key):
+            return super().get(key)
+        discovered = self._discover(key)
+        return discovered if discovered is not None else default
+
+    def __getitem__(self, key):
+        val = self.get(key)
+        if val is None:
+            raise KeyError(key)
+        return val
+
+    def __contains__(self, key):
+        return super().__contains__(key) or (self._discover(key) is not None)
+
+
+MODEL_MAP = _DynamicModelMap(
+    {
+        "App_Configurations": App_Configurations,
+        "System_User_Type": System_User_Type,
+        "system_user_type": System_User_Type,
+        "System_Users": System_Users,
+        "system_users": System_Users,
+        "Sample_Item": Sample_Item,
+        "sample_item": Sample_Item,
+    }
+)
 
 
 def build_select_expr(specs: list[dict]):

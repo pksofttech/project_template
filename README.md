@@ -47,17 +47,20 @@ PROJECT_NAME/
 │   │   └── utility.py          # DataTables parser, Excel streaming, SSE broadcast
 │   ├── module/                 # โฟลเดอร์สำหรับ Business Logic ประจำโปรเจกต์
 │   ├── routes/
+│   │   ├── api_health.py       # Health Check & Uptime Monitoring API
+│   │   ├── api_upload.py       # Generic Image & File Upload API
 │   │   ├── api_sample.py       # Boilerplate DataTables & CRUD API
 │   │   ├── api_system_config.py# System Configurations API
 │   │   ├── api_system_user.py  # User Profile & Login API
 │   │   └── views.py            # Jinja2 Frontend View Routers
-│   ├── config_app.py           # App Configuration & Metadata
+│   ├── config_app.py           # App Configuration & .env loader
 │   ├── stdio.py                # Logging & GMT+7 Timezone Helpers
 │   └── main.py                 # FastAPI Application Entrypoint & Lifespan
 ├── database/                   # ที่เก็บไฟล์ database.db (สร้างอัตโนมัติ)
 ├── logs/                       # ที่เก็บไฟล์ app.log (สร้างอัตโนมัติ)
 ├── static/                     # CSS, JS, Fonts, Plugins (DataTables, FontAwesome, Flatpickr)
 ├── templates/                  # Jinja2 HTML Templates & Partials
+├── tests/                      # Automated Integration & Unit Tests
 ├── .dockerignore
 ├── .env.example
 ├── .gitignore
@@ -65,6 +68,7 @@ PROJECT_NAME/
 ├── docker-compose.yml
 ├── requirements.txt
 ├── ruff.toml
+├── run_tests.py                # คำสั่งรัน Automated Test Suite แบบเร็ว
 └── start_server.py             # สคริปต์รันเซิร์ฟเวอร์ CLI (--dev, --prod, --port)
 ```
 
