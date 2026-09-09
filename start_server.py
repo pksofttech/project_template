@@ -9,7 +9,7 @@ import uvicorn
 from uvicorn.logging import AccessFormatter
 
 from app.core.database_init import database_init_default
-from app.stdio import print_debug, print_error, print_success, print_warning
+from app.stdio import print_debug, print_error, print_success
 
 
 class CustomAccessFormatter(AccessFormatter):
@@ -99,6 +99,7 @@ def main():
         reload=args.dev,
         workers=1 if args.dev else args.workers,
         log_config=LOGGING_CONFIG,
+        timeout_graceful_shutdown=3,
     )
 
 

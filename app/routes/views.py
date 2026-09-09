@@ -35,11 +35,20 @@ def get_view_context(request: Request, title: str = "", **kwargs) -> dict:
 
 @router.get("/", response_class=HTMLResponse)
 async def index_view(request: Request):
-    """Root route redirecting to dashboard or login."""
+    """Root route redirecting to home portal or login."""
     token = request.cookies.get("access_token")
     if token and decode_access_token(token):
-        return RedirectResponse(url="/dashboard", status_code=302)
+        return RedirectResponse(url="/home", status_code=302)
     return RedirectResponse(url="/login", status_code=302)
+
+
+@router.get("/home", response_class=HTMLResponse)
+async def home_view(request: Request):
+    """Render main Home portal page."""
+    return templates.TemplateResponse(
+        "home.html",
+        get_view_context(request, title="Home Portal", active_page="home"),
+    )
 
 
 @router.get("/login", response_class=HTMLResponse)

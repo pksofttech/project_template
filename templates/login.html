@@ -1,144 +1,372 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
     {% include '_meta.html' %}
+    <title>Sign In &mdash; {{ title or app_name }}</title>
 </head>
-<body class="bg-base-200 min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200 antialiased font-sans flex overflow-x-hidden">
 
-    <div class="card lg:card-side bg-base-100 shadow-2xl max-w-3xl w-full border border-base-content/10 overflow-hidden">
-        <!-- Left Side: Branding -->
-        <div class="lg:w-1/2 bg-gradient-to-br from-primary to-primary-focus text-primary-content p-8 lg:p-12 flex flex-col justify-between">
-            <div>
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md mb-6">
-                    <i class="fa-solid fa-shapes text-2xl text-white"></i>
+    <!-- ======================================================================= -->
+    <!-- 🌌 SPLIT-SCREEN CONTAINER                                              -->
+    <!-- ======================================================================= -->
+    <div class="flex flex-1 min-h-screen w-full">
+
+        <!-- =================================================================== -->
+        <!-- 🚀 LEFT SIDE: BRANDING & SHOWCASE (Desktop only, hidden on mobile)  -->
+        <!-- =================================================================== -->
+        <aside class="hidden lg:flex lg:w-1/2 xl:w-7/12 relative flex-col justify-between p-12 xl:p-16 overflow-hidden bg-slate-900/40 border-r border-slate-800/60 select-none">
+            
+            <!-- 🔮 Glow Orbs & Ambient Light Background -->
+            <div class="absolute -top-32 -left-32 w-128 h-128 rounded-full bg-indigo-600/20 blur-[130px] pointer-events-none"></div>
+            <div class="absolute top-1/2 -right-32 w-112 h-112 rounded-full bg-cyan-500/15 blur-[120px] pointer-events-none"></div>
+            <div class="absolute -bottom-32 left-1/4 w-96 h-96 rounded-full bg-purple-600/15 blur-[110px] pointer-events-none"></div>
+            
+            <!-- 📐 Futuristic Geometric Grid Overlay -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#33415515_1px,transparent_1px),linear-gradient(to_bottom,#33415515_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+            <!-- Top: Brand & Logo -->
+            <div class="relative z-10">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-2xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/25">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <i class="fa-solid fa-shapes text-xl text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-black text-xl tracking-tight text-white">{{ app_name }}</span>
+                            <span class="badge badge-xs bg-indigo-500/20 text-indigo-300 border-indigo-500/30 font-mono">v{{ version }}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-medium tracking-wide">Enterprise Starter Template</p>
+                    </div>
                 </div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-white mb-2">{{ app_name }}</h1>
-                <p class="text-white/80 text-sm leading-relaxed">
-                    Modern Management System Boilerplate built with FastAPI, Async SQLite, and DaisyUI v5.
-                </p>
             </div>
 
-            <div class="space-y-3 my-8">
-                <div class="flex items-center gap-3 text-xs text-white/90">
-                    <i class="fa-solid fa-bolt text-warning"></i>
-                    <span>FastAPI 0.115+ Async Backend</span>
+            <!-- Middle: Slogan & Showcase Cards -->
+            <div class="relative z-10 my-auto py-12 max-w-xl space-y-8">
+                <!-- Badge Pill -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold backdrop-blur-md shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span>Next-Gen Enterprise Architecture</span>
                 </div>
-                <div class="flex items-center gap-3 text-xs text-white/90">
-                    <i class="fa-solid fa-database text-info"></i>
-                    <span>SQLite WAL Mode + Auto-Migration</span>
+
+                <!-- Main Slogan -->
+                <div class="space-y-4">
+                    <h1 class="text-4xl xl:text-5xl font-black tracking-tight text-white leading-tight">
+                        Precision Power for <br />
+                        <span class="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-300 to-cyan-400">
+                            Modern Management
+                        </span>
+                    </h1>
+                    <p class="text-slate-300/80 text-sm xl:text-base leading-relaxed">
+                        High-velocity async framework, zero-config migrations, and DaisyUI v5 interface crafted for mission-critical operations and real-time responsiveness.
+                    </p>
                 </div>
-                <div class="flex items-center gap-3 text-xs text-white/90">
-                    <i class="fa-solid fa-shield-halved text-success"></i>
-                    <span>Argon2 / JWT Secure Authentication</span>
+
+                <!-- Glass Feature Highlights -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                    <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl hover:border-slate-700/80 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center text-base">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">Async Engine</h4>
+                                <p class="text-[11px] text-slate-400">FastAPI 0.115+ & SQLite WAL</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl hover:border-slate-700/80 transition-all">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-base">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">Argon2 Security</h4>
+                                <p class="text-[11px] text-slate-400">JWT Bearer & Role Permission</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="text-[11px] text-white/60">
-                © 2026 PKS Softtech. All rights reserved.
+            <!-- Bottom: System Status & Copyright -->
+            <div class="relative z-10 pt-4 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span class="text-slate-400 font-medium">All Systems Operational</span>
+                </div>
+                <div>
+                    &copy; 2026 PKS Softtech. Precision Engineering.
+                </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Right Side: Login Form -->
-        <div class="card-body lg:w-1/2 p-8 lg:p-12 justify-center">
-            <h2 class="card-title text-2xl font-bold mb-1">Sign In</h2>
-            <p class="text-xs text-base-content/60 mb-6">Enter your credentials to access the administration portal.</p>
+        <!-- =================================================================== -->
+        <!-- 🔐 RIGHT SIDE: LOGIN FORM (Glassmorphism & Centered)                -->
+        <!-- =================================================================== -->
+        <main class="flex-1 flex flex-col justify-center items-center p-6 sm:p-12 lg:p-16 relative overflow-hidden bg-slate-950">
+            
+            <!-- Subtle Ambient Background Lights for Right Side -->
+            <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
-                <!-- Error Alert -->
-                <div id="errorAlert" class="alert alert-error text-xs py-2 hidden">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span id="errorMsg">Invalid credentials</span>
+            <div class="w-full max-w-md space-y-6 relative z-10">
+                
+                <!-- Mobile-Only Brand Header -->
+                <div class="lg:hidden flex items-center gap-3 mb-6">
+                    <div class="w-11 h-11 rounded-2xl bg-linear-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/25">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                            <i class="fa-solid fa-shapes text-lg text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-cyan-400"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="font-black text-lg text-white tracking-tight">{{ app_name }}</h2>
+                        <p class="text-xs text-slate-400 font-medium">Starter Kit Console</p>
+                    </div>
                 </div>
 
-                <!-- Username -->
-                <div class="form-control">
-                    <label class="label py-1">
-                        <span class="label-text text-xs font-semibold">Username</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-2">
-                        <i class="fa-solid fa-user text-base-content/40 text-xs"></i>
-                        <input type="text" id="username" class="grow text-sm" placeholder="Username" value="ssystem" required />
-                    </label>
-                </div>
+                <!-- Glassmorphism Card Container -->
+                <div class="bg-slate-900/70 backdrop-blur-2xl border border-slate-800/80 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-black/80 space-y-6 relative">
+                    
+                    <!-- Top Card Glow Border Highlight -->
+                    <div class="absolute inset-x-8 -top-px h-px bg-linear-to-r from-transparent via-cyan-400/40 to-transparent"></div>
 
-                <!-- Password -->
-                <div class="form-control">
-                    <label class="label py-1">
-                        <span class="label-text text-xs font-semibold">Password</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-2">
-                        <i class="fa-solid fa-lock text-base-content/40 text-xs"></i>
-                        <input type="password" id="password" class="grow text-sm" placeholder="••••••••" value="12341234" required />
-                        <button type="button" onclick="togglePassword()" class="btn btn-ghost btn-xs btn-circle">
-                            <i id="eyeIcon" class="fa-solid fa-eye-slash text-xs"></i>
+                    <!-- Card Header -->
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-cyan-400 font-semibold text-xs tracking-wider uppercase">
+                            <i class="fa-solid fa-fingerprint text-sm"></i>
+                            <span>Portal Authentication</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Sign In</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            Enter your administrative credentials to access the console.
+                        </p>
+                    </div>
+
+                    <!-- Error Alert Box -->
+                    <div id="errorAlert" class="hidden flex items-start gap-3 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs animate-fade-in">
+                        <i class="fa-solid fa-circle-exclamation text-sm mt-0.5 text-rose-400 shrink-0"></i>
+                        <span id="errorMsg" class="font-medium leading-relaxed">Authentication failed</span>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                        
+                        <!-- Username / Email Field -->
+                        <div class="space-y-1.5">
+                            <label for="username" class="block text-xs font-semibold text-slate-300">
+                                Username or Email
+                            </label>
+                            <div class="relative flex items-center group">
+                                <span class="absolute left-4 text-slate-500 group-focus-within:text-cyan-400 transition-colors pointer-events-none">
+                                    <i class="fa-solid fa-user text-sm"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    class="w-full bg-slate-950/70 border border-slate-800 hover:border-slate-700 focus:border-cyan-400/80 focus:ring-3 focus:ring-cyan-400/15 text-slate-100 placeholder:text-slate-600 text-sm rounded-xl pl-11 pr-4 py-3 transition-all outline-hidden font-medium" 
+                                    placeholder="Enter your username" 
+                                    value="ssystem" 
+                                    required 
+                                    autocomplete="username"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="space-y-1.5">
+                            <label for="password" class="block text-xs font-semibold text-slate-300">
+                                Password
+                            </label>
+                            <div class="relative flex items-center group">
+                                <span class="absolute left-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors pointer-events-none">
+                                    <i class="fa-solid fa-lock text-sm"></i>
+                                </span>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    class="w-full bg-slate-950/70 border border-slate-800 hover:border-slate-700 focus:border-indigo-400/80 focus:ring-3 focus:ring-indigo-400/15 text-slate-100 placeholder:text-slate-600 text-sm rounded-xl pl-11 pr-11 py-3 transition-all outline-hidden font-medium" 
+                                    placeholder="••••••••" 
+                                    value="12341234" 
+                                    required 
+                                    autocomplete="current-password"
+                                />
+                                <button 
+                                    type="button" 
+                                    onclick="togglePassword()" 
+                                    class="absolute right-3.5 p-1.5 text-slate-500 hover:text-slate-300 focus:outline-hidden transition-colors"
+                                    title="Toggle password visibility"
+                                    aria-label="Toggle password visibility"
+                                >
+                                    <i id="eyeIcon" class="fa-solid fa-eye-slash text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Options Row: Remember Me & Forgot Password -->
+                        <div class="flex items-center justify-between pt-1 text-xs">
+                            <label class="flex items-center gap-2 cursor-pointer select-none text-slate-400 hover:text-slate-300 transition-colors">
+                                <input 
+                                    type="checkbox" 
+                                    id="rememberMe" 
+                                    class="checkbox checkbox-xs border-slate-700 bg-slate-950/80 checked:bg-linear-to-r checked:from-indigo-500 checked:to-cyan-400 rounded-sm" 
+                                />
+                                <span>จดจำการเข้าสู่ระบบ</span>
+                            </label>
+                            <a 
+                                href="javascript:void(0)" 
+                                onclick="handleForgotPassword()" 
+                                class="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors font-medium"
+                            >
+                                ลืมรหัสผ่าน?
+                            </a>
+                        </div>
+
+                        <!-- Default Credentials Quick-Fill Hint -->
+                        <div class="p-3 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-key text-cyan-400"></i>
+                                <span>Default: <strong class="text-white font-mono">ssystem</strong> / <strong class="text-white font-mono">12341234</strong></span>
+                            </div>
+                            <button 
+                                type="button" 
+                                onclick="autoFillDefault()" 
+                                class="text-[10px] font-bold text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+                            >
+                                Fill
+                            </button>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            id="submitBtn" 
+                            class="w-full relative group overflow-hidden rounded-xl p-px font-semibold text-sm shadow-xl shadow-indigo-500/20 focus:outline-hidden transition-all duration-200 active:scale-[0.99] cursor-pointer mt-2"
+                        >
+                            <span class="absolute inset-0 bg-linear-to-r from-indigo-500 via-indigo-600 to-cyan-500 transition-all duration-300 group-hover:opacity-90"></span>
+                            <span class="relative flex items-center justify-center gap-2 px-6 py-3.5 rounded-[11px] bg-linear-to-r from-indigo-600 to-cyan-600 group-hover:from-indigo-500 group-hover:to-cyan-500 text-white font-bold transition-all">
+                                <span id="btnText">Sign In</span>
+                                <i id="btnIcon" class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </span>
                         </button>
-                    </label>
+                    </form>
                 </div>
 
-                <!-- Default Hint -->
-                <div class="bg-base-200 p-2.5 rounded-lg text-[11px] text-base-content/70 flex items-center justify-between">
-                    <span>Default: <code class="font-bold text-primary">ssystem</code> (หรือ <code class="font-bold text-primary">system</code>) / <code class="font-bold text-primary">12341234</code></span>
+                <!-- Footer Text on Right Side -->
+                <div class="text-center text-xs text-slate-500">
+                    <span>PKS Modern Project Starter &bull; Secure Console</span>
                 </div>
-
-                <!-- Submit Button -->
-                <button type="submit" id="submitBtn" class="btn btn-primary w-full shadow-lg mt-2">
-                    <span>Sign In</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                </button>
-            </form>
-        </div>
+            </div>
+        </main>
     </div>
 
+    <!-- Scripts -->
     {% include '_script.html' %}
+
     <script>
+        // Check stored username for "Remember Me"
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedUser = localStorage.getItem("PKS_REMEMBER_USER");
+            const rememberCheckbox = document.getElementById("rememberMe");
+            const usernameInput = document.getElementById("username");
+            
+            if (savedUser) {
+                usernameInput.value = savedUser;
+                if (rememberCheckbox) rememberCheckbox.checked = true;
+            }
+        });
+
+        // Toggle password visibility
         function togglePassword() {
             const passInput = document.getElementById("password");
             const eyeIcon = document.getElementById("eyeIcon");
             if (passInput.type === "password") {
                 passInput.type = "text";
-                eyeIcon.className = "fa-solid fa-eye text-xs";
+                eyeIcon.className = "fa-solid fa-eye text-sm text-cyan-400";
             } else {
                 passInput.type = "password";
-                eyeIcon.className = "fa-solid fa-eye-slash text-xs";
+                eyeIcon.className = "fa-solid fa-eye-slash text-sm text-slate-500";
             }
         }
 
+        // Quick auto-fill default credentials
+        function autoFillDefault() {
+            document.getElementById("username").value = "ssystem";
+            document.getElementById("password").value = "12341234";
+            if (typeof toastr !== "undefined") {
+                toastr.info("Auto-filled default credentials");
+            }
+        }
+
+        // Forgot password notice
+        function handleForgotPassword() {
+            if (typeof toastr !== "undefined") {
+                toastr.info("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: ssystem / 12341234)");
+            } else {
+                alert("กรุณาติดต่อผู้ดูแลระบบเพื่อรีเซ็ตรหัสผ่าน (Default: ssystem / 12341234)");
+            }
+        }
+
+        // Handle form submission
         async function handleLogin(e) {
             e.preventDefault();
             const btn = document.getElementById("submitBtn");
+            const btnText = document.getElementById("btnText");
+            const btnIcon = document.getElementById("btnIcon");
             const errAlert = document.getElementById("errorAlert");
             const errMsg = document.getElementById("errorMsg");
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const rememberMe = document.getElementById("rememberMe")?.checked;
             
+            // Manage remember-me storage
+            if (rememberMe) {
+                localStorage.setItem("PKS_REMEMBER_USER", username);
+            } else {
+                localStorage.removeItem("PKS_REMEMBER_USER");
+            }
+
+            // Button loading state
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Signing in...';
+            btn.classList.add("opacity-75", "cursor-not-allowed");
+            btnText.innerHTML = '<span class="loading loading-spinner loading-xs mr-2"></span> Signing in...';
+            btnIcon.classList.add("hidden");
             errAlert.classList.add("hidden");
 
             try {
                 const res = await fetch("/api/system_user/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        username: document.getElementById("username").value.trim(),
-                        password: document.getElementById("password").value
-                    })
+                    body: JSON.stringify({ username, password })
                 });
+
                 const data = await res.json();
+
                 if (res.ok) {
-                    toastr.success("Login successful!");
+                    if (typeof toastr !== "undefined") {
+                        toastr.success("Login successful! Redirecting...");
+                    }
                     setTimeout(() => {
-                        window.location.href = "/dashboard";
-                    }, 500);
+                        window.location.href = "/home";
+                    }, 400);
                 } else {
-                    errMsg.innerText = data.detail || "Authentication failed";
+                    errMsg.innerText = data.detail || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
                     errAlert.classList.remove("hidden");
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>Sign In</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+                    resetBtn();
                 }
             } catch (err) {
-                errMsg.innerText = "Network error, please try again.";
+                errMsg.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง";
                 errAlert.classList.remove("hidden");
+                resetBtn();
+            }
+
+            function resetBtn() {
                 btn.disabled = false;
-                btn.innerHTML = '<span>Sign In</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+                btnText.innerText = "Sign In";
+                btnIcon.classList.remove("hidden");
             }
         }
     </script>

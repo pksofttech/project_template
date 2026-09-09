@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    {% include '_meta.html' %}
+</head>
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+        
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+                
+                <!-- Hero Welcome Banner -->
+                <div class="card bg-linear-to-r from-primary to-primary/80 text-primary-content shadow-lg overflow-hidden relative border border-primary/20">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none text-9xl">
+                        <i class="fa-solid fa-shapes"></i>
+                    </div>
+                    
+                    <div class="card-body p-6 sm:p-8 relative z-10">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="space-y-2">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-content/15 text-xs font-semibold backdrop-blur-xs">
+                                    <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+                                    <span>System Ready & Operational</span>
+                                </div>
+                                <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
+                                    Welcome to {{ app_name }}
+                                </h1>
+                                <p class="text-sm opacity-90 max-w-xl">
+                                    Modern FastAPI & DaisyUI Application Starter Kit. Fast, robust async architecture designed for enterprise web applications, IoT gateways, and management systems.
+                                </p>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-2 shrink-0">
+                                <a href="/dashboard" class="btn btn-sm bg-base-100 text-base-content hover:bg-base-200 border-none font-bold shadow-sm gap-2">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                                <a href="/sample" class="btn btn-sm btn-ghost bg-primary-content/20 hover:bg-primary-content/30 text-primary-content border-none font-bold gap-2">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                    <span>Sample Manager</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Access Module Cards -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-cubes text-primary"></i>
+                            <span>Application Modules & Navigation</span>
+                        </h2>
+                        <span class="text-xs text-base-content/60">Quick Links</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Card 1: Dashboard -->
+                        <a href="/dashboard" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-gauge-high"></i>
+                                    </div>
+                                    <span class="badge badge-primary badge-xs">Analytics</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-primary transition-colors">Dashboard</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Real-time system overview, performance counters, and quick metrics.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-primary font-semibold">
+                                    <span>Open Dashboard</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 2: Sample Items Manager -->
+                        <a href="/sample" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-secondary/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                    </div>
+                                    <span class="badge badge-secondary badge-xs">DataTables</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-secondary transition-colors">Sample Manager</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Full CRUD operations, server-side pagination, search, and Excel/CSV export.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-secondary font-semibold">
+                                    <span>Manage Items</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 3: System Settings -->
+                        <a href="/system_config" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-accent/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-sliders"></i>
+                                    </div>
+                                    <span class="badge badge-accent badge-xs">Control</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-accent transition-colors">System Settings</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Configure key-value settings, manage user accounts, and execute hot backups.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-accent font-semibold">
+                                    <span>Open Settings</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 4: API Docs -->
+                        <a href="/docs" target="_blank" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-info/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-info/10 text-info flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-code"></i>
+                                    </div>
+                                    <span class="badge badge-info badge-xs">OpenAPI</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-info transition-colors">Swagger API Docs</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Interactive API explorer, test endpoints, request/response schemas.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-info font-semibold">
+                                    <span>Explore APIs</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- System Highlights & Architecture Info -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Tech Specs Card -->
+                    <div class="card bg-base-100 border border-base-content/5 shadow-xs p-6 lg:col-span-2 space-y-4">
+                        <div class="flex items-center justify-between border-b border-base-content/10 pb-3">
+                            <h3 class="font-bold text-base flex items-center gap-2">
+                                <i class="fa-solid fa-microchip text-primary"></i>
+                                <span>Architecture & Engineering Highlights</span>
+                            </h3>
+                            <span class="badge badge-neutral badge-xs font-mono">v{{ version }}</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-base-200/50 border border-base-content/5">
+                                <div class="text-primary text-lg mt-0.5">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm">FastAPI + Async SQLite</h4>
+                                    <p class="text-base-content/60 mt-1">Non-blocking SQLModel session factory with WAL mode and 30s busy timeout.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-base-200/50 border border-base-content/5">
+                                <div class="text-success text-lg mt-0.5">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm">Safe Zero-Config Migration</h4>
+                                    <p class="text-base-content/60 mt-1">Automatic table schema synchronization, column addition, and index generation.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-base-200/50 border border-base-content/5">
+                                <div class="text-warning text-lg mt-0.5">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm">SQLite Online Hot Backup</h4>
+                                    <p class="text-base-content/60 mt-1">Lock-free background backup with GZIP compression, SHA-256 verification & auto-restore.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-base-200/50 border border-base-content/5">
+                                <div class="text-secondary text-lg mt-0.5">
+                                    <i class="fa-solid fa-palette"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm">DaisyUI v5 + Tailwind v4</h4>
+                                    <p class="text-base-content/60 mt-1">Responsive component system with multi-theme switcher and high-contrast accessibility.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Real-time Status Card -->
+                    <div class="card bg-base-100 border border-base-content/5 shadow-xs p-6 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between border-b border-base-content/10 pb-3">
+                                <h3 class="font-bold text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-satellite-dish text-secondary"></i>
+                                    <span>Real-time Status</span>
+                                </h3>
+                                <span id="sseIndicator" class="badge badge-success badge-xs gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                                    <span id="sseStatusText">Connected</span>
+                                </span>
+                            </div>
+
+                            <div class="mt-4 space-y-3 text-xs">
+                                <div class="flex justify-between py-1.5 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Server Time (GMT+7):</span>
+                                    <span id="serverClock" class="font-mono font-bold">--:--:--</span>
+                                </div>
+                                <div class="flex justify-between py-1.5 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Database Mode:</span>
+                                    <span class="font-semibold text-accent">SQLite WAL</span>
+                                </div>
+                                <div class="flex justify-between py-1.5 border-b border-base-content/5">
+                                    <span class="text-base-content/60">SSE Real-time Events:</span>
+                                    <span class="badge badge-xs badge-info">/sse active</span>
+                                </div>
+                                <div class="flex justify-between py-1.5 border-b border-base-content/5">
+                                    <span class="text-base-content/60">Logged-in User:</span>
+                                    <span class="font-bold">{{ current_user.username if current_user else 'Guest' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="triggerTestBroadcast()" class="btn btn-outline btn-secondary btn-sm w-full gap-2">
+                                <i class="fa-solid fa-bullhorn"></i>
+                                <span>Test SSE Broadcast</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar Navigation -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script>
+        // Real-time clock display (GMT+7)
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('th-TH', { hour12: false });
+            const clockEl = document.getElementById("serverClock");
+            if (clockEl) clockEl.innerText = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Trigger test SSE broadcast
+        async function triggerTestBroadcast() {
+            try {
+                const res = await fetch('/broadcast_sse', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: "Test Notification",
+                        message: "Real-time broadcast from Home page",
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                if (res.ok) {
+                    toastr.success("Broadcast message sent via SSE!");
+                }
+            } catch (err) {
+                toastr.error("Failed to broadcast SSE");
+            }
+        }
+    </script>
+</body>
+</html>

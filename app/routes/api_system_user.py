@@ -1,8 +1,9 @@
 """User Authentication and Account Management API."""
 
-from pydantic import BaseModel
-
 from fastapi import APIRouter, HTTPException, Request, Response, status
+from pydantic import BaseModel
+from sqlmodel import func, literal, or_, select
+
 from app.core.auth import (
     authenticate_user,
     create_access_token,
@@ -10,7 +11,9 @@ from app.core.auth import (
     verify_password,
 )
 from app.core.dependencies import AsyncDbDep, SystemUserDep
-from app.stdio import print_error, print_success, time_now
+from app.core.models import System_Users
+from app.core.utility import get_datatable_select
+from app.stdio import print_success, time_now
 
 router = APIRouter(
     prefix="/api/system_user",
@@ -119,9 +122,6 @@ class SystemUserCreate(BaseModel):
 @router.get("/datatable", summary="DataTables Server-side Endpoint for System Users")
 async def get_system_users_datatable(req_para: Request, db: AsyncDbDep, current_user: SystemUserDep):
     """DataTables server-side endpoint for listing system users."""
-    from sqlmodel import select, func, or_, literal
-    from app.core.models import System_Users
-    from app.core.utility import get_datatable_select
 
     params = dict(req_para.query_params)
     datatable_select = get_datatable_select(params)
@@ -184,6 +184,7 @@ async def get_system_users_datatable(req_para: Request, db: AsyncDbDep, current_
 async def create_system_user(payload: SystemUserCreate, current_user: SystemUserDep, db: AsyncDbDep):
     """Create a new user account with hashed password."""
     from sqlmodel import select
+
     from app.core.models import System_Users
 
     existing = (await db.exec(select(System_Users).where(System_Users.username == payload.username))).first()
@@ -215,6 +216,7 @@ async def create_system_user(payload: SystemUserCreate, current_user: SystemUser
 async def delete_system_user(user_id: int, current_user: SystemUserDep, db: AsyncDbDep):
     """Delete a system user by ID."""
     from sqlmodel import select
+
     from app.core.models import System_Users
 
     if current_user.id == user_id:
@@ -235,4 +237,3 @@ async def delete_system_user(user_id: int, current_user: SystemUserDep, db: Asyn
 
     print_success(f"User '{user.username}' deleted by '{current_user.username}'")
     return {"message": f"User '{user.username}' deleted successfully"}
-

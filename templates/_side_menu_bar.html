@@ -18,6 +18,12 @@
             <ul class="menu menu-md p-0 gap-1">
                 <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2">Main Menu</li>
                 <li>
+                    <a href="/home" class="{% if active_page == 'home' %}active font-semibold{% endif %}">
+                        <i class="fa-solid fa-house w-5 text-center"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
                     <a href="/dashboard" class="{% if active_page == 'dashboard' %}active font-semibold{% endif %}">
                         <i class="fa-solid fa-gauge-high w-5 text-center"></i>
                         <span>Dashboard</span>

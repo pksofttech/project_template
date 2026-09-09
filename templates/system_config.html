@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     {% include "_meta.html" %}
 </head>
+
 <body class="bg-base-200 min-h-screen text-base-content antialiased">
 
     <div class="drawer lg:drawer-open min-h-screen">
         <input id="main-drawer" type="checkbox" class="drawer-toggle" />
-        
+
         <div class="drawer-content flex flex-col min-h-screen">
             <!-- Navbar -->
             {% include "_nav_bar.html" %}
 
             <!-- Main Content Area -->
             <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-                
+
                 <!-- Premium Header Card -->
                 {% set header_icon = "fa-solid fa-sliders" %}
                 {% set header_title = "System Configuration" %}
@@ -35,13 +37,14 @@
                         <!-- 🌀 Config Selection Menu Cards -->
                         <div class="max-w-7xl px-2 py-4 mx-auto text-center">
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 py-2 justify-center">
-                                
+
                                 <!-- Card 1: General Settings -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Configure App Title, Description & Defaults">
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="show_dialog_general_config()">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-gear text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -61,7 +64,8 @@
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-secondary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="switch_to_tab('SYSTEM_CONFIG_TAB02')">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-secondary group-hover:bg-secondary group-hover:text-secondary-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-secondary group-hover:bg-secondary group-hover:text-secondary-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-users text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -81,7 +85,8 @@
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-warning/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="show_dialog_change_password()">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-warning/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-warning group-hover:bg-warning group-hover:text-warning-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-warning group-hover:bg-warning group-hover:text-warning-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-lock text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -101,7 +106,8 @@
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-info/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="switch_to_tab('SYSTEM_CONFIG_TAB03')">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-info/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-info group-hover:bg-info group-hover:text-info-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-info group-hover:bg-info group-hover:text-info-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-database text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -121,7 +127,8 @@
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-accent/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="show_dialog_sse_broadcast()">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-accent/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-accent group-hover:bg-accent group-hover:text-accent-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-accent group-hover:bg-accent group-hover:text-accent-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-tower-broadcast text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -141,7 +148,8 @@
                                     <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
                                         onclick="window.open('/docs', '_blank')">
                                         <div class="absolute inset-0 rounded-box bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                                        <div class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-primary group-hover:bg-primary group-hover:text-primary-content group-hover:scale-105 transition-all duration-300">
                                             <i class="fa-solid fa-book-bookmark text-2xl"></i>
                                         </div>
                                         <div class="flex-1 flex items-center justify-center mt-3">
@@ -186,24 +194,8 @@
                             </div>
                         </div>
 
-                        <!-- DataTables Table -->
-                        <div class="card bg-base-100 border border-base-content/5 p-3 overflow-x-auto shadow-sm">
-                            <table id="tableSystemUsers" class="table table-zebra table-sm w-full text-xs">
-                                <thead>
-                                    <tr class="bg-base-200/60 text-base-content/70">
-                                        <th>ID</th>
-                                        <th>Username</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Created Date</th>
-                                        <th class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+                        <!-- ✅ Table -->
+                        <div id="system_user_table"></div>
                     </div>
 
                     <!-- TAB 3: Database & Maintenance -->
@@ -287,7 +279,9 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyBackups">
-                                        <tr><td colspan="4" class="text-center py-4 text-base-content/40">No backups found</td></tr>
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-base-content/40">No backups found</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -514,4 +508,5 @@
     <!-- External Module JS (Standardized like original template) -->
     <script type="module" src="/static/js/system_config.js?t={{ now }}"></script>
 </body>
+
 </html>
