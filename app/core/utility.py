@@ -89,32 +89,53 @@ def get_datatable_select(params: dict) -> dict:
     except (ValueError, TypeError):
         limit = 10
 
+    target_table = (params.get("table") or "").strip()
+
     list_datas = []
     for k in params:
         match = re.search(r"^columns\[.*\]\[data\]", k)
         if match:
-            data_val = params[k]
+            data_val = (params[k] or "").strip()
             index_cols = k.split("[")[1].split("]")[0]
             search = params.get(f"columns[{index_cols}][search][value]", "")
             name = params.get(f"columns[{index_cols}][name]", "")
 
             if "." in data_val:
                 _table, _col = data_val.split(".", 1)
-                list_datas.append({"table": _table, "col": _col, "search": search, "name": name})
+                list_datas.append({"table": _table, "col": _col, "search": search, "name": name or _col})
             elif "_" in data_val:
+                matched_model = False
                 for table_name in MODEL_MAP:
                     if data_val.lower().startswith(f"{table_name.lower()}_"):
                         _table = table_name
                         _col = data_val[len(table_name) + 1 :]
                         list_datas.append({"table": _table, "col": _col, "search": search, "name": data_val})
+                        matched_model = True
                         break
+                if not matched_model and target_table:
+                    list_datas.append({"table": target_table, "col": data_val, "search": search, "name": name or data_val})
+            elif target_table and data_val:
+                list_datas.append({"table": target_table, "col": data_val, "search": search, "name": name or data_val})
+            elif name and "." in name:
+                _table, _col = name.split(".", 1)
+                list_datas.append({"table": _table, "col": _col, "search": search, "name": data_val or _col})
 
     order_by = None
     order_idx = params.get("order[0][column]")
     if order_idx:
-        order_data = params.get(f"columns[{order_idx}][data]")
-        if order_data and "." in order_data:
+        order_data = (params.get(f"columns[{order_idx}][data]") or "").strip()
+        order_name = (params.get(f"columns[{order_idx}][name]") or "").strip()
+        _table, _col = None, None
+        if "." in order_data:
             _table, _col = order_data.split(".", 1)
+        elif target_table and order_data:
+            _table, _col = target_table, order_data
+        elif "." in order_name:
+            _table, _col = order_name.split(".", 1)
+        elif target_table and order_name:
+            _table, _col = target_table, order_name
+
+        if _table and _col:
             order_by = {
                 "table": _table,
                 "col": _col,

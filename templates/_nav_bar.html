@@ -191,7 +191,7 @@
                     <i class="fa-solid fa-user-gear"></i>
                     <span>Account Settings</span>
                 </a>
-                <a href="/logout" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2">
+                <a href="/logout" onclick="localStorage.removeItem('token')" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2">
                     <i class="fa-solid fa-power-off"></i>
                     <span data-i18n="Sign Out">Sign Out</span>
                 </a>

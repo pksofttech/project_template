@@ -345,6 +345,9 @@
                 const data = await res.json();
 
                 if (res.ok) {
+                    if (data && data.access_token) {
+                        localStorage.setItem("token", data.access_token);
+                    }
                     if (typeof toastr !== "undefined") {
                         toastr.success("Login successful! Redirecting...");
                     }

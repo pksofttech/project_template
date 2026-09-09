@@ -12,21 +12,28 @@ router = APIRouter(tags=["Frontend Views"])
 templates = Jinja2Templates(directory="templates")
 
 
-def get_view_context(request: Request, title: str = "", **kwargs) -> dict:
-    """Standardized template context dictionary."""
-    user = None
+def get_authenticated_user(request: Request) -> dict | None:
+    """Extract and validate the currently authenticated user from request cookies or headers."""
     token = request.cookies.get("access_token")
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
+
     if token:
         payload = decode_access_token(token)
-        if payload:
-            user = payload
+        if payload and "sub" in payload:
+            user = payload.copy()
             if "system_user_type_id" not in user:
                 role = str(user.get("role", "")).upper()
                 user["system_user_type_id"] = 1 if role in ("ROOT", "SYSTEM") else (2 if role == "ADMIN" else 4)
+            return user
+    return None
 
-    # Provide fallback user with ROOT privileges for dev / direct navigation
-    if not user:
-        user = {"id": 1, "username": "admin", "role": "ROOT", "system_user_type_id": 1}
+
+def get_view_context(request: Request, title: str = "", current_user: dict | None = None, **kwargs) -> dict:
+    """Standardized template context dictionary."""
+    user = current_user if current_user is not None else get_authenticated_user(request)
 
     context = {
         "request": request,
@@ -44,8 +51,7 @@ def get_view_context(request: Request, title: str = "", **kwargs) -> dict:
 @router.get("/", response_class=HTMLResponse)
 async def index_view(request: Request):
     """Root route redirecting to home portal or login."""
-    token = request.cookies.get("access_token")
-    if token and decode_access_token(token):
+    if get_authenticated_user(request):
         return RedirectResponse(url="/home", status_code=302)
     return RedirectResponse(url="/login", status_code=302)
 
@@ -53,17 +59,19 @@ async def index_view(request: Request):
 @router.get("/home", response_class=HTMLResponse)
 async def home_view(request: Request):
     """Render main Home portal page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
     return templates.TemplateResponse(
         "home.html",
-        get_view_context(request, title="Home Portal", active_page="home"),
+        get_view_context(request, title="Home Portal", active_page="home", current_user=user),
     )
 
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_view(request: Request):
     """Render modern DaisyUI login screen."""
-    token = request.cookies.get("access_token")
-    if token and decode_access_token(token):
+    if get_authenticated_user(request):
         return RedirectResponse(url="/dashboard", status_code=302)
     return templates.TemplateResponse("login.html", get_view_context(request, title="Sign In"))
 
@@ -79,25 +87,34 @@ async def logout_view(response: Response):
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard_view(request: Request):
     """Render main administration dashboard."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
     return templates.TemplateResponse(
         "dashboard.html",
-        get_view_context(request, title="Dashboard", active_page="dashboard"),
+        get_view_context(request, title="Dashboard", active_page="dashboard", current_user=user),
     )
 
 
 @router.get("/sample", response_class=HTMLResponse)
 async def sample_manager_view(request: Request):
     """Render sample CRUD DataTables management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
     return templates.TemplateResponse(
         "sample_manager.html",
-        get_view_context(request, title="Sample Item Manager", active_page="sample"),
+        get_view_context(request, title="Sample Item Manager", active_page="sample", current_user=user),
     )
 
 
 @router.get("/system_config", response_class=HTMLResponse)
 async def system_config_view(request: Request):
     """Render system configurations management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
     return templates.TemplateResponse(
         "system_config.html",
-        get_view_context(request, title="System Settings", active_page="system_config"),
+        get_view_context(request, title="System Settings", active_page="system_config", current_user=user),
     )

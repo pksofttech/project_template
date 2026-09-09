@@ -8,11 +8,15 @@ from contextlib import asynccontextmanager
 from fastapi import Body, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from sse_starlette.sse import EventSourceResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config_app import AppConfig
 from app.core.database import init_sqlite_pragmas
+from app.core.database_init import database_init_default
 from app.core.utility import broadcast_sse, sse_clients
 from app.routes import api_sample, api_system_config, api_system_user, views
 from app.stdio import print_debug, time_now
@@ -23,6 +27,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager for startup and shutdown events."""
     print_debug(f"🧬 Application Lifespan Start: {time_now()}")
     await init_sqlite_pragmas()
+    await database_init_default()
     yield
     print_debug("🛑 Application shutting down...")
 
@@ -103,3 +108,33 @@ app.include_router(api_system_user.router, prefix="/api/system_user")
 app.include_router(api_system_user.router, prefix="/api/systems_user")
 app.include_router(api_system_config.router)
 app.include_router(views.router)
+
+
+# --------------------------------------------------------
+# 🚨 ERROR & EXCEPTION HANDLERS (404 / 403)
+# --------------------------------------------------------
+templates = Jinja2Templates(directory="templates")
+
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Render beautiful HTML error pages for browsers or JSON for API requests."""
+    accept = request.headers.get("accept", "")
+    if request.url.path.startswith("/api/") or "application/json" in accept:
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+    context = {
+        "request": request,
+        "title": f"{exc.status_code} Error",
+        "app_name": AppConfig.APP_NAME,
+        "url": request.url.path,
+        "detail": exc.detail,
+        "now": time_now().strftime("%Y%m%d%H%M%S"),
+    }
+    if exc.status_code == 404:
+        return templates.TemplateResponse("404.html", context, status_code=404)
+    if exc.status_code == 403:
+        return templates.TemplateResponse("403.html", context, status_code=403)
+
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+

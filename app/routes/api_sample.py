@@ -107,11 +107,22 @@ async def get_datatable(req_para: Request, db: AsyncDbDep):
     paginated_query = base_stmt.order_by(order_expr).offset(skip).limit(limit)
     rows = (await db.exec(paginated_query)).mappings().all()
 
+    formatted_data = []
+    for r in rows:
+        item = dict(r)
+        # 1. Flat keys (e.g. 'code')
+        # 2. Dotted keys (e.g. 'Sample_Item.code')
+        for k, v in list(item.items()):
+            item[f"Sample_Item.{k}"] = v
+        # 3. Nested object (e.g. item['Sample_Item']['code']) for DataTables dot-notation traversal
+        item["Sample_Item"] = dict(r)
+        formatted_data.append(item)
+
     return {
         "draw": int(params.get("draw", 1)),
         "recordsTotal": total_records,
         "recordsFiltered": filtered_records,
-        "data": [dict(r) for r in rows],
+        "data": formatted_data,
     }
 
 

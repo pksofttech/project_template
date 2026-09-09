@@ -1224,12 +1224,18 @@ export function getCookie(cname) {
  *   - `Content-Type`: The value of this header is set to `"application/json"`.
  */
 export async function getHeaders() {
-    const token = getCookie("Authorization");
+    const rawToken =
+        localStorage.getItem("token") ||
+        getCookie("Authorization") ||
+        getCookie("access_token") ||
+        "";
     const headers = {
         Accept: "application/json",
-        Authorization: token,
         "Content-Type": "application/json",
     };
+    if (rawToken) {
+        headers["Authorization"] = rawToken.startsWith("Bearer ") ? rawToken : `Bearer ${rawToken}`;
+    }
     return headers;
 }
 
