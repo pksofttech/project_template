@@ -138,31 +138,69 @@
     navigation: auto;
 }
 
+/* 1. จัดการ Performance, เลเยอร์ และป้องกันแสงวาบสีเพี้ยน (Color Bleed) */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-    will-change: transform;
+    animation-duration: 280ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: both;
+    mix-blend-mode: normal;
+    height: 100%;
 }
 
-/* Define custom slide-out and slide-in keyframes */
+::view-transition-new(root) {
+    z-index: 1;
+}
+
+/* 2. Keyframes พร้อม GPU acceleration (translate3d) และ state ครบถ้วน */
 @keyframes slide-out {
+    from {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
     to {
-        transform: translateX(-100%);
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0.8;
     }
 }
 
 @keyframes slide-in {
     from {
-        transform: translateX(100%);
+        transform: translate3d(100%, 0, 0);
+        opacity: 0.8;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
     }
 }
 
-/* Apply animations to the structural view transition elements */
+/* 3. ผูก Animations เข้ากับโครงสร้าง transition */
 ::view-transition-old(root) {
-    animation: 300ms ease-out both slide-out;
+    animation-name: slide-out;
 }
 
 ::view-transition-new(root) {
-    animation: 300ms ease-out both slide-in;
+    animation-name: slide-in;
+}
+
+/* 4. Accessibility: ปิด Animation สำหรับผู้ใช้ที่เปิดตัวเลือก Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none !important;
+    }
+}
+
+/* 5. Sticky Navbar Lock: ไม่เลื่อนตามการเปลี่ยนหน้า */
+.navbar {
+    view-transition-name: main-navbar;
+}
+
+/* 6. Rendering Performance: ข้ามการคำนวณ Layout สำหรับเนื้อหาที่อยู่นอกจอ */
+.content-auto-render {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 500px;
 }
 
 input:-webkit-autofill {

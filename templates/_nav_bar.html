@@ -46,29 +46,6 @@
         </div>
     </div>
 
-    <!-- 🟡 NAVBAR-CENTER: Dynamic Navigation Links (Filtered by user_menus) -->
-    <div class="navbar-center hidden xl:flex">
-        <ul class="menu menu-horizontal menu-sm px-1 gap-1">
-            {% for m in user_menus | default([]) if m.category != 'system' %}
-            <li>
-                <a href="{{ m.url }}" class="rounded-btn font-bold text-xs transition-colors {% if active_page == m.page or active_page == m.page ~ '_manager' %}active bg-primary/15 text-primary{% else %}hover:bg-base-content/5{% endif %}">
-                    <i class="{{ m.icon }} text-xs"></i>
-                    <span data-i18n="{{ m.title }}">{{ m.title }}</span>
-                </a>
-            </li>
-            {% endfor %}
-
-            {% set has_settings = (user_menus | default([])) | selectattr('page', 'equalto', 'system_config') | list %}
-            {% if has_settings %}
-            <li>
-                <a href="/page?page=system_config" class="rounded-btn font-bold text-xs transition-colors {% if active_page == 'system_config' %}active bg-primary/15 text-primary{% else %}hover:bg-base-content/5{% endif %}">
-                    <i class="fa-solid fa-sliders text-xs"></i>
-                    <span data-i18n="Settings">Settings</span>
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
 
     <!-- 🔴 NAVBAR-END: Real-Time SSE Indicator + Palette + Reload + Language + Quick Profile Dropdown -->
     <div class="navbar-end flex items-center gap-1 sm:gap-2">
@@ -101,7 +78,7 @@
             <div tabindex="0" role="button" class="btn btn-ghost btn-sm gap-2 px-1.5 py-1 rounded-box hover:bg-base-content/5">
                 <div class="avatar online">
                     <div class="w-7 h-7 rounded-lg ring-1 ring-primary/30 overflow-hidden bg-base-200">
-                        <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" alt="{{ user.name or user.username }}" onerror="this.src='/static/favicon.svg'" />
+                        <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" alt="{{ user.name or user.username }}" onerror="this.src='/static/favicon.svg'" loading="lazy" decoding="async" width="28" height="28" />
                     </div>
                 </div>
                 <div class="hidden md:flex flex-col items-start text-left leading-none">
@@ -220,7 +197,7 @@
             <!-- Avatar -->
             <div class="avatar -mt-14 mb-3 flex justify-center">
                 <div class="w-24 h-24 rounded-box ring-4 ring-base-100 shadow-2xl bg-base-100 overflow-hidden">
-                    <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" class="object-cover w-full h-full" onerror="this.src='/static/favicon.svg'" />
+                    <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" class="object-cover w-full h-full" onerror="this.src='/static/favicon.svg'" loading="lazy" decoding="async" width="96" height="96" />
                 </div>
             </div>
 

@@ -66,10 +66,22 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 # --------------------------------------------------------
-# 📁 STATIC ASSETS MOUNT
+# 📁 STATIC ASSETS MOUNT (WITH BROWSER CACHING)
 # --------------------------------------------------------
 os.makedirs("static", exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+class CachedStaticFiles(StaticFiles):
+    """Static asset handler with 7-day browser caching headers."""
+
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        if response.status_code == 200:
+            response.headers["Cache-Control"] = "public, max-age=604800, stale-while-revalidate=86400"
+        return response
+
+
+app.mount("/static", CachedStaticFiles(directory="static"), name="static")
 
 
 # --------------------------------------------------------
