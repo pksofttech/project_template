@@ -1,5 +1,7 @@
 """User Authentication and Account Management API."""
 
+import json
+
 from fastapi import APIRouter, HTTPException, Request, Response, status
 from pydantic import BaseModel
 from sqlmodel import func, literal, or_, select
@@ -500,6 +502,15 @@ async def save_system_user_type(
         if dup:
             return {"success": False, "msg": f"User type name '{user_type}' already exists"}
 
+        if not menu_config:
+            from app.core.menu_registry import get_default_menus_for_new_role
+
+            menu_config = json.dumps([m["code"] for m in get_default_menus_for_new_role()])
+        if not home_item_config:
+            from app.core.menu_registry import get_default_home_widgets_for_new_role
+
+            home_item_config = json.dumps(get_default_home_widgets_for_new_role())
+
         new_type = System_User_Type(
             user_type=user_type,
             description=description,
@@ -513,6 +524,23 @@ async def save_system_user_type(
         await db.refresh(new_type)
         print_success(f"System User Type '{new_type.user_type}' created by '{current_user.username}'")
         return {"success": True, "msg": f"Role '{new_type.user_type}' created successfully", "data": {"id": new_type.id}}
+
+
+@router.get("/registry", summary="Get system menu and widget registry")
+async def get_system_registry(current_user: SystemUserDep):
+    """Return all registered system menus, pages, and home widgets."""
+    from app.core.menu_registry import (
+        HOME_WIDGET_REGISTRY,
+        SYSTEM_MENU_REGISTRY,
+        SYSTEM_SETTINGS_MODULES,
+    )
+
+    return {
+        "success": True,
+        "menus": SYSTEM_MENU_REGISTRY,
+        "home_widgets": HOME_WIDGET_REGISTRY,
+        "system_modules": SYSTEM_SETTINGS_MODULES,
+    }
 
 
 @router.delete("/type", summary="Delete system user type by query ID")

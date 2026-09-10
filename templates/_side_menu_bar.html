@@ -4,7 +4,7 @@
     <aside class="bg-base-100 w-64 min-h-screen p-4 flex flex-col justify-between border-r border-base-content/10 shadow-xl">
         <div class="space-y-4">
             <!-- Sidebar Brand Header -->
-            <div class="flex items-center gap-3 px-2 py-3 border-b border-base-content/10">
+            <a href="/page?page=home" class="flex items-center gap-3 px-2 py-3 border-b border-base-content/10 hover:opacity-80 transition-opacity">
                 <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg">
                     <i class="fa-solid fa-shapes"></i>
                 </div>
@@ -12,37 +12,34 @@
                     <h2 class="font-bold text-sm tracking-wide">{{ app_name }}</h2>
                     <p class="text-[10px] text-base-content/60">Template Starter Kit</p>
                 </div>
-            </div>
+            </a>
 
             <!-- Navigation Links -->
             <ul class="menu menu-md p-0 gap-1">
                 <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2" data-i18n="Main Menu">Main Menu</li>
+                {% for item in user_menus | default([]) if item.category != 'system' %}
                 <li>
-                    <a href="/home" class="{% if active_page == 'home' %}active font-semibold{% endif %}">
-                        <i class="fa-solid fa-house w-5 text-center"></i>
-                        <span data-i18n="Home">Home</span>
+                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center"></i>
+                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
                     </a>
                 </li>
-                <li>
-                    <a href="/dashboard" class="{% if active_page == 'dashboard' %}active font-semibold{% endif %}">
-                        <i class="fa-solid fa-gauge-high w-5 text-center"></i>
-                        <span data-i18n="Dashboard">Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/sample" class="{% if active_page == 'sample' %}active font-semibold{% endif %}">
-                        <i class="fa-solid fa-box-archive w-5 text-center"></i>
-                        <span data-i18n="Sample Items">Sample Items</span>
-                    </a>
-                </li>
+                {% endfor %}
 
+                {% set sys_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'system') | list %}
+                {% if sys_menus %}
                 <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4" data-i18n="System">System</li>
+                {% for item in sys_menus %}
                 <li>
-                    <a href="/system_config" class="{% if active_page == 'system_config' %}active font-semibold{% endif %}">
-                        <i class="fa-solid fa-sliders w-5 text-center"></i>
-                        <span data-i18n="Settings">Settings</span>
+                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center"></i>
+                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
                     </a>
                 </li>
+                {% endfor %}
+                {% endif %}
+
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4" data-i18n="Documentation">Documentation</li>
                 <li>
                     <a href="/docs" target="_blank">
                         <i class="fa-solid fa-code w-5 text-center"></i>

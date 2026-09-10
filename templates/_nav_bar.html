@@ -1,85 +1,159 @@
-{% set user = current_user or user or {'username': 'Admin', 'name': 'Administrator', 'role': 'admin'} %}
+{% set user = current_user or user or {'username': 'Admin', 'name': 'Administrator', 'role': 'admin', 'system_user_type_id': 1} %}
 
-<!-- ✅ Glass Navbar Component -->
-<div class="navbar sticky top-0 z-50 border-b border-base-content/5 bg-base-200/80 backdrop-blur-xl transition-all duration-300 px-4">
-    <!-- Left: Mobile Menu & Brand -->
-    <div class="navbar-start flex items-center gap-1.5 lg:gap-3">
-        <label for="main-drawer" class="btn btn-ghost btn-circle hover:bg-base-content/10 lg:hidden" aria-label="Open Menu">
-            <i class="fa-solid fa-bars-staggered text-lg"></i>
+<!-- 🎭 Role mapping for DaisyUI v5 semantic colors across 6 PKS user types -->
+{% set role_map = {
+    1: ("ROOT", "badge-error", "bg-error/15 text-error border-error/20"),
+    2: ("ADMIN", "badge-info", "bg-info/15 text-info border-info/20"),
+    3: ("ACCOUNT", "badge-success", "bg-success/15 text-success border-success/20"),
+    4: ("OPERATOR", "badge-warning", "bg-warning/15 text-warning border-warning/20"),
+    5: ("DEVICES", "badge-primary", "bg-primary/15 text-primary border-primary/20"),
+    6: ("VIEWER", "badge-secondary", "bg-secondary/15 text-secondary border-secondary/20")
+} %}
+{% set current_role_info = role_map.get(user.system_user_type_id, (user.role or "USER", "badge-neutral", "bg-base-300 text-base-content/70 border-base-content/10")) %}
+
+<!-- ✅ Glass Navbar Component (DaisyUI v5) -->
+<div class="navbar sticky top-0 z-50 border-b border-base-content/10 bg-base-100/75 backdrop-blur-xl px-3 sm:px-5 transition-all duration-200">
+    
+    <!-- 🟢 NAVBAR-START: Mobile Drawer + Brand + Breadcrumbs -->
+    <div class="navbar-start flex items-center gap-2 lg:gap-3">
+        <!-- Mobile Sidebar Toggle -->
+        <label for="main-drawer" class="btn btn-ghost btn-circle btn-sm lg:hidden hover:bg-base-content/10" aria-label="Open Sidebar">
+            <i class="fa-solid fa-bars-staggered text-base"></i>
         </label>
 
-        <!-- Desktop Quick Links -->
-        <div class="hidden lg:flex items-center gap-1">
-            <a href="/" class="group flex h-9 w-9 items-center justify-center rounded-box text-base-content/40 transition-all hover:bg-primary/10 hover:text-primary" title="Home">
-                <i class="fa-solid fa-house text-sm transition-transform group-hover:scale-110"></i>
-            </a>
-            <a href="/dashboard" class="group flex h-9 w-9 items-center justify-center rounded-box text-base-content/40 transition-all hover:bg-primary/10 hover:text-primary" title="Dashboard">
-                <i class="fa-solid fa-gauge-high text-sm transition-transform group-hover:scale-110"></i>
-            </a>
-        </div>
-
-        <!-- Brand Component -->
-        <a href="/dashboard" class="flex items-center gap-2 font-bold text-base text-primary tracking-wide ml-1">
-            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <i class="fa-solid fa-shapes text-lg"></i>
+        <!-- Brand Logo & Title -->
+        <a href="/page?page=home" class="flex items-center gap-2.5 font-black text-base tracking-tight hover:opacity-85 transition-opacity">
+            <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-base shadow-inner">
+                <i class="fa-solid fa-shapes"></i>
             </div>
-            <span>{{ app_name }}</span>
-            <span class="badge badge-primary badge-outline badge-xs font-mono">v{{ version }}</span>
+            <div class="flex flex-col leading-none">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-sm sm:text-base font-extrabold text-base-content">{{ app_name }}</span>
+                    <span class="badge badge-primary badge-outline badge-xs font-mono scale-90">v{{ version }}</span>
+                </div>
+                <span class="text-[9px] font-semibold text-base-content/50 uppercase tracking-widest hidden sm:inline-block">Management Suite</span>
+            </div>
         </a>
+
+        <div class="divider divider-horizontal mx-1 h-5 hidden md:flex opacity-30"></div>
+
+        <!-- 🧭 Breadcrumbs / Active Page -->
+        <div class="hidden md:flex items-center gap-1.5 text-xs text-base-content/60 font-semibold">
+            <i class="fa-solid fa-chevron-right text-[9px] opacity-40"></i>
+            <span class="badge badge-sm badge-soft badge-primary font-bold capitalize">
+                {{ active_page | default('Home') | replace('_', ' ') }}
+            </span>
+        </div>
     </div>
 
-    <!-- Center: Desktop Links (Optional) -->
-    <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal px-1 gap-1">
+    <!-- 🟡 NAVBAR-CENTER: Dynamic Navigation Links (Filtered by user_menus) -->
+    <div class="navbar-center hidden xl:flex">
+        <ul class="menu menu-horizontal menu-sm px-1 gap-1">
+            {% for m in user_menus | default([]) if m.category != 'system' %}
             <li>
-                <a href="/dashboard" class="rounded-lg {% if active_page == 'dashboard' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-gauge-high"></i> <span data-i18n="Dashboard">Dashboard</span>
+                <a href="{{ m.url }}" class="rounded-btn font-bold text-xs transition-colors {% if active_page == m.page or active_page == m.page ~ '_manager' %}active bg-primary/15 text-primary{% else %}hover:bg-base-content/5{% endif %}">
+                    <i class="{{ m.icon }} text-xs"></i>
+                    <span data-i18n="{{ m.title }}">{{ m.title }}</span>
                 </a>
             </li>
+            {% endfor %}
+            
+            {% set has_settings = (user_menus | default([])) | selectattr('page', 'equalto', 'system_config') | list %}
+            {% if has_settings %}
             <li>
-                <a href="/sample" class="rounded-lg {% if active_page == 'sample' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-box-archive"></i> <span data-i18n="Sample Items">Sample Items</span>
+                <a href="/page?page=system_config" class="rounded-btn font-bold text-xs transition-colors {% if active_page == 'system_config' %}active bg-primary/15 text-primary{% else %}hover:bg-base-content/5{% endif %}">
+                    <i class="fa-solid fa-sliders text-xs"></i>
+                    <span data-i18n="Settings">Settings</span>
                 </a>
             </li>
-            <li>
-                <a href="/system_config" class="rounded-lg {% if active_page == 'system_config' %}bg-primary/10 text-primary font-bold{% endif %}">
-                    <i class="fa-solid fa-sliders"></i> <span data-i18n="Settings">Settings</span>
-                </a>
-            </li>
+            {% endif %}
         </ul>
     </div>
 
-    <!-- RIGHT: Theme Switcher & User Profile (Aligned with original template) -->
-    <div class="navbar-end gap-1 md:gap-2">
-        <!-- Toolbar Actions -->
-        <div class="flex items-center gap-0.5 md:gap-1">
-            <!-- 🎨 Theme Palette Selector Button -->
-            <button class="btn btn-ghost btn-circle btn-sm hover:bg-primary/10 hover:text-primary transition-colors" onclick="theme_modal.showModal()" title="Themes" data-i18n-title="Themes">
-                <i class="fa-solid fa-palette text-sm"></i>
-            </button>
+    <!-- 🔴 NAVBAR-END: Real-Time SSE Indicator + Palette + Reload + Language + Quick Profile Dropdown -->
+    <div class="navbar-end flex items-center gap-1 sm:gap-2">
+        
+        <!-- Real-Time SSE Status Indicator -->
+        <div class="tooltip tooltip-bottom text-xs hidden sm:inline-block" data-tip="System Online (SSE Connected)">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-[10px] font-bold border border-success/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+                <span data-i18n="Online">Online</span>
+            </span>
+        </div>
 
-            <!-- 🔄 Reload System Button -->
-            <button class="btn btn-ghost btn-circle btn-sm hover:bg-info/10 hover:text-info transition-all active:rotate-180" onclick="window.location.reload()" title="Reload System" data-i18n-title="Reload System">
-                <i class="fa-solid fa-rotate-right text-sm"></i>
-            </button>
+        <!-- 🎨 Theme Palette Selector Button -->
+        <button class="btn btn-ghost btn-circle btn-sm hover:bg-base-content/10 transition-colors" onclick="theme_modal.showModal()" title="Change Theme" data-i18n-title="Themes">
+            <i class="fa-solid fa-palette text-sm"></i>
+        </button>
 
-            <div class="h-6 w-px bg-base-content/10 mx-1 hidden md:block"></div>
+        <!-- 🔄 Reload System Button -->
+        <button class="btn btn-ghost btn-circle btn-sm hover:bg-base-content/10 transition-transform active:rotate-180" onclick="window.location.reload()" title="Reload System" data-i18n-title="Reload System">
+            <i class="fa-solid fa-rotate-right text-sm"></i>
+        </button>
 
-            <!-- 👤 User Profile Button -->
-            <button class="group flex items-center gap-2 rounded-box p-1 pr-3 transition-all hover:bg-base-content/5 active:scale-95" onclick="profile_modal.showModal()">
+        <!-- 🌐 Language Switcher -->
+        {% include '_lang_dropdown.html' %}
+
+        <div class="divider divider-horizontal mx-0.5 h-6 opacity-20"></div>
+
+        <!-- 👤 Quick User Profile Dropdown -->
+        <div class="dropdown dropdown-end z-50">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-sm gap-2 px-1.5 py-1 rounded-box hover:bg-base-content/5">
                 <div class="avatar online">
-                    <div class="h-8 w-8 rounded-box ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all overflow-hidden bg-base-200">
+                    <div class="w-7 h-7 rounded-lg ring-1 ring-primary/30 overflow-hidden bg-base-200">
                         <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" alt="{{ user.name or user.username }}" onerror="this.src='/static/favicon.svg'" />
                     </div>
                 </div>
-                <div class="hidden lg:flex flex-col items-start leading-none">
-                    <span class="text-[11px] font-bold text-base-content/80 group-hover:text-primary transition-colors">{{ user.username }}</span>
-                    <span class="text-[9px] font-medium text-base-content/40 uppercase tracking-tighter" data-i18n="Profile">Profile</span>
+                <div class="hidden md:flex flex-col items-start text-left leading-none">
+                    <span class="text-xs font-bold text-base-content truncate max-w-[100px]">{{ user.username }}</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider text-primary mt-0.5">{{ current_role_info[0] }}</span>
                 </div>
-            </button>
+                <i class="fa-solid fa-chevron-down text-[9px] opacity-50 hidden md:inline-block"></i>
+            </div>
 
-            <!-- 🌐 Language Switcher -->
-            {% include '_lang_dropdown.html' %}
+            <!-- Profile Dropdown Content -->
+            <ul tabindex="0" class="dropdown-content z-50 menu menu-sm p-2 shadow-2xl bg-base-100 rounded-box w-56 border border-base-content/10 gap-1 mt-2" style="z-index: 1000;">
+                <li class="menu-title px-3 py-2 border-b border-base-content/10 mb-1">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-xs text-base-content truncate max-w-[120px]">{{ user.name or user.username }}</span>
+                        <span class="badge {{ current_role_info[1] }} badge-soft badge-xs font-black">{{ current_role_info[0] }}</span>
+                    </div>
+                    <span class="text-[10px] text-base-content/50 font-normal">@{{ user.username }}</span>
+                </li>
+
+                <li>
+                    <a onclick="profile_modal.showModal()" class="flex items-center gap-2 font-semibold">
+                        <i class="fa-solid fa-id-card text-primary w-4"></i>
+                        <span data-i18n="Profile Details">Profile Details</span>
+                    </a>
+                </li>
+                {% if user.system_user_type_id in [1, 2] %}
+                <li>
+                    <a href="/page?page=system_config" class="flex items-center gap-2 font-semibold">
+                        <i class="fa-solid fa-sliders text-accent w-4"></i>
+                        <span data-i18n="Settings">System Settings</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="/docs" target="_blank" class="flex items-center justify-between font-semibold">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-code text-info w-4"></i>
+                            <span>Swagger API</span>
+                        </span>
+                        <span class="badge badge-xs badge-info font-mono">API</span>
+                    </a>
+                </li>
+
+                <div class="divider my-1 opacity-20"></div>
+
+                <li>
+                    <a href="/logout" onclick="localStorage.removeItem('token')" class="flex items-center gap-2 font-bold text-error hover:bg-error/10">
+                        <i class="fa-solid fa-power-off w-4"></i>
+                        <span data-i18n="Sign Out">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -157,11 +231,9 @@
                 <p class="text-xs font-bold text-base-content/60 uppercase tracking-wider">{{ user.name or user.username }}</p>
 
                 <div class="pt-2 flex justify-center">
-                    {% set role_label = user.role | default('Admin') %}
-                    {% set role_class = "badge-info" if role_label == 'admin' else "badge-primary" %}
-                    <span class="badge {{ role_class }} badge-soft badge-lg h-7 gap-2 px-3 text-[11px] font-black uppercase tracking-widest border border-base-300/40">
+                    <span class="badge {{ current_role_info[1] }} badge-soft badge-lg h-7 gap-2 px-3 text-[11px] font-black uppercase tracking-widest border border-base-300/40">
                         <i class="fa-solid fa-shield-halved opacity-70"></i>
-                        {{ role_label | upper }}
+                        {{ current_role_info[0] }}
                     </span>
                 </div>
             </div>
@@ -187,7 +259,7 @@
 
             <!-- Actions -->
             <div class="mt-6 flex flex-col gap-2.5">
-                <a href="/system_config" class="btn btn-primary h-11 rounded-btn border-none shadow-lg shadow-primary/20 transition-all font-bold gap-2">
+                <a href="/page?page=system_config" class="btn btn-primary h-11 rounded-btn border-none shadow-lg shadow-primary/20 transition-all font-bold gap-2">
                     <i class="fa-solid fa-user-gear"></i>
                     <span>Account Settings</span>
                 </a>
