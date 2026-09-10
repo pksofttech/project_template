@@ -191,6 +191,9 @@ export function initSse(callBack, url = "/sse") {
         });
     };
 
+    window.addEventListener("beforeunload", () => evtSource.close());
+    window.addEventListener("pagehide", () => evtSource.close());
+
     return evtSource;
 }
 

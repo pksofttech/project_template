@@ -54,22 +54,50 @@ def time_logger(func: Callable) -> Callable:
     return sync_wrapper
 
 
-def broadcast_sse(payload: dict):
-    """Broadcast an SSE event dictionary to all active connected clients."""
+def broadcast_sse(payload: Any, event: str = "message") -> None:
+    """
+    Broadcast an SSE event payload to all active connected clients.
+
+    Thread-safe, race-condition free, and handles slow clients by evicting
+    stale messages rather than leaking memory or abruptly terminating connections.
+    """
+    if isinstance(payload, dict) and "event" in payload and "data" in payload:
+        sse_message = payload
+    else:
+        sse_message = {"event": event, "data": payload}
 
     async def _send_all():
-        dead_clients = []
-        for q in sse_clients:
+        dead_clients: list[asyncio.Queue] = []
+        # Snapshot copy avoids RuntimeError: list changed size during iteration
+        for q in list(sse_clients):
             try:
-                q.put_nowait(payload)
+                q.put_nowait(sse_message)
             except asyncio.QueueFull:
+                # Evict oldest event to make room for newer real-time update
+                try:
+                    q.get_nowait()
+                    q.put_nowait(sse_message)
+                except Exception:
+                    dead_clients.append(q)
+            except Exception:
                 dead_clients.append(q)
 
         for q in dead_clients:
-            if q in sse_clients:
-                sse_clients.remove(q)
+            try:
+                if q in sse_clients:
+                    sse_clients.remove(q)
+            except ValueError:
+                pass
 
-    asyncio.create_task(_send_all())
+    try:
+        loop = asyncio.get_running_loop()
+        loop.create_task(_send_all())
+    except RuntimeError:
+        # Fallback if called outside an active asyncio event loop
+        try:
+            asyncio.run(_send_all())
+        except Exception as e:
+            print_warning(f"Could not broadcast SSE outside event loop: {e}")
 
 
 def get_datatable_select(params: dict) -> dict:

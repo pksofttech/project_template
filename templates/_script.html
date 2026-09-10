@@ -28,18 +28,41 @@
     }
 
     // Connect to Server-Sent Events (SSE)
-    if (!!window.EventSource) {
+    if (!!window.EventSource && !window.__appSseSource) {
         const source = new EventSource('/sse');
+        window.__appSseSource = source;
+
+        source.addEventListener('connected', function(e) {
+            try {
+                const initData = JSON.parse(e.data);
+                // Connected handshake received
+            } catch(err) {}
+        });
+
         source.onmessage = function(e) {
             try {
                 const data = JSON.parse(e.data);
                 console.log("⚡ SSE Realtime Message:", data);
+                window.dispatchEvent(new CustomEvent('sse:message', { detail: data }));
             } catch(err) {
                 console.log("⚡ SSE Raw:", e.data);
+                window.dispatchEvent(new CustomEvent('sse:message', { detail: e.data }));
             }
         };
+
         source.onerror = function(err) {
-            // console.warn("SSE Connection error, reconnecting...");
+            // Only log if connection was permanently closed (not temporary reconnect)
+            if (source.readyState === EventSource.CLOSED) {
+                console.warn("⚡ SSE Connection closed.");
+            }
         };
+
+        // Cleanly terminate connection on page transition to prevent ghost connections
+        window.addEventListener('beforeunload', function() {
+            source.close();
+        });
+        window.addEventListener('pagehide', function() {
+            source.close();
+        });
     }
 </script>

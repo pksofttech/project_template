@@ -87,40 +87,68 @@ app.mount("/static", CachedStaticFiles(directory="static"), name="static")
 # --------------------------------------------------------
 # 📡 REAL-TIME SERVER-SENT EVENTS (SSE)
 # --------------------------------------------------------
+SSE_QUEUE_MAXSIZE = 100
+SSE_RETRY_TIMEOUT_MS = 3000  # Instruct browser EventSource to wait 3s before reconnecting
+
+
 async def event_generator(request: Request, client_queue: asyncio.Queue):
     """Generator for streaming events to clients via SSE."""
     try:
-        # Send initial welcome message
-        yield {"event": "connected", "data": json.dumps({"status": "connected", "time": time_now().isoformat()})}
+        # Send initial welcome message with reconnect retry directive
+        yield {
+            "event": "connected",
+            "retry": SSE_RETRY_TIMEOUT_MS,
+            "data": json.dumps({"status": "connected", "time": time_now().isoformat()}),
+        }
 
         while True:
             if await request.is_disconnected():
                 break
             try:
-                data = await asyncio.wait_for(client_queue.get(), timeout=20.0)
-                yield {"event": "message", "data": json.dumps(data)}
+                msg = await asyncio.wait_for(client_queue.get(), timeout=20.0)
+                if isinstance(msg, dict) and "event" in msg and "data" in msg:
+                    raw_data = msg["data"]
+                    event_data = json.dumps(raw_data) if not isinstance(raw_data, str) else raw_data
+                    yield {"event": msg["event"], "data": event_data}
+                else:
+                    event_data = json.dumps(msg) if not isinstance(msg, str) else msg
+                    yield {"event": "message", "data": event_data}
             except TimeoutError:
                 # Keep-alive ping
                 yield {"event": "ping", "data": ""}
+    except asyncio.CancelledError:
+        # Expected when client tab closes or navigates to another page
+        pass
     finally:
         if client_queue in sse_clients:
             sse_clients.remove(client_queue)
-            print_debug("Removed disconnected SSE client.")
+            print_debug(f"SSE client disconnected (active clients: {len(sse_clients)})")
 
 
 @app.get("/sse", summary="Server-Sent Events endpoint", tags=["Real-time"])
 async def sse_endpoint(request: Request):
     """SSE endpoint for browser EventSource clients."""
-    client_queue: asyncio.Queue = asyncio.Queue()
+    client_queue: asyncio.Queue = asyncio.Queue(maxsize=SSE_QUEUE_MAXSIZE)
     sse_clients.append(client_queue)
-    return EventSourceResponse(event_generator(request, client_queue), headers={"content-encoding": "identity"})
+    print_debug(f"SSE client connected (active clients: {len(sse_clients)})")
+
+    return EventSourceResponse(
+        event_generator(request, client_queue),
+        ping=20,
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+            "Content-Encoding": "identity",
+        },
+    )
 
 
 @app.post("/broadcast_sse", summary="Broadcast message to SSE clients", tags=["Real-time"])
 async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
     """Broadcast an event payload to all active SSE subscribers."""
     broadcast_sse(payload)
-    return {"success": True}
+    return {"success": True, "active_clients": len(sse_clients)}
 
 
 # --------------------------------------------------------
