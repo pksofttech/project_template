@@ -200,6 +200,7 @@ export const zh = {
     "Apply Stamp": "加盖电子印章",
     "Apply System Update": "应用系统更新",
     "Apply globally to all cameras in system": "应用到系统中的所有摄像头",
+    "Are you sure you want to sign out?": "您确定要退出登录吗？",
     "Archive Browser": "归档 浏览器",
     "Archive Capacity": "Archive Capacity",
     "Archive Package": "Archive Package",

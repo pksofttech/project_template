@@ -200,6 +200,7 @@ export const lo = {
     "Apply Stamp": "ປະທັບຕາສ່ວນຫຼຸດ",
     "Apply System Update": "ອັບເດດລະບົບ",
     "Apply globally to all cameras in system": "ໃຊ້ກັບກ້ອງທຸກຕົວໃນລະບົບ",
+    "Are you sure you want to sign out?": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການອອກຈາກລະບົບ?",
     "Archive Browser": "ເບິ່ງຂໍ້ມູນທີ່ຈັດເກັບຖາວອນ",
     "Archive Capacity": "Archive Capacity",
     "Archive Package": "Archive Package",

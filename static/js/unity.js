@@ -294,6 +294,13 @@ export function showDialogError({ title = "Error", msg = "info" } = {}) {
     dialog.showModal();
 }
 
+window.showDialogLoading = showDialogLoading;
+window.closeDialogLoading = closeDialogLoading;
+window.showDialogInfo = showDialogInfo;
+window.showDialogSuccess = showDialogSuccess;
+window.showDialogWarning = showDialogWarning;
+window.showDialogError = showDialogError;
+
 export function escapeHtml(value = "") {
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -522,18 +529,23 @@ export async function showDialogConfirm({
             dialogElement.close();
         };
 
-        // attach events (once)
-        dialogElement
-            .querySelector("[data-field='confirm_btn']")
-            .addEventListener("click", confirmHandler, { once: true });
-        dialogElement
-            .querySelector("[data-field='cancel_btn']")
-            .addEventListener("click", cancelHandler, { once: true });
+        const confirmBtn = dialogElement.querySelector("[data-field='confirm_btn']");
+        const cancelBtnElFinal = dialogElement.querySelector("[data-field='cancel_btn']");
+
+        const cleanup = () => {
+            if (confirmBtn) confirmBtn.removeEventListener("click", confirmHandler);
+            if (cancelBtnElFinal) cancelBtnElFinal.removeEventListener("click", cancelHandler);
+        };
+
+        // attach events
+        if (confirmBtn) confirmBtn.addEventListener("click", confirmHandler, { once: true });
+        if (cancelBtnElFinal) cancelBtnElFinal.addEventListener("click", cancelHandler, { once: true });
 
         // wait for close
         dialogElement.addEventListener(
             "close",
             () => {
+                cleanup();
                 if (returnValueElement) {
                     result.value = returnValueElement.value;
                 }
@@ -545,10 +557,11 @@ export async function showDialogConfirm({
         // show dialog
         dialogElement.showModal();
         setTimeout(() => {
-            dialogElement.querySelector("[data-field='confirm_btn']").focus();
+            if (confirmBtn) confirmBtn.focus();
         }, 100);
     });
 }
+window.showDialogConfirm = showDialogConfirm;
 
 /**
  * Validate the transaction string.
@@ -1384,13 +1397,15 @@ export async function fetchApi(
 }
 
 window.logout = logout;
-async function logout() {
-    const result = await showDialogConfirm({ title: "Sign Out", content: "Are you sure you want to sign out?" });
-    debug(result);
-    if (result.confirm) {
-        // document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+export async function logout() {
+    const title = (typeof i18next_translate === "function" ? i18next_translate("Sign Out") : "Sign Out") || "Sign Out";
+    const content = (typeof i18next_translate === "function" ? i18next_translate("Are you sure you want to sign out?") : "Are you sure you want to sign out?") || "Are you sure you want to sign out?";
+    const result = await showDialogConfirm({ title, content });
+    debug("Logout confirm result:", result);
+    if (result && result.confirm) {
+        localStorage.removeItem("token");
         clearAllCookies();
-        location.reload();
+        window.location.href = "/logout";
     }
 }
 

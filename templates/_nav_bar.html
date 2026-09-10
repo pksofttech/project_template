@@ -2,18 +2,18 @@
 
 <!-- 🎭 Role mapping for DaisyUI v5 semantic colors across 6 PKS user types -->
 {% set role_map = {
-    1: ("ROOT", "badge-error", "bg-error/15 text-error border-error/20"),
-    2: ("ADMIN", "badge-info", "bg-info/15 text-info border-info/20"),
-    3: ("ACCOUNT", "badge-success", "bg-success/15 text-success border-success/20"),
-    4: ("OPERATOR", "badge-warning", "bg-warning/15 text-warning border-warning/20"),
-    5: ("DEVICES", "badge-primary", "bg-primary/15 text-primary border-primary/20"),
-    6: ("VIEWER", "badge-secondary", "bg-secondary/15 text-secondary border-secondary/20")
+1: ("ROOT", "badge-error", "bg-error/15 text-error border-error/20"),
+2: ("ADMIN", "badge-info", "bg-info/15 text-info border-info/20"),
+3: ("ACCOUNT", "badge-success", "bg-success/15 text-success border-success/20"),
+4: ("OPERATOR", "badge-warning", "bg-warning/15 text-warning border-warning/20"),
+5: ("DEVICES", "badge-primary", "bg-primary/15 text-primary border-primary/20"),
+6: ("VIEWER", "badge-secondary", "bg-secondary/15 text-secondary border-secondary/20")
 } %}
 {% set current_role_info = role_map.get(user.system_user_type_id, (user.role or "USER", "badge-neutral", "bg-base-300 text-base-content/70 border-base-content/10")) %}
 
 <!-- ✅ Glass Navbar Component (DaisyUI v5) -->
 <div class="navbar sticky top-0 z-50 border-b border-base-content/10 bg-base-100/75 backdrop-blur-xl px-3 sm:px-5 transition-all duration-200">
-    
+
     <!-- 🟢 NAVBAR-START: Mobile Drawer + Brand + Breadcrumbs -->
     <div class="navbar-start flex items-center gap-2 lg:gap-3">
         <!-- Mobile Sidebar Toggle -->
@@ -57,7 +57,7 @@
                 </a>
             </li>
             {% endfor %}
-            
+
             {% set has_settings = (user_menus | default([])) | selectattr('page', 'equalto', 'system_config') | list %}
             {% if has_settings %}
             <li>
@@ -72,7 +72,7 @@
 
     <!-- 🔴 NAVBAR-END: Real-Time SSE Indicator + Palette + Reload + Language + Quick Profile Dropdown -->
     <div class="navbar-end flex items-center gap-1 sm:gap-2">
-        
+
         <!-- Real-Time SSE Status Indicator -->
         <div class="tooltip tooltip-bottom text-xs hidden sm:inline-block" data-tip="System Online (SSE Connected)">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 text-success text-[10px] font-bold border border-success/20">
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 <div class="hidden md:flex flex-col items-start text-left leading-none">
-                    <span class="text-xs font-bold text-base-content truncate max-w-[100px]">{{ user.username }}</span>
+                    <span class="text-xs font-bold text-base-content truncate max-w-25">{{ user.username }}</span>
                     <span class="text-[9px] font-black uppercase tracking-wider text-primary mt-0.5">{{ current_role_info[0] }}</span>
                 </div>
                 <i class="fa-solid fa-chevron-down text-[9px] opacity-50 hidden md:inline-block"></i>
@@ -115,7 +115,7 @@
             <ul tabindex="0" class="dropdown-content z-50 menu menu-sm p-2 shadow-2xl bg-base-100 rounded-box w-56 border border-base-content/10 gap-1 mt-2" style="z-index: 1000;">
                 <li class="menu-title px-3 py-2 border-b border-base-content/10 mb-1">
                     <div class="flex items-center justify-between">
-                        <span class="font-bold text-xs text-base-content truncate max-w-[120px]">{{ user.name or user.username }}</span>
+                        <span class="font-bold text-xs text-base-content truncate max-w-30">{{ user.name or user.username }}</span>
                         <span class="badge {{ current_role_info[1] }} badge-soft badge-xs font-black">{{ current_role_info[0] }}</span>
                     </div>
                     <span class="text-[10px] text-base-content/50 font-normal">@{{ user.username }}</span>
@@ -148,7 +148,7 @@
                 <div class="divider my-1 opacity-20"></div>
 
                 <li>
-                    <a href="/logout" onclick="localStorage.removeItem('token')" class="flex items-center gap-2 font-bold text-error hover:bg-error/10">
+                    <a href="javascript:void(0)" onclick="logout()" class="flex items-center gap-2 font-bold text-error hover:bg-error/10 cursor-pointer">
                         <i class="fa-solid fa-power-off w-4"></i>
                         <span data-i18n="Sign Out">Sign Out</span>
                     </a>
@@ -185,7 +185,8 @@
 
         <div class="p-5 max-h-[65vh] overflow-y-auto">
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" data-choose-theme>
-                {% for theme in ['modern', 'nord', 'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'valentine', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'luxury', 'dracula', 'autumn', 'business', 'acid', 'lemonade', 'coffee', 'winter'] %}
+                {% for theme in ['modern', 'nord', 'light', 'dark', 'cupcake', 'bumblebee', 'emerald', 'corporate', 'synthwave', 'retro', 'valentine', 'garden', 'forest', 'aqua', 'lofi', 'pastel', 'luxury', 'dracula', 'autumn', 'business', 'acid',
+                'lemonade', 'coffee', 'winter'] %}
                 <button class="btn btn-sm btn-outline justify-start gap-2.5 border-base-300 hover:border-primary hover:bg-primary/10 transition-all font-bold rounded-btn h-10 shadow-2xs" data-set-theme="{{ theme }}">
                     <span class="h-3 w-3 rounded-full bg-primary/80 ring-2 ring-primary/20 shrink-0"></span>
                     <span class="capitalize text-xs truncate">{{ theme }}</span>
@@ -263,7 +264,7 @@
                     <i class="fa-solid fa-user-gear"></i>
                     <span>Account Settings</span>
                 </a>
-                <a href="/logout" onclick="localStorage.removeItem('token')" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2">
+                <a href="javascript:void(0)" onclick="logout()" class="btn btn-error btn-soft h-11 rounded-btn transition-all font-bold gap-2 cursor-pointer">
                     <i class="fa-solid fa-power-off"></i>
                     <span data-i18n="Sign Out">Sign Out</span>
                 </a>

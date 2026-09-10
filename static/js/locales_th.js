@@ -200,6 +200,7 @@ export const th = {
     "Apply Stamp": "ประทับตราส่วนลด",
     "Apply System Update": "ปรับปรุงระบบ",
     "Apply globally to all cameras in system": "ใช้งานกับกล้องทุกตัวในระบบ",
+    "Are you sure you want to sign out?": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
     "Archive Browser": "เรียกดูข้อมูลที่เก็บถาวร",
     "Archive Capacity": "ความจุพื้นที่จัดเก็บเอกสาร",
     "Archive Package": "Archive Package",

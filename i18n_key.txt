@@ -188,6 +188,7 @@ Apply Rate to Settings
 Apply Stamp
 Apply System Update
 Apply globally to all cameras in system
+Are you sure you want to sign out?
 Archive Browser
 Archive Capacity
 Archive Package

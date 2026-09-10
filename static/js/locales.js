@@ -200,6 +200,7 @@ export const en = {
     "Apply Stamp": "Apply Stamp",
     "Apply System Update": "Apply System Update",
     "Apply globally to all cameras in system": "Apply globally to all cameras in system",
+    "Are you sure you want to sign out?": "Are you sure you want to sign out?",
     "Archive Browser": "Archive Browser",
     "Archive Capacity": "Archive Capacity",
     "Archive Package": "Archive Package",

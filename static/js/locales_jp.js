@@ -200,6 +200,7 @@ export const jp = {
     "Apply Stamp": "スタンプを適用",
     "Apply System Update": "システム更新を適用",
     "Apply globally to all cameras in system": "システム内のすべてのカメラに適用",
+    "Are you sure you want to sign out?": "ログアウトしてもよろしいですか？",
     "Archive Browser": "アーカイブ閲覧",
     "Archive Capacity": "Archive Capacity",
     "Archive Package": "Archive Package",

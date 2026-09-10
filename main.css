@@ -1025,7 +1025,8 @@ div.dts div.dataTables_scrollBody table {
 /* 🚗 Kiosk Horizontal Purpose Cards Scrollbar */
 .kiosk-horizontal-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklch, var(--color-base-content) 35%, transparent) color-mix(in oklch, var(--color-base-300) 50%, transparent);
+    scrollbar-color: color-mix(in oklch, var(--color-base-content) 35%, transparent)
+        color-mix(in oklch, var(--color-base-300) 50%, transparent);
 }
 
 .kiosk-horizontal-scrollbar::-webkit-scrollbar {
@@ -1046,4 +1047,3 @@ div.dts div.dataTables_scrollBody table {
 .kiosk-horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
     background: color-mix(in oklch, var(--color-primary) 60%, transparent);
 }
-

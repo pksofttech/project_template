@@ -200,6 +200,7 @@ export const my = {
     "Apply Stamp": "တံဆိပ်တုံးနှိပ်ပါ",
     "Apply System Update": "စနစ်အပ်ဒိတ် အသုံးပြုရန်",
     "Apply globally to all cameras in system": "စနစ်ရှိ ကင်မရာအားလုံးတွင် အသုံးပြုရန်",
+    "Are you sure you want to sign out?": "အကောင့်မှ ထွက်ရန် သေချာပါသလား?",
     "Archive Browser": "မော်ကွန်းဒေတာ ကြည့်ရှုရန်",
     "Archive Capacity": "Archive Capacity",
     "Archive Package": "Archive Package",
