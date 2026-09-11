@@ -48,6 +48,7 @@ def get_authenticated_user(request: Request) -> dict | None:
 def get_view_context(request: Request, title: str = "", current_user: Any = None, **kwargs) -> dict:
     """Standardized template context dictionary."""
     user = current_user if current_user is not None else get_authenticated_user(request)
+    current_theme = request.cookies.get("theme", "")
 
     context = {
         "request": request,
@@ -56,6 +57,7 @@ def get_view_context(request: Request, title: str = "", current_user: Any = None
         "version": AppConfig.VERSION,
         "current_user": user,
         "user": user,
+        "current_theme": current_theme,
         "now": time_now().strftime("%Y%m%d%H%M%S"),
         "user_menus": kwargs.pop("user_menus", SYSTEM_MENU_REGISTRY),
         "card_menu_home": kwargs.pop("card_menu_home", [w["title"] for w in HOME_WIDGET_REGISTRY]),

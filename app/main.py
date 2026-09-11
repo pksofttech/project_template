@@ -182,6 +182,7 @@ async def custom_http_exception_handler(request: Request, exc: StarletteHTTPExce
         "app_name": AppConfig.APP_NAME,
         "url": request.url.path,
         "detail": exc.detail,
+        "current_theme": request.cookies.get("theme", ""),
         "now": time_now().strftime("%Y%m%d%H%M%S"),
     }
     if exc.status_code == 404:
