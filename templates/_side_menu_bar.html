@@ -6,30 +6,21 @@
             <!-- Sidebar Brand Header -->
             <a href="/page?page=home" class="flex items-center gap-3 px-2 py-3 border-b border-base-content/10 hover:opacity-80 transition-opacity">
                 <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-shapes"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <div>
                     <h2 class="font-bold text-sm tracking-wide">{{ app_name }}</h2>
-                    <p class="text-[10px] text-base-content/60">Template Starter Kit</p>
+                    <p class="text-[10px] text-base-content/60">Access Control System</p>
                 </div>
             </a>
 
             <!-- Navigation Links -->
             <ul class="menu menu-md p-0 gap-1">
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2" data-i18n="Main Menu">Main Menu</li>
-                {% for item in user_menus | default([]) if item.category != 'system' %}
-                <li>
-                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
-                        <i class="{{ item.icon }} w-5 text-center"></i>
-                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
-                    </a>
-                </li>
-                {% endfor %}
-
-                {% set sys_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'system') | list %}
-                {% if sys_menus %}
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4" data-i18n="System">System</li>
-                {% for item in sys_menus %}
+                <!-- 📊 Overview -->
+                {% set main_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'main') | list %}
+                {% if main_menus %}
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2" data-i18n="Overview">Overview</li>
+                {% for item in main_menus %}
                 <li>
                     <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
                         <i class="{{ item.icon }} w-5 text-center"></i>
@@ -39,7 +30,76 @@
                 {% endfor %}
                 {% endif %}
 
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-4" data-i18n="Documentation">Documentation</li>
+                <!-- 🛡️ Access Control Management -->
+                {% set access_menus = (user_menus | default([])) | selectattr('category', 'in', ['access', 'monitor', 'logs', 'management', 'hardware', 'security']) | list %}
+                {% if access_menus %}
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Access Control">Access Control</li>
+                {% for item in access_menus %}
+                <li>
+                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center"></i>
+                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
+
+                <!-- ⚙️ System Settings (with Submenus) -->
+                {% set sys_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'system') | list %}
+                {% if sys_menus %}
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="System">System</li>
+                {% for item in sys_menus %}
+                    {% if item.children %}
+                    <li>
+                        <details {% if active_page == item.page or active_page == item.page ~ '_manager' %}open{% endif %}>
+                            <summary class="font-semibold {% if active_page == item.page %}text-primary font-bold{% endif %}">
+                                <i class="{{ item.icon }} w-5 text-center"></i>
+                                <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                            </summary>
+                            <ul class="ml-1 border-l border-base-content/10 pl-2 space-y-1 mt-1">
+                                <li>
+                                    <a href="{{ item.url }}" class="text-xs py-1.5 flex items-center gap-2 hover:text-primary">
+                                        <i class="fa-solid fa-table-cells-large w-4 text-center text-xs opacity-60"></i>
+                                        <span data-i18n="All Settings">All Settings Overview</span>
+                                    </a>
+                                </li>
+                                {% for sub in item.children %}
+                                <li>
+                                    <a href="{{ sub.url }}" class="text-xs py-1.5 flex items-center gap-2 hover:text-primary">
+                                        <i class="{{ sub.icon }} w-4 text-center text-xs opacity-60"></i>
+                                        <span data-i18n="{{ sub.title }}">{{ sub.title }}</span>
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </details>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
+                            <i class="{{ item.icon }} w-5 text-center"></i>
+                            <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
+
+                <!-- Fallback for any other custom menus -->
+                {% set other_menus = (user_menus | default([])) | rejectattr('category', 'in', ['main', 'access', 'monitor', 'logs', 'management', 'hardware', 'security', 'system']) | list %}
+                {% if other_menus %}
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Other">Other</li>
+                {% for item in other_menus %}
+                <li>
+                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center"></i>
+                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
+
+                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Documentation">Documentation</li>
                 <li>
                     <a href="/docs" target="_blank">
                         <i class="fa-solid fa-code w-5 text-center"></i>

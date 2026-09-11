@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-clock-rotate-left" %}
+                {% set header_title = "Access Event Logs" %}
+                {% set header_desc = "Complete chronological audit trail of all card taps, authorization checks, and door openings." %}
+                {% set header_badge = "Audit Trail" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action & Filter Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Export Excel -->
+                            <a id="btnExportExcel" href="/api/access/log/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Multi-column Filters -->
+                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                            <!-- Result Filter -->
+                            <select id="filterResult" onchange="reloadTable()" class="select select-bordered select-sm text-xs">
+                                <option value="">All Results (ทั้งหมด)</option>
+                                <option value="GRANTED">GRANTED (ผ่าน)</option>
+                                <option value="DENIED">DENIED (ปฏิเสธ)</option>
+                            </select>
+
+                            <!-- Direction Filter -->
+                            <select id="filterDirection" onchange="reloadTable()" class="select select-bordered select-sm text-xs">
+                                <option value="">All Directions (ทิศทาง)</option>
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableAccessLogs" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+
+        $(document).ready(function () {
+            tableModel = new TableModel(
+                "#tableAccessLogs",
+                "/api/access/log/datatable",
+                {
+                    table: "Access_Log",
+                    order: [[1, "desc"]], // Default sort by event_time desc
+                    columns: [
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "#",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: function (data) {
+                                return `<span class="font-mono text-base-content/40">#${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "event_time",
+                            name: "event_time",
+                            title: "Date & Time",
+                            render: function (data) {
+                                if (!data) return "-";
+                                const dateStr = data.substring(0, 10);
+                                const timeStr = data.substring(11, 19);
+                                return `<div class="font-mono"><span class="font-bold text-base-content">${timeStr}</span> <span class="text-[10px] text-base-content/50">${dateStr}</span></div>`;
+                            }
+                        },
+                        {
+                            data: "card_number",
+                            name: "card_number",
+                            title: "Card Number",
+                            render: function (data) {
+                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "member_name",
+                            name: "member_name",
+                            title: "Cardholder",
+                            render: function (data) {
+                                return `<span class="font-bold text-base-content">${data || "Unknown"}</span>`;
+                            }
+                        },
+                        {
+                            data: "department",
+                            name: "department",
+                            title: "Department",
+                            render: function (data) {
+                                return data ? `<span class="badge badge-sm badge-soft">${data}</span>` : "-";
+                            }
+                        },
+                        {
+                            data: "door_name",
+                            name: "door_name",
+                            title: "Door / Gate",
+                            render: function (data) {
+                                return `<span class="font-semibold text-base-content">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "direction",
+                            name: "direction",
+                            title: "Direction",
+                            render: function (data) {
+                                const isIncoming = (data === "IN");
+                                return `<span class="badge badge-xs ${isIncoming ? "badge-primary" : "badge-neutral"} font-mono font-bold">${data || "IN"}</span>`;
+                            }
+                        },
+                        {
+                            data: "result",
+                            name: "result",
+                            title: "Result",
+                            render: function (data) {
+                                const isGranted = (data === "GRANTED");
+                                return `<span class="badge badge-sm ${isGranted ? "badge-success" : "badge-error"} font-bold gap-1">
+                                    <i class="${isGranted ? "fa-solid fa-check" : "fa-solid fa-xmark"}"></i> ${data}
+                                </span>`;
+                            }
+                        },
+                        {
+                            data: "reason",
+                            name: "reason",
+                            title: "Verification Reason",
+                            render: function (data, type, row) {
+                                const isGranted = (row.result === "GRANTED");
+                                return `<span class="${isGranted ? "text-success font-medium" : "text-error font-medium"}">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "event_type",
+                            name: "event_type",
+                            title: "Event Type",
+                            render: function (data) {
+                                return `<span class="badge badge-xs badge-outline font-mono text-[10px]">${data || "CARD_SWIPE"}</span>`;
+                            }
+                        }
+                    ]
+                }
+            );
+
+            // Set initial filters
+            tableModel.data_custom_filter = {
+                result: $("#filterResult").val(),
+                direction: $("#filterDirection").val()
+            };
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
+        });
+
+        window.reloadTable = function () {
+            if (tableModel) {
+                tableModel.data_custom_filter = {
+                    result: $("#filterResult").val(),
+                    direction: $("#filterDirection").val()
+                };
+                tableModel.reload();
+            }
+        };
+    </script>
+
+</body>
+</html>

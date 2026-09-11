@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-door-open" %}
+                {% set header_title = "Doors & Barrier Gates" %}
+                {% set header_desc = "Configure access points, turnstiles, vehicle barriers, IP controllers, and relay pulse timings." %}
+                {% set header_badge = "Hardware Controller" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add New Door / Gate</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/access/door/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableDoors" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <dialog id="doorModal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-door-closed"></i>
+                <span>Add New Door / Gate</span>
+            </h3>
+
+            <form id="doorForm" onsubmit="saveDoor(event)" class="space-y-3">
+                <input type="hidden" id="doorId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Code *</span></label>
+                        <input type="text" id="doorCode" class="input input-bordered input-sm font-mono" placeholder="e.g. DOOR-01" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Type</span></label>
+                        <select id="doorType" class="select select-bordered select-sm text-xs">
+                            <option value="DOOR">Door (ประตูทั่วไป)</option>
+                            <option value="BARRIER_GATE">Barrier Gate (ไม้กั้นรถยนต์)</option>
+                            <option value="TURNSTILE">Turnstile (เครื่องกั้นสามขา/ปีกผีเสื้อ)</option>
+                            <option value="SLIDING_DOOR">Sliding Door (ประตูเลื่อนอัตโนมัติ)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Door Name *</span></label>
+                    <input type="text" id="doorName" class="input input-bordered input-sm" placeholder="e.g. Main Lobby Turnstile 1" required />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Zone / Location</span></label>
+                        <input type="text" id="doorZone" class="input input-bordered input-sm" placeholder="e.g. Building A (Floor 1)" value="Main Building" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Direction</span></label>
+                        <select id="doorDirection" class="select select-bordered select-sm text-xs">
+                            <option value="IN">IN (ทางเข้า)</option>
+                            <option value="OUT">OUT (ทางออก)</option>
+                            <option value="BOTH">BOTH (สองทิศทาง)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">IP Address</span></label>
+                        <input type="text" id="doorIp" class="input input-bordered input-sm font-mono" placeholder="192.168.1.100" value="127.0.0.1" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Relay Pulse (s)</span></label>
+                        <input type="number" min="1" max="60" id="doorRelay" class="input input-bordered input-sm" value="5" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="doorStatus" class="select select-bordered select-sm text-xs">
+                            <option value="ONLINE">ONLINE</option>
+                            <option value="OFFLINE">OFFLINE</option>
+                            <option value="DISABLED">DISABLED</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Description / Notes</span></label>
+                    <textarea id="doorDesc" class="textarea textarea-bordered textarea-sm" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="doorModal.close()">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Door</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+
+        $(document).ready(function () {
+            tableModel = new TableModel(
+                "#tableDoors",
+                "/api/access/door/datatable",
+                {
+                    table: "Access_Door",
+                    order: [[1, "asc"]],
+                    columns: [
+                        {
+                            data: "id",
+                            title: '<h3 class="font-bold text-xs text-center">Actions</h3>',
+                            orderable: false,
+                            searchable: false,
+                            className: "noExport text-center",
+                            render: function (data, type, row) {
+                                return `
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button onclick="remoteUnlock(${data}, '${row.name}')" class="btn btn-xs btn-outline btn-success gap-1" title="Remote Unlock">
+                                            <i class="fa-solid fa-unlock"></i> Open
+                                        </button>
+                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button onclick="confirmDelete(${data}, '${row.name}')" class="btn btn-ghost btn-xs btn-circle text-error" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "#",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: function (data) {
+                                return `<span class="font-mono text-base-content/40">#${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "code",
+                            name: "code",
+                            title: "Door Code",
+                            render: function (data) {
+                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "name",
+                            name: "name",
+                            title: "Name",
+                            render: function (data) {
+                                return `<span class="font-bold text-base-content">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "zone",
+                            name: "zone",
+                            title: "Zone",
+                            render: function (data) {
+                                return `<span class="text-xs text-base-content/70">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "door_type",
+                            name: "door_type",
+                            title: "Type",
+                            render: function (data) {
+                                let icon = "fa-door-closed";
+                                if (data === "BARRIER_GATE") icon = "fa-road-barrier";
+                                if (data === "TURNSTILE") icon = "fa-arrows-turn-to-dots";
+                                return `<span class="badge badge-sm badge-soft gap-1.5"><i class="fa-solid ${icon} text-[10px]"></i> ${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "direction",
+                            name: "direction",
+                            title: "Direction",
+                            render: function (data) {
+                                return `<span class="badge badge-xs badge-neutral font-mono font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "ip_address",
+                            name: "ip_address",
+                            title: "IP Controller",
+                            render: function (data) {
+                                return `<span class="font-mono text-[11px] text-base-content/60">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "relay_time_sec",
+                            name: "relay_time_sec",
+                            title: "Relay (sec)",
+                            render: function (data) {
+                                return `<span class="font-bold">${data}s</span>`;
+                            }
+                        },
+                        {
+                            data: "status",
+                            name: "status",
+                            title: "Status",
+                            render: function (data) {
+                                const isOnline = (data === "ONLINE");
+                                return `<span class="badge badge-sm ${isOnline ? "badge-success" : "badge-error"} font-bold gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white ${isOnline ? "animate-pulse" : ""}"></span> ${data}
+                                </span>`;
+                            }
+                        }
+                    ]
+                }
+            );
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
+        });
+
+        window.reloadTable = function () {
+            tableModel?.reload();
+        };
+        window.openCreateModal = openCreateModal;
+        window.openEditModal = openEditModal;
+        window.saveDoor = saveDoor;
+        window.confirmDelete = confirmDelete;
+        window.remoteUnlock = remoteUnlock;
+
+        function openCreateModal() {
+            document.getElementById('doorId').value = '';
+            document.getElementById('doorCode').value = '';
+            document.getElementById('doorName').value = '';
+            document.getElementById('doorZone').value = 'Main Building';
+            document.getElementById('doorType').value = 'DOOR';
+            document.getElementById('doorDirection').value = 'IN';
+            document.getElementById('doorIp').value = '127.0.0.1';
+            document.getElementById('doorRelay').value = 5;
+            document.getElementById('doorStatus').value = 'ONLINE';
+            document.getElementById('doorDesc').value = '';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-door-open"></i><span>Add New Door / Gate</span>';
+            doorModal.showModal();
+        }
+
+        async function openEditModal(id) {
+            try {
+                const res = await fetch(`/api/access/door/${id}`);
+                const result = await res.json();
+                if (!result.success) {
+                    if (window.toast) toast.error("Failed to load door data");
+                    return;
+                }
+                const d = result.data;
+                document.getElementById('doorId').value = d.id;
+                document.getElementById('doorCode').value = d.code;
+                document.getElementById('doorName').value = d.name;
+                document.getElementById('doorZone').value = d.zone || '';
+                document.getElementById('doorType').value = d.door_type;
+                document.getElementById('doorDirection').value = d.direction;
+                document.getElementById('doorIp').value = d.ip_address || '127.0.0.1';
+                document.getElementById('doorRelay').value = d.relay_time_sec || 5;
+                document.getElementById('doorStatus').value = d.status;
+                document.getElementById('doorDesc').value = d.description || '';
+                document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Edit Door / Gate</span>';
+                doorModal.showModal();
+            } catch (err) {
+                console.error("Edit load error:", err);
+            }
+        }
+
+        async function saveDoor(event) {
+            event.preventDefault();
+            const id = document.getElementById('doorId').value;
+            const payload = {
+                code: document.getElementById('doorCode').value.trim(),
+                name: document.getElementById('doorName').value.trim(),
+                zone: document.getElementById('doorZone').value.trim(),
+                door_type: document.getElementById('doorType').value,
+                direction: document.getElementById('doorDirection').value,
+                ip_address: document.getElementById('doorIp').value.trim(),
+                relay_time_sec: parseInt(document.getElementById('doorRelay').value, 10),
+                status: document.getElementById('doorStatus').value,
+                description: document.getElementById('doorDesc').value.trim()
+            };
+
+            const isEdit = !!id;
+            const url = isEdit ? `/api/access/door/${id}` : '/api/access/door/';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    doorModal.close();
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Operation failed");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                if (window.toast) toast.error("Communication error");
+            }
+        }
+
+        function confirmDelete(id, name) {
+            if (confirm(`Are you sure you want to delete door '${name}'?`)) {
+                deleteDoor(id);
+            }
+        }
+
+        async function deleteDoor(id) {
+            try {
+                const res = await fetch(`/api/access/door/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+            }
+        }
+
+        async function remoteUnlock(doorId, doorName) {
+            try {
+                const res = await fetch('/api/access/event/remote_unlock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ door_id: doorId, operator_name: 'Admin Console' })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                } else {
+                    if (window.toast) toast.error(result.detail || "Unlock failed");
+                }
+            } catch (err) {
+                console.error("Remote unlock error:", err);
+            }
+        }
+    </script>
+
+</body>
+</html>

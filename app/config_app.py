@@ -13,8 +13,8 @@ load_dotenv()
 class AppConfig:
     """AppConfig centralized configuration class."""
 
-    APP_NAME = os.getenv("APP_NAME", "PROJECT-STARTER-PKS")
-    APP_TITLE = os.getenv("APP_TITLE", "PKS Modern Management System")
+    APP_NAME = os.getenv("APP_NAME", "PKS-ACCESS-CONTROL")
+    APP_TITLE = os.getenv("APP_TITLE", "PKS Access Control Management")
     VERSION = os.getenv("VERSION", "1.0.0")
     DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
     PROD_MODE = not DEBUG

@@ -56,24 +56,9 @@
                     </div>
                 </div>
 
-                <!-- DataTables Card -->
-                <div class="card bg-base-100 shadow-sm border border-base-content/5 p-4 overflow-x-auto">
-                    <table id="tableSample" class="table table-zebra table-sm w-full text-xs">
-                        <thead>
-                            <tr class="bg-base-200/60 text-base-content/70">
-                                <th>ID</th>
-                                <th>Code</th>
-                                <th>Item Name</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                                <th>Updated At</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableSample" class="w-full overflow-x-auto"></div>
                 </div>
 
             </main>
@@ -150,84 +135,95 @@
     {% include '_dialog.html' %}
     {% include '_script.html' %}
 
-    <script>
-        let table = null;
+    <script type="module">
+        import { TableModel, actionButtonsTemplate } from "/static/js/_table_class.js";
+
+        let tableModel = null;
 
         $(document).ready(function () {
-            table = $('#tableSample').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                ajax: {
-                    url: '/api/sample/datatable',
-                    type: 'GET',
-                    data: function (d) {
-                        d.table = "Sample_Item";
-                        const statusVal = $('#filterStatus').val();
-                        if (statusVal) {
-                            d.filter = JSON.stringify({ "sample_item.status": statusVal });
+            tableModel = new TableModel(
+                "#tableSample",
+                "/api/sample/datatable",
+                {
+                    table: "Sample_Item",
+                    order: [[1, 'desc']],
+                    columns: [
+                        {
+                            data: null,
+                            title: '<h3 class="font-bold text-xs text-center">Actions</h3>',
+                            orderable: false,
+                            searchable: false,
+                            className: "noExport text-center",
+                            render: function (data, type, row) {
+                                const id = row.id || (row.Sample_Item && row.Sample_Item.id);
+                                return `
+                                    <div class="inline-flex gap-1">
+                                        <button class="btn btn-ghost btn-xs text-info hover:bg-info/10" onclick="editItem(${id})" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="btn btn-ghost btn-xs text-error hover:bg-error/10" onclick="deleteItem(${id})" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "ID",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: data => `<span class="badge badge-outline badge-primary font-mono text-[11px] font-bold">#${data}</span>`
+                        },
+                        {
+                            data: "code",
+                            name: "code",
+                            title: "Code",
+                            render: data => `<span class="badge badge-outline badge-primary font-mono text-[11px] font-bold">${data || ''}</span>`
+                        },
+                        { data: "name", name: "name", title: "Item Name", className: "font-semibold" },
+                        { data: "category", name: "category", title: "Category" },
+                        {
+                            data: "price",
+                            name: "price",
+                            title: "Price",
+                            render: data => Number(data || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }) + " ฿"
+                        },
+                        { data: "quantity", name: "quantity", title: "Quantity" },
+                        {
+                            data: "status",
+                            name: "status",
+                            title: "Status",
+                            render: function (data) {
+                                if (data === "active") return '<span class="badge badge-success badge-xs gap-1">active</span>';
+                                return '<span class="badge badge-ghost badge-xs gap-1">inactive</span>';
+                            }
+                        },
+                        {
+                            data: "updated_at",
+                            name: "updated_at",
+                            title: "Updated At",
+                            render: data => data ? dayjs(data).format('DD/MM/YYYY HH:mm') : '-'
                         }
+                    ],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search code, name..."
                     }
-                },
-                columns: [
-                    { data: "id", name: "id" },
-                    {
-                        data: "code",
-                        name: "code",
-                        render: data => `<span class="badge badge-outline badge-primary font-mono text-[11px] font-bold">${data || ''}</span>`
-                    },
-                    { data: "name", name: "name", className: "font-semibold" },
-                    { data: "category", name: "category" },
-                    {
-                        data: "price",
-                        name: "price",
-                        render: data => Number(data || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 }) + " ฿"
-                    },
-                    { data: "quantity", name: "quantity" },
-                    {
-                        data: "status",
-                        name: "status",
-                        render: function (data) {
-                            if (data === "active") return '<span class="badge badge-success badge-xs gap-1">active</span>';
-                            return '<span class="badge badge-ghost badge-xs gap-1">inactive</span>';
-                        }
-                    },
-                    {
-                        data: "updated_at",
-                        name: "updated_at",
-                        render: data => data ? dayjs(data).format('DD/MM/YYYY HH:mm') : '-'
-                    },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        className: "text-center",
-                        render: function (data, type, row) {
-                            const id = row.id || (row.Sample_Item && row.Sample_Item.id);
-                            return `
-                                <div class="inline-flex gap-1">
-                                    <button class="btn btn-ghost btn-xs text-info hover:bg-info/10" onclick="editItem(${id})" title="Edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button class="btn btn-ghost btn-xs text-error hover:bg-error/10" onclick="deleteItem(${id})" title="Delete">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                </div>
-                            `;
-                        }
-                    }
-                ],
-                order: [[0, 'desc']],
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search code, name..."
                 }
-            });
+            );
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
         });
 
-        function reloadTable() {
-            if (table) table.ajax.reload(null, false);
-        }
+        window.reloadTable = function () {
+            if (!tableModel) return;
+            const statusVal = $('#filterStatus').val();
+            tableModel.filter = statusVal ? JSON.stringify({ "sample_item.status": statusVal }) : "";
+            tableModel.reload();
+        };
 
         function openCreateModal() {
             document.getElementById("itemForm").reset();

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-id-card-clip" %}
+                {% set header_title = "Cardholders & Members" %}
+                {% set header_desc = "Manage personnel, employees, contractors, visitors, and assigned security access groups." %}
+                {% set header_badge = "Identity & Access" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Add Cardholder</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/access/member/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableMembers" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <dialog id="memberModal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Add Cardholder</span>
+            </h3>
+
+            <form id="memberForm" onsubmit="saveMember(event)" class="space-y-3">
+                <input type="hidden" id="memberId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Member Code *</span></label>
+                        <input type="text" id="memberCode" class="input input-bordered input-sm font-mono" placeholder="e.g. MEM-001" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Access Group</span></label>
+                        <select id="memberAccessGroup" class="select select-bordered select-sm text-xs">
+                            <option value="">-- No Group Assigned --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">First Name *</span></label>
+                        <input type="text" id="firstName" class="input input-bordered input-sm" placeholder="First name" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Last Name</span></label>
+                        <input type="text" id="lastName" class="input input-bordered input-sm" placeholder="Last name" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Department</span></label>
+                        <input type="text" id="memberDept" class="input input-bordered input-sm" placeholder="e.g. IT / HR / Management" value="General" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Phone</span></label>
+                        <input type="text" id="memberPhone" class="input input-bordered input-sm" placeholder="08x-xxx-xxxx" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Email</span></label>
+                    <input type="email" id="memberEmail" class="input input-bordered input-sm" placeholder="user@company.com" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="memberStatus" class="select select-bordered select-sm text-xs">
+                            <option value="active">Active (ใช้งานได้)</option>
+                            <option value="inactive">Inactive (ระงับชั่วคราว)</option>
+                            <option value="expired">Expired (หมดอายุ)</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Expiration Date</span></label>
+                        <input type="date" id="memberExpire" class="input input-bordered input-sm text-xs" />
+                    </div>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="memberModal.close()">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Cardholder</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel, actionButtonsTemplate } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+        let accessGroups = [];
+
+        $(document).ready(function () {
+            loadAccessGroups();
+
+            tableModel = new TableModel(
+                "#tableMembers",
+                "/api/access/member/datatable",
+                {
+                    table: "Access_Member",
+                    order: [[1, "asc"]],
+                    columns: [
+                        {
+                            data: "id",
+                            title: '<h3 class="font-bold text-xs text-center">Actions</h3>',
+                            orderable: false,
+                            searchable: false,
+                            className: "noExport text-center",
+                            render: function (data, type, row) {
+                                return `
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button onclick="confirmDelete(${data}, '${row.first_name}')" class="btn btn-ghost btn-xs btn-circle text-error" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "#",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: function (data) {
+                                return `<span class="font-mono text-base-content/40">#${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "member_code",
+                            name: "member_code",
+                            title: "Code",
+                            render: function (data) {
+                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "first_name",
+                            name: "first_name",
+                            title: "Full Name",
+                            render: function (data, type, row) {
+                                const last = row.last_name || "";
+                                return `<div class="font-bold text-base-content">${data} ${last}</div>`;
+                            }
+                        },
+                        {
+                            data: "department",
+                            name: "department",
+                            title: "Department",
+                            render: function (data) {
+                                return data ? `<span class="badge badge-sm badge-soft">${data}</span>` : "-";
+                            }
+                        },
+                        {
+                            data: "phone",
+                            name: "phone",
+                            title: "Phone",
+                            render: function (data) {
+                                return `<span class="font-mono text-xs">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "email",
+                            name: "email",
+                            title: "Email",
+                            render: function (data) {
+                                return `<span class="text-xs text-base-content/70">${data || "-"}</span>`;
+                            }
+                        },
+                        {
+                            data: "access_group_id",
+                            name: "access_group_id",
+                            title: "Access Group",
+                            render: function (data) {
+                                if (!data) return '<span class="text-base-content/30 text-xs">No Group</span>';
+                                const grp = accessGroups.find((g) => g.id === data);
+                                return grp
+                                    ? `<span class="badge badge-xs badge-info font-bold">${grp.name}</span>`
+                                    : `<span class="badge badge-xs badge-neutral">Group #${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "status",
+                            name: "status",
+                            title: "Status",
+                            render: function (data) {
+                                const isActive = data === "active";
+                                return `<span class="badge badge-sm ${isActive ? "badge-success" : "badge-error"} font-bold">
+                                    ${data}
+                                </span>`;
+                            }
+                        }
+                    ],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search cardholders...",
+                        lengthMenu: "Show _MENU_",
+                        paginate: {
+                            previous: '<i class="fa-solid fa-chevron-left text-xs"></i>',
+                            next: '<i class="fa-solid fa-chevron-right text-xs"></i>'
+                        }
+                    }
+                }
+            );
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
+        });
+
+        window.reloadTable = function () {
+            tableModel?.reload();
+        };
+        window.openCreateModal = openCreateModal;
+        window.openEditModal = openEditModal;
+        window.confirmDelete = confirmDelete;
+        window.saveMember = saveMember;
+
+        async function loadAccessGroups() {
+            try {
+                const res = await fetch('/api/access/group/list/all');
+                const result = await res.json();
+                if (result.success && result.data) {
+                    accessGroups = result.data;
+                    const select = document.getElementById('memberAccessGroup');
+                    select.innerHTML = '<option value="">-- No Group Assigned --</option>' +
+                        accessGroups.map(g => `<option value="${g.id}">${g.name} (${g.code})</option>`).join('');
+                }
+            } catch (err) {
+                console.error("Failed to load access groups:", err);
+            }
+        }
+
+        function openCreateModal() {
+            document.getElementById('memberId').value = '';
+            document.getElementById('memberCode').value = '';
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('memberDept').value = 'General';
+            document.getElementById('memberPhone').value = '';
+            document.getElementById('memberEmail').value = '';
+            document.getElementById('memberAccessGroup').value = '';
+            document.getElementById('memberStatus').value = 'active';
+            document.getElementById('memberExpire').value = '';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-id-card"></i><span>Add Cardholder</span>';
+            memberModal.showModal();
+        }
+
+        async function openEditModal(id) {
+            try {
+                const res = await fetch(`/api/access/member/${id}`);
+                const result = await res.json();
+                if (!result.success) {
+                    if (window.toast) toast.error("Failed to load member data");
+                    return;
+                }
+                const m = result.data;
+                document.getElementById('memberId').value = m.id;
+                document.getElementById('memberCode').value = m.member_code;
+                document.getElementById('firstName').value = m.first_name;
+                document.getElementById('lastName').value = m.last_name || '';
+                document.getElementById('memberDept').value = m.department || '';
+                document.getElementById('memberPhone').value = m.phone || '';
+                document.getElementById('memberEmail').value = m.email || '';
+                document.getElementById('memberAccessGroup').value = m.access_group_id || '';
+                document.getElementById('memberStatus').value = m.status || 'active';
+                document.getElementById('memberExpire').value = m.expire_date ? m.expire_date.substring(0, 10) : '';
+                document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Edit Cardholder</span>';
+                memberModal.showModal();
+            } catch (err) {
+                console.error("Edit load error:", err);
+            }
+        }
+
+        async function saveMember(event) {
+            event.preventDefault();
+            const id = document.getElementById('memberId').value;
+            const groupIdVal = document.getElementById('memberAccessGroup').value;
+
+            const payload = {
+                member_code: document.getElementById('memberCode').value.trim(),
+                first_name: document.getElementById('firstName').value.trim(),
+                last_name: document.getElementById('lastName').value.trim(),
+                department: document.getElementById('memberDept').value.trim(),
+                phone: document.getElementById('memberPhone').value.trim(),
+                email: document.getElementById('memberEmail').value.trim(),
+                access_group_id: groupIdVal ? parseInt(groupIdVal, 10) : null,
+                status: document.getElementById('memberStatus').value,
+                expire_date: document.getElementById('memberExpire').value || null
+            };
+
+            const isEdit = !!id;
+            const url = isEdit ? `/api/access/member/${id}` : '/api/access/member/';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    memberModal.close();
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Operation failed");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                if (window.toast) toast.error("Communication error");
+            }
+        }
+
+        function confirmDelete(id, name) {
+            if (confirm(`Are you sure you want to delete cardholder '${name}'?`)) {
+                deleteMember(id);
+            }
+        }
+
+        async function deleteMember(id) {
+            try {
+                const res = await fetch(`/api/access/member/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+            }
+        }
+    </script>
+
+</body>
+</html>

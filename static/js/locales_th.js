@@ -1,4 +1,8 @@
 export const th = {
+    "Access Control": "ควบคุมการเข้า-ออก",
+    "All Settings": "ภาพรวมการตั้งค่าทั้งหมด",
+    "Roles & Permissions": "บทบาทและกำหนดสิทธิ์",
+    "Real-time Broadcast": "ทดสอบสัญญาณสด (SSE)",
     "Security & Password": "ความปลอดภัยและรหัสผ่าน",
     "User Types": "ประเภทผู้ใช้งาน",
     "User Management": "จัดการผู้ใช้งาน",

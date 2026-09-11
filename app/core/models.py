@@ -138,6 +138,126 @@ class Sample_Item(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
 
 
+# ---------------------------------------------------------------------------
+# 🚪 ACCESS CONTROL MANAGEMENT MODELS
+# ---------------------------------------------------------------------------
+
+
+class Access_Zone(SQLModel, table=True):
+    """Access Zone / Area Entity for presence and occupancy tracking."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    code: str = Field(unique=True, index=True, nullable=False)
+    name: str = Field(index=True, nullable=False)
+    zone_type: str = Field(default="INTERNAL", index=True)  # OUTSIDE, INTERNAL, HIGH_SECURITY, MUSTER_POINT
+    parent_zone_id: int | None = Field(default=None, foreign_key="access_zone.id", index=True)
+    max_occupancy: int = Field(default=0)  # 0 = unlimited, >0 = maximum personnel capacity
+    antipassback_enabled: bool = Field(default=False)
+    antipassback_timeout_min: int = Field(default=30)
+    status: str = Field(default="active", index=True)  # active, inactive
+    description: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Door(SQLModel, table=True):
+    """Access point, door, turnstile, or barrier gate entity."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    code: str = Field(unique=True, index=True, nullable=False)
+    name: str = Field(index=True, nullable=False)
+    zone: str = Field(default="Main Building", index=True)
+    from_zone_id: int | None = Field(default=None, foreign_key="access_zone.id", index=True)
+    to_zone_id: int | None = Field(default=None, foreign_key="access_zone.id", index=True)
+    door_type: str = Field(default="DOOR", index=True)  # DOOR, BARRIER_GATE, TURNSTILE, SLIDING_DOOR
+    ip_address: str = Field(default="127.0.0.1")
+    controller_type: str = Field(default="REST_WEBHOOK", index=True)  # REST_WEBHOOK, TCP_IP, WIEGAND, SIMULATOR
+    direction: str = Field(default="IN", index=True)  # IN, OUT, BOTH
+    relay_time_sec: int = Field(default=5)
+    status: str = Field(default="ONLINE", index=True)  # ONLINE, OFFLINE, DISABLED
+    description: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Group(SQLModel, table=True):
+    """Access permission group with timezone schedules and allowed doors."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    code: str = Field(unique=True, index=True, nullable=False)
+    name: str = Field(index=True, nullable=False)
+    time_start: str = Field(default="00:00")  # HH:MM format
+    time_end: str = Field(default="23:59")    # HH:MM format
+    allowed_days: str = Field(default="MON,TUE,WED,THU,FRI,SAT,SUN")
+    doors_allowed: str = Field(default="[]")  # JSON string of door ids, e.g. "[1, 2, 3]" or "*"
+    status: str = Field(default="active", index=True)
+    description: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Member(SQLModel, table=True):
+    """Cardholder / Member profile entity."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    member_code: str = Field(unique=True, index=True, nullable=False)
+    first_name: str = Field(index=True, nullable=False)
+    last_name: str = Field(default="", index=True)
+    department: str = Field(default="General", index=True)
+    phone: str = Field(default="")
+    email: str = Field(default="")
+    picture_url: str = Field(default="")
+    access_group_id: int | None = Field(default=None, foreign_key="access_group.id", index=True)
+    current_zone_id: int | None = Field(default=None, foreign_key="access_zone.id", index=True)
+    is_inside: bool = Field(default=False, index=True)
+    last_access_door_id: int | None = Field(default=None, index=True)
+    last_access_time: datetime | None = Field(default=None, sa_type=ISODateTime)
+    last_direction: str | None = Field(default=None)
+    status: str = Field(default="active", index=True)  # active, inactive, expired, suspended
+    expire_date: datetime | None = Field(default=None, sa_type=ISODateTime)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Card(SQLModel, table=True):
+    """RFID Card, Keycard, or Credential token entity."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    card_number: str = Field(unique=True, index=True, nullable=False)
+    card_type: str = Field(default="RFID_125K", index=True)  # RFID_125K, MIFARE, UHF, QR_CODE, PIN
+    member_id: int | None = Field(default=None, foreign_key="access_member.id", index=True)
+    pin_code: str | None = Field(default=None)
+    status: str = Field(default="active", index=True)  # active, blocked, lost, expired
+    issue_date: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    expire_date: datetime | None = Field(default=None, sa_type=ISODateTime)
+    remark: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Log(SQLModel, table=True):
+    """Access event logs (Card swipe, gate opening, permission audit)."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    event_time: datetime = Field(default_factory=time_now, sa_type=ISODateTime, index=True)
+    card_number: str = Field(default="", index=True)
+    member_id: int | None = Field(default=None, index=True)
+    member_name: str = Field(default="Unknown", index=True)
+    department: str = Field(default="", index=True)
+    door_id: int | None = Field(default=None, index=True)
+    door_name: str = Field(default="Unknown Door", index=True)
+    from_zone_id: int | None = Field(default=None, index=True)
+    from_zone_name: str = Field(default="", index=True)
+    to_zone_id: int | None = Field(default=None, index=True)
+    to_zone_name: str = Field(default="", index=True)
+    direction: str = Field(default="IN", index=True)  # IN, OUT
+    result: str = Field(default="GRANTED", index=True)  # GRANTED, DENIED, EXPIRED, UNREGISTERED, OUT_OF_SCHEDULE
+    reason: str = Field(default="Access Granted")
+    event_type: str = Field(default="CARD_SWIPE", index=True)  # CARD_SWIPE, REMOTE_OPEN, MANUAL_BUTTON, ALARM
+    snapshot_url: str = Field(default="")
+    reader_id: str = Field(default="")
+
+
 class _DynamicModelMap(dict):
     """
     Dynamic dictionary that automatically discovers any SQLModel table class
@@ -188,23 +308,35 @@ MODEL_MAP = _DynamicModelMap(
         "system_users": System_Users,
         "Sample_Item": Sample_Item,
         "sample_item": Sample_Item,
+        "Access_Door": Access_Door,
+        "access_door": Access_Door,
+        "Access_Group": Access_Group,
+        "access_group": Access_Group,
+        "Access_Member": Access_Member,
+        "access_member": Access_Member,
+        "Access_Card": Access_Card,
+        "access_card": Access_Card,
+        "Access_Log": Access_Log,
+        "access_log": Access_Log,
     }
 )
 
 
-def build_select_expr(specs: list[dict]):
+def build_select_expr(specs: list[dict], fallback_model: type[SQLModel] | None = None):
     """Build dynamic column selections for DataTables."""
     selects = []
     for s in specs:
         table = (s.get("table") or "").strip()
         col = (s.get("col") or "").strip()
-        model = MODEL_MAP.get(table)
+        model = MODEL_MAP.get(table) or fallback_model
         if not model or not hasattr(model, col):
             continue
         column = getattr(model, col)
         if s.get("name"):
             column = column.label(s["name"])
         selects.append(column)
+    if not selects and fallback_model is not None:
+        selects = [c.label(c.name) for c in fallback_model.__table__.c]
     return selects
 
 
@@ -236,14 +368,14 @@ def build_where_expr(specs: list[dict], filter_dict: dict | None = None):
     return and_(*wheres) if wheres else None
 
 
-def build_order_by_expr(order_by: dict):
+def build_order_by_expr(order_by: dict, fallback_model: type[SQLModel] | None = None):
     """Build dynamic ORDER BY expression for DataTables."""
     if not order_by:
         return None
     table = (order_by.get("table") or "").strip()
     col = (order_by.get("col") or "").strip()
     direction = (order_by.get("dir") or "asc").strip().lower()
-    model = MODEL_MAP.get(table)
+    model = MODEL_MAP.get(table) or fallback_model
     if not model or not hasattr(model, col):
         return None
     order_col = getattr(model, col)

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-tower-broadcast" %}
+                {% set header_title = "Live Access Monitor" %}
+                {% set header_desc = "Real-time card swipe stream, access authorization monitor, and remote gate/door control." %}
+                {% set header_badge = "Live SSE Stream" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Simulator & Test Console Toolbar -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="badge badge-primary badge-sm font-bold">Simulator</span>
+                                <span class="text-sm font-bold text-base-content">Card Swipe & Reader Test Console</span>
+                            </div>
+                            <p class="text-xs text-base-content/60">
+                                Simulate card tap events to test real-time validation and gate relay triggers.
+                            </p>
+                        </div>
+
+                        <!-- Simulation Action Form -->
+                        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <!-- Quick Test Presets -->
+                            <div class="dropdown dropdown-end">
+                                <button tabindex="0" class="btn btn-sm btn-outline gap-2">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
+                                    <span>Quick Test Badges</span>
+                                    <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
+                                </button>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-72 z-50 text-xs border border-base-content/10">
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40">Registered Staff</li>
+                                    <li><a onclick="setSimBadge('1001234567', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somchai (IT - All Doors)</a></li>
+                                    <li><a onclick="setSimBadge('1001234568', 'GATE-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somsri (HR - Staff Hours)</a></li>
+                                    <li><a onclick="setSimBadge('1001234569', 'DOOR-03', 'BOTH')"><i class="fa-solid fa-shield text-info"></i> Anan (Security Guard)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2">Denied Test Cases</li>
+                                    <li><a onclick="setSimBadge('9990001111', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-xmark text-error"></i> John Doe (Blocked Card)</a></li>
+                                    <li><a onclick="setSimBadge('RANDOM_9988', 'DOOR-03', 'IN')"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Unregistered Card</a></li>
+                                </ul>
+                            </div>
+
+                            <input type="text" id="simCard" class="input input-bordered input-sm font-mono text-xs w-36" placeholder="Card No" value="1001234567" />
+                            
+                            <select id="simDoor" class="select select-bordered select-sm text-xs w-44">
+                                <option value="DOOR-01">DOOR-01 (Turnstile 1)</option>
+                                <option value="DOOR-02">DOOR-02 (Turnstile 2)</option>
+                                <option value="GATE-01">GATE-01 (Barrier In)</option>
+                                <option value="GATE-02">GATE-02 (Barrier Out)</option>
+                                <option value="DOOR-03">DOOR-03 (Server Room)</option>
+                            </select>
+
+                            <select id="simDirection" class="select select-bordered select-sm text-xs w-24">
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+
+                            <button onclick="triggerSwipe()" id="btnSimulate" class="btn btn-sm btn-primary gap-1 font-bold shadow-sm">
+                                <i class="fa-solid fa-id-card"></i>
+                                <span>Tap Card</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Monitor Stage: Split Screen -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                    <!-- Left Column: Spotlight Last Swipe Card (5 cols) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div id="liveSpotlightCard" class="card bg-base-100 shadow-md border-2 border-primary/30 p-6 transition-all duration-300 relative overflow-hidden">
+                            <div class="flex items-center justify-between border-b border-base-content/10 pb-3 mb-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-success animate-ping"></span>
+                                    <span class="font-bold text-xs uppercase tracking-wider text-base-content/70">Latest Access Event</span>
+                                </div>
+                                <span id="spotlightTime" class="font-mono text-xs text-base-content/50">Waiting for tap...</span>
+                            </div>
+
+                            <!-- Big Visual Status Badge -->
+                            <div id="spotlightBadgeContainer" class="text-center py-4">
+                                <div id="spotlightBadge" class="inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-base-200 text-base-content/50">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                    <span>STANDBY</span>
+                                </div>
+                            </div>
+
+                            <!-- Cardholder Profile Details -->
+                            <div class="flex flex-col sm:flex-row items-center gap-4 py-3 border-y border-base-content/5">
+                                <div id="spotlightAvatar" class="avatar placeholder">
+                                    <div class="bg-primary/10 text-primary rounded-2xl w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="text-center sm:text-left space-y-1 flex-1">
+                                    <h3 id="spotlightName" class="font-black text-lg text-base-content">System Ready</h3>
+                                    <p id="spotlightDept" class="text-xs text-base-content/60">Swipe a card to view verification</p>
+                                    <div class="flex items-center justify-center sm:justify-start gap-2 pt-1 font-mono text-xs text-base-content/50">
+                                        <i class="fa-solid fa-credit-card text-[10px]"></i>
+                                        <span id="spotlightCardNo">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Door & Direction Meta -->
+                            <div class="grid grid-cols-2 gap-3 pt-4 text-xs">
+                                <div class="p-2.5 rounded-xl bg-base-200/60 border border-base-content/5">
+                                    <span class="text-[10px] font-bold uppercase text-base-content/50 block">Access Point</span>
+                                    <span id="spotlightDoor" class="font-bold text-sm text-base-content">-</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-base-200/60 border border-base-content/5">
+                                    <span class="text-[10px] font-bold uppercase text-base-content/50 block">Direction</span>
+                                    <span id="spotlightDirection" class="font-bold text-sm text-base-content">-</span>
+                                </div>
+                            </div>
+
+                            <!-- Reason Message Box -->
+                            <div class="mt-4 p-3 rounded-xl bg-base-200/80 border border-base-content/10">
+                                <span class="text-[10px] font-bold uppercase text-base-content/50 block mb-0.5">Verification Note</span>
+                                <p id="spotlightReason" class="text-xs font-semibold text-base-content/80">No events recorded in this session</p>
+                            </div>
+                        </div>
+
+                        <!-- Quick Remote Open Doors List -->
+                        <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-base-content/70 flex items-center gap-2">
+                                    <i class="fa-solid fa-door-open text-primary"></i>
+                                    <span>Remote Gate & Door Operations</span>
+                                </h4>
+                                <span class="text-[10px] text-base-content/50">Click to pulse relay</span>
+                            </div>
+
+                            <div class="space-y-2" id="remoteDoorsContainer">
+                                <div class="text-center py-4 text-xs text-base-content/40">Loading registered doors...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Real-time Live Log Stream (7 cols) -->
+                    <div class="lg:col-span-7">
+                        <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 h-full flex flex-col">
+                            <div class="flex items-center justify-between border-b border-base-content/10 pb-3 mb-3">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-list-check text-primary"></i>
+                                    <h3 class="font-bold text-sm text-base-content">Live Activity Stream</h3>
+                                    <span id="streamCounter" class="badge badge-sm badge-soft badge-primary font-mono">0 events</span>
+                                </div>
+                                <button onclick="clearStream()" class="btn btn-ghost btn-xs text-base-content/50 hover:text-error">
+                                    <i class="fa-solid fa-trash-can text-xs"></i> Clear Feed
+                                </button>
+                            </div>
+
+                            <!-- Live Feed List Container -->
+                            <div class="flex-1 overflow-y-auto max-h-[580px] space-y-2 pr-1" id="liveFeedList">
+                                <!-- Pre-populated recent events will load here -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script>
+        let eventCount = 0;
+
+        // 1. Initial Load: Fetch Doors for Remote Unlock & Initial Recent Logs
+        $(document).ready(function () {
+            loadDoors();
+            loadRecentLogs();
+            initSSE();
+        });
+
+        // Load Doors for Remote Controls
+        async function loadDoors() {
+            try {
+                const res = await fetch('/api/access/door/list/all');
+                const result = await res.json();
+                if (result.success && result.data) {
+                    renderDoors(result.data);
+                }
+            } catch (err) {
+                console.error("Failed to load doors:", err);
+            }
+        }
+
+        function renderDoors(doors) {
+            const container = document.getElementById('remoteDoorsContainer');
+            if (!doors || doors.length === 0) {
+                container.innerHTML = '<div class="text-center py-4 text-xs text-base-content/40">No doors registered</div>';
+                return;
+            }
+
+            container.innerHTML = doors.map(d => `
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors border border-base-content/5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs">
+                            <i class="${d.door_type === 'BARRIER_GATE' ? 'fa-solid fa-road-barrier' : 'fa-solid fa-door-closed'}"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-xs text-base-content">${d.name}</div>
+                            <div class="text-[10px] text-base-content/50">${d.code} • ${d.zone}</div>
+                        </div>
+                    </div>
+                    <button onclick="remoteUnlock(${d.id}, '${d.name}')" class="btn btn-xs btn-outline btn-success font-bold gap-1 shadow-xs hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-unlock"></i> Open (${d.relay_time_sec}s)
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Remote Unlock Trigger
+        async function remoteUnlock(doorId, doorName) {
+            try {
+                const res = await fetch('/api/access/event/remote_unlock', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ door_id: doorId, operator_name: 'Admin Console' })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) {
+                        toast.success(result.message);
+                    }
+                } else {
+                    if (window.toast) toast.error(result.detail || "Unlock failed");
+                }
+            } catch (err) {
+                console.error("Remote unlock error:", err);
+                if (window.toast) toast.error("Communication error");
+            }
+        }
+
+        // Load Initial Recent Logs
+        async function loadRecentLogs() {
+            try {
+                const res = await fetch('/api/access/log/recent');
+                const result = await res.json();
+                if (result.success && result.data) {
+                    const feed = document.getElementById('liveFeedList');
+                    feed.innerHTML = '';
+                    result.data.forEach(log => {
+                        appendLogCard(log, false);
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load recent logs:", err);
+            }
+        }
+
+        // Simulator Quick Badge Helper
+        function setSimBadge(cardNo, doorCode, direction) {
+            document.getElementById('simCard').value = cardNo;
+            document.getElementById('simDoor').value = doorCode;
+            document.getElementById('simDirection').value = direction;
+        }
+
+        // Trigger Simulated Card Swipe
+        async function triggerSwipe() {
+            const btn = document.getElementById('btnSimulate');
+            const card = document.getElementById('simCard').value.trim();
+            const door = document.getElementById('simDoor').value;
+            const direction = document.getElementById('simDirection').value;
+
+            if (!card) {
+                if (window.toast) toast.warning("Please enter a card number");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Tapping...';
+
+            try {
+                const res = await fetch('/api/access/event/swipe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        card_number: card,
+                        door_code: door,
+                        direction: direction,
+                        reader_id: 'SIM-READER-1'
+                    })
+                });
+                const result = await res.json();
+                // UI will be updated automatically via SSE!
+            } catch (err) {
+                console.error("Simulation error:", err);
+                if (window.toast) toast.error("Simulation request failed");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-id-card"></i> <span>Tap Card</span>';
+            }
+        }
+
+        // Connect to Real-time SSE
+        function initSSE() {
+            const evtSource = new EventSource('/sse');
+
+            evtSource.addEventListener('access_swipe', function (e) {
+                try {
+                    const payload = JSON.parse(e.data);
+                    handleIncomingSwipe(payload);
+                } catch (err) {
+                    console.error("SSE parse error:", err);
+                }
+            });
+
+            evtSource.addEventListener('door_unlocked', function (e) {
+                try {
+                    const payload = JSON.parse(e.data);
+                    if (window.toast) {
+                        toast.info(`Door '${payload.door_name}' unlocked remotely by ${payload.operator}`);
+                    }
+                } catch (err) {
+                    console.error("SSE parse error:", err);
+                }
+            });
+
+            evtSource.onerror = function () {
+                console.warn("SSE connection lost. Reconnecting...");
+            };
+        }
+
+        // Handle incoming real-time swipe event
+        function handleIncomingSwipe(data) {
+            updateSpotlight(data);
+            appendLogCard(data, true);
+        }
+
+        // Update Big Spotlight Card
+        function updateSpotlight(d) {
+            const card = document.getElementById('liveSpotlightCard');
+            const badge = document.getElementById('spotlightBadge');
+            const isGranted = (d.result === 'GRANTED');
+
+            // Sound feedback if available
+            try {
+                const audio = new Audio(isGranted ? '/static/sound/granted.mp3' : '/static/sound/denied.mp3');
+                audio.play().catch(() => {});
+            } catch (e) {}
+
+            // Border & Glow Animation
+            card.classList.remove('border-primary/30', 'border-success', 'border-error', 'shadow-success/20', 'shadow-error/20');
+            card.classList.add(isGranted ? 'border-success' : 'border-error', isGranted ? 'shadow-success/20' : 'shadow-error/20');
+
+            // Badge
+            badge.className = isGranted 
+                ? 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-success text-success-content animate-pulse'
+                : 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-error text-error-content animate-pulse';
+            badge.innerHTML = isGranted 
+                ? '<i class="fa-solid fa-circle-check"></i> <span>ACCESS GRANTED</span>'
+                : '<i class="fa-solid fa-circle-xmark"></i> <span>ACCESS DENIED</span>';
+
+            // Cardholder Info
+            document.getElementById('spotlightName').textContent = d.member_name || 'Unknown Cardholder';
+            document.getElementById('spotlightDept').textContent = d.department || 'No department assigned';
+            document.getElementById('spotlightCardNo').textContent = d.card_number || '-';
+            document.getElementById('spotlightDoor').textContent = d.door_name || d.door_code;
+            document.getElementById('spotlightDirection').textContent = d.direction || 'IN';
+            document.getElementById('spotlightReason').textContent = d.reason || '-';
+            document.getElementById('spotlightTime').textContent = d.time || new Date().toLocaleTimeString();
+
+            // Avatar initial or picture
+            const avatarContainer = document.getElementById('spotlightAvatar');
+            if (d.picture_url) {
+                avatarContainer.innerHTML = `<img src="${d.picture_url}" class="rounded-2xl w-20 h-20 object-cover shadow-inner" />`;
+            } else {
+                const initial = (d.member_name && d.member_name !== 'Unknown') ? d.member_name.charAt(0).toUpperCase() : '?';
+                avatarContainer.innerHTML = `
+                    <div class="${isGranted ? 'bg-success/15 text-success' : 'bg-error/15 text-error'} rounded-2xl w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
+                        ${initial}
+                    </div>
+                `;
+            }
+        }
+
+        // Prepend Log Card to Live Feed
+        function appendLogCard(log, animate = true) {
+            const feed = document.getElementById('liveFeedList');
+            const isGranted = (log.result === 'GRANTED');
+            const timeStr = log.time || (log.event_time ? log.event_time.substring(11, 19) : '');
+
+            const cardHtml = document.createElement('div');
+            cardHtml.className = `p-3 rounded-xl border ${isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20'} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
+            
+            cardHtml.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full ${isGranted ? 'bg-success text-success-content' : 'bg-error text-error-content'} flex items-center justify-center text-xs font-bold shrink-0">
+                        <i class="${isGranted ? 'fa-solid fa-check' : 'fa-solid fa-xmark'}"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs text-base-content">${log.member_name || 'Unknown'}</span>
+                            <span class="badge badge-xs ${isGranted ? 'badge-success' : 'badge-error'} font-mono">${log.result}</span>
+                            <span class="badge badge-xs badge-neutral font-mono">${log.direction || 'IN'}</span>
+                        </div>
+                        <div class="text-[11px] text-base-content/60 mt-0.5">
+                            <span>${log.door_name}</span> • <span class="font-mono">${log.card_number}</span>
+                        </div>
+                        <div class="text-[10px] ${isGranted ? 'text-success' : 'text-error'} font-semibold mt-0.5">
+                            ${log.reason || ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="font-mono text-xs text-base-content/50">${timeStr}</span>
+                </div>
+            `;
+
+            feed.insertBefore(cardHtml, feed.firstChild);
+
+            eventCount++;
+            document.getElementById('streamCounter').textContent = `${eventCount} events`;
+
+            // Limit feed to 40 items to prevent DOM bloat
+            if (feed.children.length > 40) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        function clearStream() {
+            document.getElementById('liveFeedList').innerHTML = '';
+            eventCount = 0;
+            document.getElementById('streamCounter').textContent = '0 events';
+        }
+    </script>
+
+</body>
+</html>

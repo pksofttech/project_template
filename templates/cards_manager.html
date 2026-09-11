@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-credit-card" %}
+                {% set header_title = "Access Cards & RFID Tokens" %}
+                {% set header_desc = "Issue, assign, block, and manage RFID cards, keyfobs, stickers, and cardholder credentials." %}
+                {% set header_badge = "Credentials" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Register New Card</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/access/card/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableCards" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <dialog id="cardModal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Register Access Card</span>
+            </h3>
+
+            <form id="cardForm" onsubmit="saveCard(event)" class="space-y-3">
+                <input type="hidden" id="cardId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Card Number *</span></label>
+                        <input type="text" id="cardNumber" class="input input-bordered input-sm font-mono" placeholder="e.g. 1001234567" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Card Type</span></label>
+                        <select id="cardType" class="select select-bordered select-sm text-xs">
+                            <option value="RFID_125K">RFID 125KHz (EM4100)</option>
+                            <option value="MIFARE">Mifare 13.56MHz</option>
+                            <option value="UHF">UHF Long Range</option>
+                            <option value="QR_CODE">QR Code Voucher</option>
+                            <option value="PIN">Keypad PIN</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Assign to Cardholder</span></label>
+                    <select id="cardMember" class="select select-bordered select-sm text-xs">
+                        <option value="">-- Unassigned (บัตรว่าง) --</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="cardStatus" class="select select-bordered select-sm text-xs">
+                            <option value="active">Active (ใช้งานปกติ)</option>
+                            <option value="blocked">Blocked (ระงับการใช้)</option>
+                            <option value="lost">Lost (แจ้งสูญหาย)</option>
+                            <option value="expired">Expired (หมดอายุ)</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Expiration Date</span></label>
+                        <input type="date" id="cardExpire" class="input input-bordered input-sm text-xs" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Remark / Notes</span></label>
+                    <textarea id="cardRemark" class="textarea textarea-bordered textarea-sm" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="cardModal.close()">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Card</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+        let membersList = [];
+
+        $(document).ready(function () {
+            loadMembers();
+
+            tableModel = new TableModel(
+                "#tableCards",
+                "/api/access/card/datatable",
+                {
+                    table: "Access_Card",
+                    order: [[1, "asc"]],
+                    columns: [
+                        {
+                            data: "id",
+                            title: '<h3 class="font-bold text-xs text-center">Actions</h3>',
+                            orderable: false,
+                            searchable: false,
+                            className: "noExport text-center",
+                            render: function (data, type, row) {
+                                return `
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button onclick="confirmDelete(${data}, '${row.card_number}')" class="btn btn-ghost btn-xs btn-circle text-error" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "#",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: function (data) {
+                                return `<span class="font-mono text-base-content/40">#${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "card_number",
+                            name: "card_number",
+                            title: "Card Number (RFID)",
+                            render: function (data) {
+                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "card_type",
+                            name: "card_type",
+                            title: "Card Type",
+                            render: function (data) {
+                                return `<span class="badge badge-xs badge-soft font-mono">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "member_id",
+                            name: "member_id",
+                            title: "Cardholder",
+                            render: function (data) {
+                                if (!data) return '<span class="text-base-content/30 text-xs">Unassigned</span>';
+                                const mem = membersList.find(m => m.id === data);
+                                return mem ? `<span class="font-bold text-primary">${mem.first_name} ${mem.last_name || ''}</span>` : `<span class="badge badge-xs badge-neutral">Member #${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "status",
+                            name: "status",
+                            title: "Status",
+                            render: function (data) {
+                                let badgeClass = "badge-success";
+                                if (data === "blocked") badgeClass = "badge-error";
+                                if (data === "lost") badgeClass = "badge-warning";
+                                if (data === "expired") badgeClass = "badge-neutral";
+                                return `<span class="badge badge-sm ${badgeClass} font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "issue_date",
+                            name: "issue_date",
+                            title: "Issue Date",
+                            render: function (data) {
+                                return data ? `<span class="font-mono text-xs">${data.substring(0, 10)}</span>` : "-";
+                            }
+                        },
+                        {
+                            data: "remark",
+                            name: "remark",
+                            title: "Remarks",
+                            render: function (data) {
+                                return `<span class="text-xs text-base-content/60">${data || "-"}</span>`;
+                            }
+                        }
+                    ]
+                }
+            );
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
+        });
+
+        window.reloadTable = function () {
+            tableModel?.reload();
+        };
+        window.openCreateModal = openCreateModal;
+        window.openEditModal = openEditModal;
+        window.saveCard = saveCard;
+        window.confirmDelete = confirmDelete;
+
+        async function loadMembers() {
+            try {
+                const res = await fetch('/api/access/member/list/all');
+                const result = await res.json();
+                if (result.success && result.data) {
+                    membersList = result.data;
+                    const select = document.getElementById('cardMember');
+                    select.innerHTML = '<option value="">-- Unassigned (บัตรว่าง) --</option>' +
+                        membersList.map(m => `<option value="${m.id}">${m.first_name} ${m.last_name || ''} (${m.member_code})</option>`).join('');
+                }
+            } catch (err) {
+                console.error("Failed to load members:", err);
+            }
+        }
+
+        function openCreateModal() {
+            document.getElementById('cardId').value = '';
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('cardType').value = 'RFID_125K';
+            document.getElementById('cardMember').value = '';
+            document.getElementById('cardStatus').value = 'active';
+            document.getElementById('cardExpire').value = '';
+            document.getElementById('cardRemark').value = '';
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-credit-card"></i><span>Register Access Card</span>';
+            cardModal.showModal();
+        }
+
+        async function openEditModal(id) {
+            try {
+                const res = await fetch(`/api/access/card/${id}`);
+                const result = await res.json();
+                if (!result.success) {
+                    if (window.toast) toast.error("Failed to load card data");
+                    return;
+                }
+                const c = result.data;
+                document.getElementById('cardId').value = c.id;
+                document.getElementById('cardNumber').value = c.card_number;
+                document.getElementById('cardType').value = c.card_type;
+                document.getElementById('cardMember').value = c.member_id || '';
+                document.getElementById('cardStatus').value = c.status || 'active';
+                document.getElementById('cardExpire').value = c.expire_date ? c.expire_date.substring(0, 10) : '';
+                document.getElementById('cardRemark').value = c.remark || '';
+                document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Edit Access Card</span>';
+                cardModal.showModal();
+            } catch (err) {
+                console.error("Edit load error:", err);
+            }
+        }
+
+        async function saveCard(event) {
+            event.preventDefault();
+            const id = document.getElementById('cardId').value;
+            const memberIdVal = document.getElementById('cardMember').value;
+
+            const payload = {
+                card_number: document.getElementById('cardNumber').value.trim(),
+                card_type: document.getElementById('cardType').value,
+                member_id: memberIdVal ? parseInt(memberIdVal, 10) : null,
+                status: document.getElementById('cardStatus').value,
+                expire_date: document.getElementById('cardExpire').value || null,
+                remark: document.getElementById('cardRemark').value.trim()
+            };
+
+            const isEdit = !!id;
+            const url = isEdit ? `/api/access/card/${id}` : '/api/access/card/';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    cardModal.close();
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Operation failed");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                if (window.toast) toast.error("Communication error");
+            }
+        }
+
+        function confirmDelete(id, cardNo) {
+            if (confirm(`Are you sure you want to delete card '${cardNo}'?`)) {
+                deleteCard(id);
+            }
+        }
+
+        async function deleteCard(id) {
+            try {
+                const res = await fetch(`/api/access/card/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+            }
+        }
+    </script>
+
+</body>
+</html>

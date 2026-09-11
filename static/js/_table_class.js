@@ -440,13 +440,13 @@ export class TableModel {
         // handle edit button
         $(this.selector).on("click", ".control-edit-btn", (e) => {
             const id = e.currentTarget.dataset.id;
-            this.model_control.manager(id);
+            this.model_control?.manager(id);
         });
 
         // handle delete button
         $(this.selector).on("click", ".control-remove-btn", (e) => {
             const id = e.currentTarget.dataset.id;
-            this.model_control.remove(id);
+            this.model_control?.remove(id);
         });
 
         if (this._on_loaded && typeof this._on_loaded === "function") {
@@ -878,3 +878,11 @@ export function actionButtonsTemplate(id, opts = {}) {
         return "error not id";
     }
 }
+
+if (typeof window !== "undefined") {
+    window.TableModel = TableModel;
+    window.ItemModel = ItemModel;
+    window.actionButtonsTemplate = actionButtonsTemplate;
+    window.init_table_model_with_datatime_picker = init_table_model_with_datatime_picker;
+}
+

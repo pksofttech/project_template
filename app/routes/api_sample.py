@@ -63,19 +63,9 @@ async def get_datatable(req_para: Request, db: AsyncDbDep):
         )
 
     # 2. Dynamic Column Select & Where Expressions
-    select_stmt = build_select_expr(datatable_select["list_datas"])
+    select_stmt = build_select_expr(datatable_select["list_datas"], fallback_model=Sample_Item)
     if not select_stmt:
-        select_stmt = [
-            Sample_Item.id.label("id"),
-            Sample_Item.code.label("code"),
-            Sample_Item.name.label("name"),
-            Sample_Item.category.label("category"),
-            Sample_Item.price.label("price"),
-            Sample_Item.quantity.label("quantity"),
-            Sample_Item.status.label("status"),
-            Sample_Item.created_at.label("created_at"),
-            Sample_Item.updated_at.label("updated_at"),
-        ]
+        select_stmt = [c.label(c.name) for c in Sample_Item.__table__.c]
 
     base_stmt = select(*select_stmt).where(search_cond)
 
@@ -83,7 +73,7 @@ async def get_datatable(req_para: Request, db: AsyncDbDep):
     if where_stmt is not None:
         base_stmt = base_stmt.where(where_stmt)
 
-    order_expr = build_order_by_expr(datatable_select["order_by"])
+    order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Sample_Item)
     if order_expr is None:
         order_expr = Sample_Item.id.desc()
 

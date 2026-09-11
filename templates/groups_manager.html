@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-user-shield" %}
+                {% set header_title = "Access Permission Groups" %}
+                {% set header_desc = "Define security policies, time schedules, active days, and authorized doors for cardholders." %}
+                {% set header_badge = "Security Policy" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add Access Group</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/access/group/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableGroups" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <dialog id="groupModal" class="modal">
+        <div class="modal-box max-w-xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-user-shield"></i>
+                <span>Add Access Permission Group</span>
+            </h3>
+
+            <form id="groupForm" onsubmit="saveGroup(event)" class="space-y-4">
+                <input type="hidden" id="groupId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Group Code *</span></label>
+                        <input type="text" id="grpCode" class="input input-bordered input-sm font-mono" placeholder="e.g. GRP-STAFF" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="grpStatus" class="select select-bordered select-sm text-xs">
+                            <option value="active">Active (เปิดใช้งาน)</option>
+                            <option value="inactive">Inactive (ปิดใช้งาน)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Group Name *</span></label>
+                    <input type="text" id="grpName" class="input input-bordered input-sm" placeholder="e.g. Office Staff (Standard)" required />
+                </div>
+
+                <!-- Time Profile -->
+                <div class="p-3 bg-base-200/50 rounded-xl border border-base-content/5 space-y-3">
+                    <span class="text-xs font-bold text-base-content flex items-center gap-1.5">
+                        <i class="fa-solid fa-clock text-primary"></i> Time Window & Active Days
+                    </span>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="form-control">
+                            <label class="label py-0.5"><span class="label-text text-[11px]">Start Time</span></label>
+                            <input type="time" id="timeStart" class="input input-bordered input-sm text-xs" value="00:00" required />
+                        </div>
+                        <div class="form-control">
+                            <label class="label py-0.5"><span class="label-text text-[11px]">End Time</span></label>
+                            <input type="time" id="timeEnd" class="input input-bordered input-sm text-xs" value="23:59" required />
+                        </div>
+                    </div>
+
+                    <!-- Allowed Days Checkboxes -->
+                    <div>
+                        <label class="label py-0.5"><span class="label-text text-[11px]">Active Days</span></label>
+                        <div class="flex flex-wrap gap-2 pt-1" id="daysContainer">
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="MON" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">MON</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="TUE" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">TUE</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="WED" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">WED</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="THU" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">THU</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="FRI" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">FRI</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="SAT" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">SAT</span>
+                            </label>
+                            <label class="label cursor-pointer gap-1.5 p-1.5 rounded-lg bg-base-100 border border-base-content/10">
+                                <input type="checkbox" name="dayCheck" value="SUN" class="checkbox checkbox-xs checkbox-primary" checked />
+                                <span class="text-[11px] font-bold">SUN</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Allowed Doors Selection -->
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Authorized Doors / Gates</span></label>
+                    <div class="space-y-2">
+                        <label class="label cursor-pointer justify-start gap-2">
+                            <input type="checkbox" id="checkAllDoors" onchange="toggleAllDoors(this)" class="checkbox checkbox-xs checkbox-primary" checked />
+                            <span class="text-xs font-bold text-base-content">All Doors & Gates (เข้าได้ทุกจุด '*')</span>
+                        </label>
+                        <div id="doorCheckboxes" class="grid grid-cols-2 gap-2 pl-4 opacity-50 pointer-events-none">
+                            <!-- Dynamic door list -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Description</span></label>
+                    <textarea id="grpDesc" class="textarea textarea-bordered textarea-sm" rows="2" placeholder="Optional notes..."></textarea>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="groupModal.close()">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5">Save Group</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+        let registeredDoors = [];
+
+        $(document).ready(function () {
+            loadRegisteredDoors();
+
+            tableModel = new TableModel(
+                "#tableGroups",
+                "/api/access/group/datatable",
+                {
+                    table: "Access_Group",
+                    order: [[1, "asc"]],
+                    columns: [
+                        {
+                            data: "id",
+                            title: '<h3 class="font-bold text-xs text-center">Actions</h3>',
+                            orderable: false,
+                            searchable: false,
+                            className: "noExport text-center",
+                            render: function (data, type, row) {
+                                return `
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button onclick="confirmDelete(${data}, '${row.name}')" class="btn btn-ghost btn-xs btn-circle text-error" title="Delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: "id",
+                            name: "id",
+                            title: "#",
+                            className: "text-center font-mono font-bold text-xs",
+                            render: function (data) {
+                                return `<span class="font-mono text-base-content/40">#${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "code",
+                            name: "code",
+                            title: "Code",
+                            render: function (data) {
+                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "name",
+                            name: "name",
+                            title: "Group Name",
+                            render: function (data) {
+                                return `<span class="font-bold text-base-content">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "time_start",
+                            name: "time_start",
+                            title: "Time Schedule",
+                            render: function (data, type, row) {
+                                return `<span class="font-mono text-xs badge badge-soft badge-primary">${data} - ${row.time_end}</span>`;
+                            }
+                        },
+                        {
+                            data: "allowed_days",
+                            name: "allowed_days",
+                            title: "Allowed Days",
+                            render: function (data) {
+                                return `<span class="text-[11px] font-mono text-base-content/70">${data || 'ALL'}</span>`;
+                            }
+                        },
+                        {
+                            data: "doors_allowed",
+                            name: "doors_allowed",
+                            title: "Authorized Doors",
+                            render: function (data) {
+                                if (!data || data === '*') {
+                                    return '<span class="badge badge-xs badge-success font-bold">ALL DOORS (*)</span>';
+                                }
+                                return `<span class="font-mono text-xs text-base-content/70">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "status",
+                            name: "status",
+                            title: "Status",
+                            render: function (data) {
+                                const isActive = (data === 'active');
+                                return `<span class="badge badge-sm ${isActive ? 'badge-success' : 'badge-neutral'} font-bold">${data}</span>`;
+                            }
+                        },
+                        {
+                            data: "description",
+                            name: "description",
+                            title: "Description",
+                            render: function (data) {
+                                return `<span class="text-xs text-base-content/60">${data || '-'}</span>`;
+                            }
+                        }
+                    ]
+                }
+            );
+
+            tableModel.init();
+            window.table = tableModel.table;
+            window.tableModel = tableModel;
+        });
+
+        window.reloadTable = function () {
+            tableModel?.reload();
+        };
+        window.openCreateModal = openCreateModal;
+        window.openEditModal = openEditModal;
+        window.saveGroup = saveGroup;
+        window.confirmDelete = confirmDelete;
+        window.toggleAllDoors = toggleAllDoors;
+
+        async function loadRegisteredDoors() {
+            try {
+                const res = await fetch('/api/access/door/list/all');
+                const result = await res.json();
+                if (result.success && result.data) {
+                    registeredDoors = result.data;
+                    const container = document.getElementById('doorCheckboxes');
+                    container.innerHTML = registeredDoors.map(d => `
+                        <label class="label cursor-pointer justify-start gap-2 p-1 rounded hover:bg-base-200">
+                            <input type="checkbox" name="specificDoor" value="${d.id}" class="checkbox checkbox-xs" />
+                            <span class="text-xs text-base-content">${d.name} (${d.code})</span>
+                        </label>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error("Failed to load doors:", err);
+            }
+        }
+
+        function toggleAllDoors(elem) {
+            const container = document.getElementById('doorCheckboxes');
+            if (elem.checked) {
+                container.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                container.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        function reloadTable() {
+            if (table) table.ajax.reload(null, false);
+        }
+
+        function openCreateModal() {
+            document.getElementById('groupId').value = '';
+            document.getElementById('grpCode').value = '';
+            document.getElementById('grpName').value = '';
+            document.getElementById('grpStatus').value = 'active';
+            document.getElementById('timeStart').value = '00:00';
+            document.getElementById('timeEnd').value = '23:59';
+            document.getElementById('grpDesc').value = '';
+
+            // Reset days checkboxes to checked
+            document.querySelectorAll('input[name="dayCheck"]').forEach(cb => cb.checked = true);
+
+            // Reset doors to All
+            const checkAll = document.getElementById('checkAllDoors');
+            checkAll.checked = true;
+            toggleAllDoors(checkAll);
+            document.querySelectorAll('input[name="specificDoor"]').forEach(cb => cb.checked = false);
+
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-shield"></i><span>Add Access Permission Group</span>';
+            groupModal.showModal();
+        }
+
+        async function openEditModal(id) {
+            try {
+                const res = await fetch(`/api/access/group/${id}`);
+                const result = await res.json();
+                if (!result.success) {
+                    if (window.toast) toast.error("Failed to load group data");
+                    return;
+                }
+                const g = result.data;
+                document.getElementById('groupId').value = g.id;
+                document.getElementById('grpCode').value = g.code;
+                document.getElementById('grpName').value = g.name;
+                document.getElementById('grpStatus').value = g.status || 'active';
+                document.getElementById('timeStart').value = g.time_start || '00:00';
+                document.getElementById('timeEnd').value = g.time_end || '23:59';
+                document.getElementById('grpDesc').value = g.description || '';
+
+                // Days
+                const activeDays = (g.allowed_days || '').split(',').map(s => s.trim().toUpperCase());
+                document.querySelectorAll('input[name="dayCheck"]').forEach(cb => {
+                    cb.checked = activeDays.includes(cb.value);
+                });
+
+                // Doors
+                const checkAll = document.getElementById('checkAllDoors');
+                if (!g.doors_allowed || g.doors_allowed === '*') {
+                    checkAll.checked = true;
+                    toggleAllDoors(checkAll);
+                    document.querySelectorAll('input[name="specificDoor"]').forEach(cb => cb.checked = false);
+                } else {
+                    checkAll.checked = false;
+                    toggleAllDoors(checkAll);
+                    try {
+                        const doorIds = JSON.parse(g.doors_allowed);
+                        document.querySelectorAll('input[name="specificDoor"]').forEach(cb => {
+                            cb.checked = doorIds.includes(parseInt(cb.value, 10)) || doorIds.includes(cb.value);
+                        });
+                    } catch (e) {}
+                }
+
+                document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Edit Access Group</span>';
+                groupModal.showModal();
+            } catch (err) {
+                console.error("Edit load error:", err);
+            }
+        }
+
+        async function saveGroup(event) {
+            event.preventDefault();
+            const id = document.getElementById('groupId').value;
+
+            // Gather Days
+            const days = Array.from(document.querySelectorAll('input[name="dayCheck"]:checked')).map(cb => cb.value);
+            const daysStr = days.join(',') || 'MON,TUE,WED,THU,FRI,SAT,SUN';
+
+            // Gather Doors
+            let doorsAllowed = '*';
+            const checkAll = document.getElementById('checkAllDoors');
+            if (!checkAll.checked) {
+                const specificDoors = Array.from(document.querySelectorAll('input[name="specificDoor"]:checked'))
+                    .map(cb => parseInt(cb.value, 10));
+                doorsAllowed = JSON.stringify(specificDoors);
+            }
+
+            const payload = {
+                code: document.getElementById('grpCode').value.trim(),
+                name: document.getElementById('grpName').value.trim(),
+                time_start: document.getElementById('timeStart').value,
+                time_end: document.getElementById('timeEnd').value,
+                allowed_days: daysStr,
+                doors_allowed: doorsAllowed,
+                status: document.getElementById('grpStatus').value,
+                description: document.getElementById('grpDesc').value.trim()
+            };
+
+            const isEdit = !!id;
+            const url = isEdit ? `/api/access/group/${id}` : '/api/access/group/';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    groupModal.close();
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Operation failed");
+                }
+            } catch (err) {
+                console.error("Save error:", err);
+                if (window.toast) toast.error("Communication error");
+            }
+        }
+
+        function confirmDelete(id, name) {
+            if (confirm(`Are you sure you want to delete access group '${name}'?`)) {
+                deleteGroup(id);
+            }
+        }
+
+        async function deleteGroup(id) {
+            try {
+                const res = await fetch(`/api/access/group/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+            }
+        }
+    </script>
+
+</body>
+</html>

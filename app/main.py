@@ -18,7 +18,21 @@ from app.config_app import AppConfig
 from app.core.database import init_sqlite_pragmas
 from app.core.database_init import database_init_default
 from app.core.utility import broadcast_sse, sse_clients
-from app.routes import api_health, api_sample, api_system_config, api_system_user, api_upload, views
+from app.routes import (
+    api_access_card,
+    api_access_door,
+    api_access_event,
+    api_access_group,
+    api_access_log,
+    api_access_member,
+    api_access_zone,
+    api_health,
+    api_sample,
+    api_system_config,
+    api_system_user,
+    api_upload,
+    views,
+)
 from app.stdio import print_debug, time_now
 
 
@@ -156,6 +170,13 @@ async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
 # --------------------------------------------------------
 app.include_router(api_health.router)
 app.include_router(api_upload.router)
+app.include_router(api_access_event.router)
+app.include_router(api_access_door.router)
+app.include_router(api_access_member.router)
+app.include_router(api_access_card.router)
+app.include_router(api_access_group.router)
+app.include_router(api_access_zone.router)
+app.include_router(api_access_log.router)
 app.include_router(api_sample.router)
 app.include_router(api_system_user.router, prefix="/api/system_user")
 app.include_router(api_system_user.router, prefix="/api/systems_user")

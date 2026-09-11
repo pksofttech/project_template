@@ -102,6 +102,102 @@ async def dashboard_view(request: Request):
     )
 
 
+@router.get("/live_monitor", response_class=HTMLResponse)
+async def live_monitor_view(request: Request):
+    """Render real-time access control monitor page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "live_monitor.html",
+        get_view_context(request, title="Live Monitor", active_page="live_monitor", current_user=user),
+    )
+
+
+@router.get("/access_logs", response_class=HTMLResponse)
+async def access_logs_view(request: Request):
+    """Render access event logs and audit trail page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "access_logs.html",
+        get_view_context(request, title="Access Logs", active_page="access_logs", current_user=user),
+    )
+
+
+@router.get("/members", response_class=HTMLResponse)
+async def members_manager_view(request: Request):
+    """Render cardholders / members management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "members_manager.html",
+        get_view_context(request, title="Cardholders Management", active_page="members", current_user=user),
+    )
+
+
+@router.get("/cards", response_class=HTMLResponse)
+async def cards_manager_view(request: Request):
+    """Render RFID cards / keycards management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "cards_manager.html",
+        get_view_context(request, title="Access Cards Management", active_page="cards", current_user=user),
+    )
+
+
+@router.get("/doors", response_class=HTMLResponse)
+async def doors_manager_view(request: Request):
+    """Render doors, turnstiles, and barrier gates management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "doors_manager.html",
+        get_view_context(request, title="Doors & Barrier Gates", active_page="doors", current_user=user),
+    )
+
+
+@router.get("/access_groups", response_class=HTMLResponse)
+async def groups_manager_view(request: Request):
+    """Render access permission groups and schedules management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "access_groups.html",
+        get_view_context(request, title="Access Groups Management", active_page="access_groups", current_user=user),
+    )
+
+
+@router.get("/zones", response_class=HTMLResponse)
+async def zones_manager_view(request: Request):
+    """Render access zones and security areas management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "zones_manager.html",
+        get_view_context(request, title="Access Zones Management", active_page="zones", current_user=user),
+    )
+
+
+@router.get("/zone_presence", response_class=HTMLResponse)
+async def zone_presence_view(request: Request):
+    """Render real-time zone presence, occupancy, and emergency muster page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "zone_presence.html",
+        get_view_context(request, title="Zone Presence & Muster", active_page="zone_presence", current_user=user),
+    )
+
+
 @router.get("/sample", response_class=HTMLResponse)
 async def sample_manager_view(request: Request):
     """Render sample CRUD DataTables management page."""

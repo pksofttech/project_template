@@ -112,6 +112,13 @@ def print_debug(*args, **kwargs):
     logger.debug(msg, stacklevel=kwargs.get("stacklevel", 2))
 
 
+def print_info(*args, **kwargs):
+    """print info with logging"""
+    sep = kwargs.get("sep", " ")
+    msg = sep.join(str(a) for a in args) if args else ""
+    logger.info(msg, stacklevel=kwargs.get("stacklevel", 2))
+
+
 def print_warning(*args, **kwargs):
     """print warning with logging"""
     sep = kwargs.get("sep", " ")

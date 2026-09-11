@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-layer-group" %}
+                {% set header_title = "Access Zones Management" %}
+                {% set header_desc = "Configure security areas, anti-passback rules, occupancy capacity limits, and emergency muster points." %}
+                {% set header_badge = "Zone & Area Security" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add New Zone</span>
+                            </button>
+                            <!-- View Live Presence -->
+                            <a href="/page?page=zone_presence" class="btn btn-secondary btn-outline btn-sm gap-2">
+                                <i class="fa-solid fa-person-shelter"></i>
+                                <span>Live Presence & Muster</span>
+                            </a>
+                            <!-- Export Excel -->
+                            <a href="/api/access/zone/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Table -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4">
+                    <div id="tableZones" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <dialog id="zoneModal" class="modal">
+        <div class="modal-box max-w-lg">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Add New Zone</span>
+            </h3>
+
+            <form id="zoneForm" onsubmit="saveZone(event)" class="space-y-3">
+                <input type="hidden" id="zoneId" value="" />
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Zone Code *</span></label>
+                        <input type="text" id="zoneCode" class="input input-bordered input-sm font-mono uppercase" placeholder="e.g. ZONE-01" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Zone Type</span></label>
+                        <select id="zoneType" class="select select-bordered select-sm text-xs">
+                            <option value="INTERNAL">Internal Area (ภายในอาคาร)</option>
+                            <option value="OUTSIDE">Outside Perimeter (ภายนอก/พื้นที่สาธารณะ)</option>
+                            <option value="HIGH_SECURITY">High Security (พื้นที่ความปลอดภัยสูง)</option>
+                            <option value="MUSTER_POINT">Muster Point (จุดรวมพลฉุกเฉิน)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Zone Name *</span></label>
+                    <input type="text" id="zoneName" class="input input-bordered input-sm" placeholder="e.g. Data Center Server Room" required />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1">
+                            <span class="label-text text-xs font-semibold">Max Occupancy (Capacity)</span>
+                            <span class="label-text-alt text-xs text-base-content/60">0 = Unlimited</span>
+                        </label>
+                        <input type="number" id="maxOccupancy" class="input input-bordered input-sm" value="0" min="0" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">Status</span></label>
+                        <select id="zoneStatus" class="select select-bordered select-sm text-xs">
+                            <option value="active">Active (ใช้งาน)</option>
+                            <option value="inactive">Inactive (ระงับใช้งาน)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Anti-Passback Settings Card -->
+                <div class="p-3 bg-base-200 rounded-lg border border-base-content/10 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-warning"></i>
+                            <div>
+                                <p class="text-xs font-semibold">Anti-Passback (APB)</p>
+                                <p class="text-[11px] text-base-content/60">Prevent card sharing & pass-backs</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" id="antipassbackEnabled" class="toggle toggle-warning toggle-sm" onchange="toggleApbFields()" />
+                    </div>
+                    <div id="apbTimeoutBox" class="form-control hidden pt-2 border-t border-base-content/10">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold">APB Auto-Reset Timeout (Minutes)</span></label>
+                        <input type="number" id="antipassbackTimeout" class="input input-bordered input-sm" value="30" min="1" />
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold">Description / Notes</span></label>
+                    <textarea id="zoneDesc" class="textarea textarea-bordered textarea-sm h-16" placeholder="Zone details and notes..."></textarea>
+                </div>
+
+                <div class="modal-action pt-2">
+                    <button type="button" onclick="document.getElementById('zoneModal').close()" class="btn btn-ghost btn-sm">Cancel</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-sm gap-2">
+                        <i class="fa-solid fa-save"></i>
+                        <span>Save Zone</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+
+    <script type="module">
+        import { TableModel } from "/static/js/_table_class.js";
+
+        let tableModel = null;
+
+        $(document).ready(function () {
+            initZoneTable();
+        });
+
+        window.toggleApbFields = function() {
+            const isChecked = document.getElementById('antipassbackEnabled').checked;
+            const box = document.getElementById('apbTimeoutBox');
+            if (isChecked) {
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+        };
+
+        function initZoneTable() {
+            tableModel = new TableModel(
+                "#tableZones",
+                "/api/access/zone/datatable",
+                {
+                    table: "Access_Zone",
+                    order: [[1, "asc"]],
+                    columns: [
+                        {
+                            data: 'id',
+                            title: 'Actions',
+                            orderable: false,
+                            searchable: false,
+                            className: 'noExport text-center w-24',
+                            render: function (data, type, row) {
+                                return `
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openEditModal(${row.id})" class="btn btn-xs btn-ghost text-info" title="Edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button onclick="deleteZone(${row.id}, '${row.name}')" class="btn btn-xs btn-ghost text-error" title="Delete">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
+                        },
+                        {
+                            data: 'code',
+                            title: 'Zone Code',
+                            className: 'font-mono font-bold text-xs',
+                            render: function (data) {
+                                return `<span class="badge badge-neutral badge-sm font-mono">${data || '-'}</span>`;
+                            }
+                        },
+                        {
+                            data: 'name',
+                            title: 'Zone Name',
+                            className: 'font-semibold text-xs',
+                            render: function (data, type, row) {
+                                return `<div>
+                                    <span class="text-base-content font-bold">${data}</span>
+                                    ${row.description ? `<p class="text-[11px] text-base-content/60 truncate max-w-xs">${row.description}</p>` : ''}
+                                </div>`;
+                            }
+                        },
+                        {
+                            data: 'zone_type',
+                            title: 'Zone Type',
+                            className: 'text-xs',
+                            render: function (data) {
+                                if (data === 'HIGH_SECURITY') {
+                                    return `<span class="badge badge-error badge-sm gap-1"><i class="fa-solid fa-shield-cat"></i> High Security</span>`;
+                                } else if (data === 'OUTSIDE') {
+                                    return `<span class="badge badge-warning badge-sm gap-1"><i class="fa-solid fa-tree"></i> Outside</span>`;
+                                } else if (data === 'MUSTER_POINT') {
+                                    return `<span class="badge badge-info badge-sm gap-1"><i class="fa-solid fa-person-shelter"></i> Muster Point</span>`;
+                                }
+                                return `<span class="badge badge-outline badge-sm gap-1"><i class="fa-solid fa-building"></i> Internal</span>`;
+                            }
+                        },
+                        {
+                            data: 'max_occupancy',
+                            title: 'Capacity (Max)',
+                            className: 'text-xs font-mono',
+                            render: function (data) {
+                                if (!data || data === 0) {
+                                    return `<span class="text-base-content/60">Unlimited</span>`;
+                                }
+                                return `<span class="badge badge-neutral badge-sm">${data} persons</span>`;
+                            }
+                        },
+                        {
+                            data: 'antipassback_enabled',
+                            title: 'Anti-Passback',
+                            className: 'text-center text-xs',
+                            render: function (data, type, row) {
+                                if (data) {
+                                    return `<span class="badge badge-success badge-sm gap-1"><i class="fa-solid fa-check"></i> Enabled (${row.antipassback_timeout_min}m)</span>`;
+                                }
+                                return `<span class="badge badge-ghost badge-sm text-base-content/40">Disabled</span>`;
+                            }
+                        },
+                        {
+                            data: 'status',
+                            title: 'Status',
+                            className: 'text-center text-xs',
+                            render: function (data) {
+                                if (data && data.toLowerCase() === 'active') {
+                                    return `<span class="badge badge-success badge-sm">Active</span>`;
+                                }
+                                return `<span class="badge badge-ghost badge-sm">Inactive</span>`;
+                            }
+                        },
+                        {
+                            data: 'created_at',
+                            title: 'Created At',
+                            className: 'text-xs text-base-content/60',
+                            render: function (data) {
+                                return data ? data.replace('T', ' ').substring(0, 19) : '-';
+                            }
+                        }
+                    ]
+                }
+            );
+            tableModel.init();
+        }
+
+        window.reloadTable = function() {
+            if (tableModel && tableModel.dt) {
+                tableModel.dt.ajax.reload(null, false);
+            }
+        };
+
+        function openCreateModal() {
+            document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-layer-group"></i> <span>Add New Zone</span>';
+            document.getElementById('zoneId').value = '';
+            document.getElementById('zoneForm').reset();
+            document.getElementById('zoneStatus').value = 'active';
+            document.getElementById('zoneType').value = 'INTERNAL';
+            document.getElementById('maxOccupancy').value = '0';
+            document.getElementById('antipassbackEnabled').checked = false;
+            document.getElementById('antipassbackTimeout').value = '30';
+            toggleApbFields();
+            document.getElementById('zoneModal').showModal();
+        }
+
+        async function openEditModal(id) {
+            try {
+                const res = await fetch(`/api/access/zone/list/all`);
+                const zones = await res.json();
+                const zone = zones.find(z => z.id === id);
+
+                if (!zone) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Zone not found' });
+                    return;
+                }
+
+                document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> <span>Edit Zone</span>';
+                document.getElementById('zoneId').value = zone.id;
+                document.getElementById('zoneCode').value = zone.code;
+                document.getElementById('zoneName').value = zone.name;
+                document.getElementById('zoneType').value = zone.zone_type || 'INTERNAL';
+                document.getElementById('maxOccupancy').value = zone.max_occupancy || 0;
+                document.getElementById('antipassbackEnabled').checked = Boolean(zone.antipassback_enabled);
+                document.getElementById('antipassbackTimeout').value = zone.antipassback_timeout_min || 30;
+                toggleApbFields();
+                document.getElementById('zoneModal').showModal();
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+            }
+        }
+
+        async function saveZone(e) {
+            e.preventDefault();
+            const id = document.getElementById('zoneId').value;
+            const isEdit = Boolean(id);
+
+            const payload = {
+                code: document.getElementById('zoneCode').value.trim().toUpperCase(),
+                name: document.getElementById('zoneName').value.trim(),
+                zone_type: document.getElementById('zoneType').value,
+                max_occupancy: parseInt(document.getElementById('maxOccupancy').value) || 0,
+                antipassback_enabled: document.getElementById('antipassbackEnabled').checked,
+                antipassback_timeout_min: parseInt(document.getElementById('antipassbackTimeout').value) || 30,
+                status: document.getElementById('zoneStatus').value,
+                description: document.getElementById('zoneDesc').value.trim() || null
+            };
+
+            const url = isEdit ? `/api/access/zone/${id}` : '/api/access/zone';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(result.detail || 'Failed to save zone');
+                }
+
+                document.getElementById('zoneModal').close();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Saved',
+                    text: result.message || 'Zone saved successfully',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                reloadTable();
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+            }
+        }
+
+        async function deleteZone(id, name) {
+            const confirm = await Swal.fire({
+                title: 'Delete Zone?',
+                text: `Are you sure you want to delete zone '${name}'?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            });
+
+            if (confirm.isConfirmed) {
+                try {
+                    const res = await fetch(`/api/access/zone/${id}`, { method: 'DELETE' });
+                    const result = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(result.detail || 'Failed to delete zone');
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted',
+                        text: result.message || 'Zone deleted successfully',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    reloadTable();
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Cannot Delete', text: err.message });
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

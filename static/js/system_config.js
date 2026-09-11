@@ -45,6 +45,44 @@ function restore_active_tab() {
     }
 }
 
+export function handleUrlTab() {
+    const searchParams = new URLSearchParams(window.location.search);
+    let tabTarget = searchParams.get("tab");
+    if (!tabTarget && window.location.hash) {
+        tabTarget = window.location.hash.replace(/^#tab=/, "").replace(/^#/, "");
+    }
+    if (!tabTarget) return false;
+
+    const t = tabTarget.toLowerCase();
+    if (t === "general" || t === "config") {
+        switch_to_tab("SYSTEM_CONFIG_TAB01");
+        setTimeout(() => show_dialog_general_config(), 120);
+        return true;
+    } else if (t === "users" || t === "user" || t === "tab02" || t === "system_config_tab02") {
+        switch_to_tab("SYSTEM_CONFIG_TAB02");
+        return true;
+    } else if (t === "roles" || t === "user_types" || t === "role" || t === "tab03" || t === "system_config_tab03") {
+        switch_to_tab("SYSTEM_CONFIG_TAB03");
+        return true;
+    } else if (t === "database" || t === "backup" || t === "maintenance" || t === "tab04" || t === "system_config_tab04") {
+        switch_to_tab("SYSTEM_CONFIG_TAB04");
+        return true;
+    } else if (t === "sse" || t === "broadcast") {
+        switch_to_tab("SYSTEM_CONFIG_TAB01");
+        setTimeout(() => show_dialog_sse_broadcast(), 120);
+        return true;
+    } else if (t === "password" || t === "security") {
+        switch_to_tab("SYSTEM_CONFIG_TAB01");
+        setTimeout(() => show_dialog_change_password(), 120);
+        return true;
+    } else if (t === "overview" || t === "all" || t === "tab01" || t === "system_config_tab01") {
+        switch_to_tab("SYSTEM_CONFIG_TAB01");
+        return true;
+    }
+    return false;
+}
+window.handleUrlTab = handleUrlTab;
+
 // =============================================================================
 // 🪟 MODAL CONTROLLERS
 // =============================================================================
@@ -714,7 +752,10 @@ window.sendBroadcastSSE = sendBroadcastSSE;
 // =============================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    restore_active_tab();
+    const urlHandled = handleUrlTab();
+    if (!urlHandled) {
+        restore_active_tab();
+    }
     loadConfigs();
     initUserTable();
     initUserTypeTable();
@@ -729,4 +770,8 @@ document.addEventListener("DOMContentLoaded", () => {
             userTypeTable?.table?.columns?.adjust()?.responsive?.recalc?.();
         }, 200);
     }
+});
+
+window.addEventListener("hashchange", () => {
+    handleUrlTab();
 });

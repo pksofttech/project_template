@@ -1,32 +1,35 @@
-# 🚀 PKS Modern FastAPI & DaisyUI Project Template (Starter Kit)
+# 🛡️ PKS Access Control Management System
 
-เทมเพลตตั้งต้นสำหรับพัฒนาเว็บแอปพลิเคชัน, ระบบบริหารจัดการ (Management System), ระบบควบคุมฮาร์ดแวร์/IoT และ REST API ระดับ Production มาตรฐาน PKS V5 
+ระบบบริหารจัดการการเข้า-ออก (Access Control Management), ไม้กั้นรถยนต์ (Barrier Gates), ประตูคีย์การ์ด (Doors & Turnstiles), บัตร RFID, สมาชิก/ผู้ถือบัตร (Cardholders) และประวัติบันทึกการเข้า-ออก (Audit Logs) ระดับ Production มาตรฐาน PKS V5
 
 พัฒนาด้วย **Python 3.12+**, **FastAPI**, **SQLModel (Async SQLite)**, **Tailwind CSS v4** และ **DaisyUI v5**
 
 ---
 
-## 🌟 จุดเด่นของ Template (Core Features)
+## 🌟 จุดเด่นและฟังก์ชันหลักของระบบ (Core Features)
 
-1. **Production-Ready Logging & Timezone Standard (`app/stdio.py`)**:
-   - บันทึกเวลาแบบ **Timezone-Aware GMT+7 (`Asia/Bangkok`)** ผ่านฟังก์ชัน `time_now()` และ `parse_datetime_bkk()`
-   - จัดเก็บข้อมูลเวลาใน SQLite ด้วยฟอร์แมตมาตรฐาน ISO 8601 ผ่าน `ISODateTime` TypeDecorator
-   - ระบบ Console Log สวยงามมีสีสัน พร้อมบันทึกไฟล์หมุนเวียนอัตโนมัติ `logs/app.log` (10MB x 5 backups)
-2. **Async SQLite Engine + Safe Auto-Migration**:
+1. **ระบบตรวจสอบและอนุมัติการเข้า-ออกอัตโนมัติ (Automated Access Verification & Webhook API)**:
+   - รองรับ Webhook API `POST /api/access/event/swipe` สำหรับเชื่อมต่อเครื่องอ่านบัตร RFID / คอนโทรลเลอร์ภายนอก
+   - ตรวจสอบความถูกต้องของบัตร, สถานะการใช้งาน, วันหมดอายุ, สิทธิ์เข้าถึงประตู และช่วงเวลาที่อนุญาต (Timezone Schedule)
+   - ปลดล็อกประตูอัตโนมัติ (Relay Pulse) เมื่อได้รับสิทธิ์ (GRANTED) และบันทึกลงฐานข้อมูล
+2. **หน้าจอมอนิเตอร์สดแบบเรียลไทม์ (Live Monitor Room with Real-time SSE)**:
+   - แสดงผลสดทันทีเมื่อมีการทาบบัตรผ่าน **Server-Sent Events (`/sse`)** โดยไม่ต้องรีเฟรชหน้าจอ
+   - Spotlight Card ขนาดใหญ่แสดงรูปถ่าย, ชื่อผู้ถือบัตร, แผนก, ประตู, ทิศทาง (เข้า/ออก) พร้อมแถบสีสถานะ (เขียว=ผ่าน / แดง=ปฏิเสธ)
+   - มีปุ่มสั่งเปิดประตูหรือยกไม้กั้นระยะไกล (Remote Door Unlock)
+   - มีคอนโซลจำลองการทาบบัตร (Simulator) สำหรับทดสอบระบบได้ทันที
+3. **จัดการข้อมูลบัตร, สมาชิก, ประตู และกลุ่มสิทธิ์ครบวงจร (Full CRUD Management)**:
+   - **Doors & Gates (`/doors`)**: กำหนดจุดควบคุม, ประเภทประตู/ไม้กั้น, IP Controller, เวลา Relay (วินาที)
+   - **Cardholders (`/members`)**: จัดการข้อมูลบุคคล, พนักงาน, ผู้มาติดต่อ, สังกัดแผนก, และกำหนดกลุ่มสิทธิ์
+   - **Access Cards (`/cards`)**: จัดการเลขบัตร RFID (125KHz, Mifare, UHF), บัตรสูญหาย, บล็อกบัตร
+   - **Access Groups (`/access_groups`)**: กำหนดช่วงเวลา (Time Window), วันในสัปดาห์ (Mon-Sun), และประตูที่อนุญาต
+4. **บันทึกประวัติการเข้า-ออก (Access Event Logs & Analytics)**:
+   - หน้าจอประวัติการเข้า-ออก (`/access_logs`) พร้อม DataTables Server-Side ค้นหาได้ทุกคอลัมน์
+   - ส่งออกข้อมูลเป็น Excel (.xlsx) และ CSV พร้อมรองรับภาษาไทย
+   - แดชบอร์ดสรุปสถิติ (`/dashboard`) พร้อมกราฟสถิติการเข้า-ออกตลอด 24 ชั่วโมง
+5. **Async SQLite Engine + Safe Auto-Migration**:
    - ปรับแต่ง SQLite PRAGMAs ระดับโปรดักชัน (`WAL mode`, `busy_timeout=30s`, `synchronous=NORMAL`, 20MB cache)
-   - มีระบบ **`sqlite_auto_migrate_async`** ปรับแก้โครงสร้างตารางและคอลัมน์อัตโนมัติเมื่อแก้ไข `models.py` โดยไม่ต้องพึ่ง Alembic
+   - มีระบบ **`sqlite_auto_migrate_async`** ปรับแก้โครงสร้างตารางอัตโนมัติ
    - ระบบสำรองฐานข้อมูลออนไลน์แบบไม่ล็อกตาราง (SQLite Hot Backup Service)
-3. **DataTables Server-Side Engine & Streaming Excel Export**:
-   - รองรับการแบ่งหน้า (Pagination), ค้นหาหลายคอลัมน์ (Multi-column Search) และเรียงลำดับ (Sorting) ผ่าน Server-side ใน [`app/core/utility.py`](app/core/utility.py)
-   - ส่งออกข้อมูลเป็น Excel (.xlsx) และ CSV พร้อม UTF-8 BOM สำหรับภาษาไทยได้ทันที
-4. **Modern UI/UX with DaisyUI v5 & Tailwind CSS v4**:
-   - หน้าจอ Responsive พร้อมใช้งาน: Login, Dashboard สถิติ, CRUD Manager, System Settings
-   - คอมโพเนนต์มาตรฐาน **`<!-- Premium Header Card -->`** ปรับแต่งได้ตามหน้าจอ
-5. **Real-time Server-Sent Events (SSE)**:
-   - รองรับการ Broadcast ข้อความหรือแจ้งเตือนแบบเรียลไทม์ผ่าน `/sse`
-6. **Authentication & Security**:
-   - เข้ารหัสรหัสผ่านด้วย **Argon2 / Passlib**
-   - ยืนยันตัวตนด้วย **JWT Bearer Token** และ HTTP-only Cookie
 
 ---
 

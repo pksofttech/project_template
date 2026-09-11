@@ -20,7 +20,7 @@
                 <!-- Hero Welcome Banner -->
                 <div class="card bg-linear-to-r from-primary to-primary/80 text-primary-content shadow-lg overflow-hidden relative border border-primary/20">
                     <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none text-9xl">
-                        <i class="fa-solid fa-shapes"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
                     </div>
 
                     <div class="card-body p-6 sm:p-8 relative z-10">
@@ -28,24 +28,24 @@
                             <div class="space-y-2">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-content/15 text-xs font-semibold backdrop-blur-xs">
                                     <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
-                                    <span>System Ready & Operational</span>
+                                    <span>Access Control System Online</span>
                                 </div>
                                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
-                                    Welcome to {{ app_name }}
+                                    {{ app_name }}
                                 </h1>
                                 <p class="text-sm opacity-90 max-w-xl">
-                                    Modern FastAPI & DaisyUI Application Starter Kit. Fast, robust async architecture designed for enterprise web applications, IoT gateways, and management systems.
+                                    Comprehensive Access Control & Gate Management Solution. Real-time authorization, RFID card management, barrier gates, turnstiles, and security audit logs.
                                 </p>
                             </div>
 
                             <div class="flex flex-wrap gap-2 shrink-0">
-                                <a href="/dashboard" class="btn btn-sm bg-base-100 text-base-content hover:bg-base-200 border-none font-bold shadow-sm gap-2">
-                                    <i class="fa-solid fa-gauge-high"></i>
-                                    <span data-i18n="Dashboard">Dashboard</span>
+                                <a href="/page?page=live_monitor" class="btn btn-sm bg-base-100 text-base-content hover:bg-base-200 border-none font-bold shadow-sm gap-2">
+                                    <i class="fa-solid fa-tower-broadcast text-primary"></i>
+                                    <span>Live Monitor</span>
                                 </a>
-                                <a href="/sample" class="btn btn-sm btn-ghost bg-primary-content/20 hover:bg-primary-content/30 text-primary-content border-none font-bold gap-2">
-                                    <i class="fa-solid fa-boxes-stacked"></i>
-                                    <span data-i18n="Sample Items">Sample Manager</span>
+                                <a href="/page?page=dashboard" class="btn btn-sm btn-ghost bg-primary-content/20 hover:bg-primary-content/30 text-primary-content border-none font-bold gap-2">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    <span>Dashboard</span>
                                 </a>
                             </div>
                         </div>
@@ -57,88 +57,168 @@
                     <div class="flex items-center justify-between">
                         <h2 class="text-lg font-bold flex items-center gap-2">
                             <i class="fa-solid fa-cubes text-primary"></i>
-                            <span>Application Modules & Navigation</span>
+                            <span>Access Control Operations</span>
                         </h2>
-                        <span class="text-xs text-base-content/60">Quick Links</span>
+                        <span class="text-xs text-base-content/60">Quick Navigation</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <!-- Card 1: Dashboard -->
-                        <a href="/dashboard" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all group">
+                        <!-- Card 1: Live Monitor -->
+                        <a href="/page?page=live_monitor" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all group">
                             <div class="card-body p-5">
                                 <div class="flex items-start justify-between">
                                     <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
-                                        <i class="fa-solid fa-gauge-high"></i>
+                                        <i class="fa-solid fa-tower-broadcast"></i>
                                     </div>
-                                    <span class="badge badge-primary badge-xs">Analytics</span>
+                                    <span class="badge badge-primary badge-xs">Real-Time</span>
                                 </div>
-                                <h3 class="font-bold text-base mt-3 group-hover:text-primary transition-colors" data-i18n="Dashboard">Dashboard</h3>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-primary transition-colors">Live Monitor</h3>
                                 <p class="text-xs text-base-content/60 line-clamp-2">
-                                    Real-time system overview, performance counters, and quick metrics.
+                                    Real-time card swipe verification stream, sound alerts, and remote gate relay controls.
                                 </p>
                                 <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-primary font-semibold">
-                                    <span>Open Dashboard</span>
+                                    <span>Open Monitor</span>
                                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Card 2: Sample Items Manager -->
-                        <a href="/sample" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-secondary/30 transition-all group">
+                        <!-- Card 2: Access Logs -->
+                        <a href="/page?page=access_logs" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-warning/30 transition-all group">
                             <div class="card-body p-5">
                                 <div class="flex items-start justify-between">
-                                    <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
-                                        <i class="fa-solid fa-boxes-stacked"></i>
+                                    <div class="w-12 h-12 rounded-xl bg-warning/10 text-warning flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
                                     </div>
-                                    <span class="badge badge-secondary badge-xs">DataTables</span>
+                                    <span class="badge badge-warning badge-xs">Audit</span>
                                 </div>
-                                <h3 class="font-bold text-base mt-3 group-hover:text-secondary transition-colors" data-i18n="Sample Items">Sample Manager</h3>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-warning transition-colors">Access Logs</h3>
                                 <p class="text-xs text-base-content/60 line-clamp-2">
-                                    Full CRUD operations, server-side pagination, search, and Excel/CSV export.
+                                    Chronological audit trails, search by card/door/result, and streaming Excel export.
                                 </p>
-                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-secondary font-semibold">
-                                    <span>Manage Items</span>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-warning font-semibold">
+                                    <span>Audit Logs</span>
                                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Card 3: System Settings -->
-                        <a href="/system_config" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-accent/30 transition-all group">
+                        <!-- Card 3: Doors & Gates -->
+                        <a href="/page?page=doors" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-success/30 transition-all group">
                             <div class="card-body p-5">
                                 <div class="flex items-start justify-between">
-                                    <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
-                                        <i class="fa-solid fa-sliders"></i>
+                                    <div class="w-12 h-12 rounded-xl bg-success/10 text-success flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-door-open"></i>
                                     </div>
-                                    <span class="badge badge-accent badge-xs">Control</span>
+                                    <span class="badge badge-success badge-xs">Hardware</span>
                                 </div>
-                                <h3 class="font-bold text-base mt-3 group-hover:text-accent transition-colors" data-i18n="System Settings">System Settings</h3>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-success transition-colors">Doors & Gates</h3>
                                 <p class="text-xs text-base-content/60 line-clamp-2">
-                                    Configure key-value settings, manage user accounts, and execute hot backups.
+                                    Configure access turnstiles, parking barrier gates, IP controllers, and relay timings.
                                 </p>
-                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-accent font-semibold">
-                                    <span>Open Settings</span>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-success font-semibold">
+                                    <span>Manage Doors</span>
                                     <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                 </div>
                             </div>
                         </a>
 
-                        <!-- Card 4: API Docs -->
-                        <a href="/docs" target="_blank" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-info/30 transition-all group">
+                        <!-- Card 4: Cardholders -->
+                        <a href="/page?page=members" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-info/30 transition-all group">
                             <div class="card-body p-5">
                                 <div class="flex items-start justify-between">
                                     <div class="w-12 h-12 rounded-xl bg-info/10 text-info flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
-                                        <i class="fa-solid fa-code"></i>
+                                        <i class="fa-solid fa-id-card-clip"></i>
                                     </div>
-                                    <span class="badge badge-info badge-xs">OpenAPI</span>
+                                    <span class="badge badge-info badge-xs">Personnel</span>
                                 </div>
-                                <h3 class="font-bold text-base mt-3 group-hover:text-info transition-colors" data-i18n="Swagger Docs">Swagger API Docs</h3>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-info transition-colors">Cardholders</h3>
                                 <p class="text-xs text-base-content/60 line-clamp-2">
-                                    Interactive API explorer, test endpoints, request/response schemas.
+                                    Manage employees, visitors, contractors, departments, and assigned access groups.
                                 </p>
                                 <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-info font-semibold">
-                                    <span>Explore APIs</span>
-                                    <i class="fa-solid fa-arrow-up-right-from-square group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                                    <span>Manage Members</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 5: Access Cards -->
+                        <a href="/page?page=cards" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-secondary/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                    </div>
+                                    <span class="badge badge-secondary badge-xs">RFID / Token</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-secondary transition-colors">Access Cards</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Issue RFID tags, Mifare badges, block lost credentials, and link cards to cardholders.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-secondary font-semibold">
+                                    <span>Manage Cards</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 6: Access Groups -->
+                        <a href="/page?page=access_groups" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-accent/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-user-shield"></i>
+                                    </div>
+                                    <span class="badge badge-accent badge-xs">Security Policy</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-accent transition-colors">Access Groups</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Configure permission schedules, allowed passage days, and door access rules.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-accent font-semibold">
+                                    <span>Manage Groups</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 7: Dashboard Analytics -->
+                        <a href="/page?page=dashboard" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-primary/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    </div>
+                                    <span class="badge badge-primary badge-xs">KPI & Charts</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-primary transition-colors">Analytics Dashboard</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    24-hour traffic charts, passage success rates, online door monitors, and counters.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-primary font-semibold">
+                                    <span>View Analytics</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Card 8: System Settings -->
+                        <a href="/page?page=system_config" class="card bg-base-100 border border-base-content/5 shadow-xs hover:shadow-md hover:border-neutral/30 transition-all group">
+                            <div class="card-body p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="w-12 h-12 rounded-xl bg-base-content/10 text-base-content flex items-center justify-center text-xl group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-sliders"></i>
+                                    </div>
+                                    <span class="badge badge-neutral badge-xs">System</span>
+                                </div>
+                                <h3 class="font-bold text-base mt-3 group-hover:text-base-content transition-colors">System Settings</h3>
+                                <p class="text-xs text-base-content/60 line-clamp-2">
+                                    Administrator accounts, database hot backups, role permissions, and configurations.
+                                </p>
+                                <div class="mt-4 pt-3 border-t border-base-content/5 flex items-center justify-between text-xs text-base-content font-semibold">
+                                    <span>Open Settings</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                 </div>
                             </div>
                         </a>
