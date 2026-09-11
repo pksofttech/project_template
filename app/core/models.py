@@ -215,6 +215,9 @@ class Access_Member(SQLModel, table=True):
     last_direction: str | None = Field(default=None)
     status: str = Field(default="active", index=True)  # active, inactive, expired, suspended
     expire_date: datetime | None = Field(default=None, sa_type=ISODateTime)
+    face_embedding: str | None = Field(default=None)  # JSON-encoded 512-dim normalized vector
+    face_registered_at: datetime | None = Field(default=None, sa_type=ISODateTime)
+    face_tag: str | None = Field(default=None)  # e.g., Mockup-ArcFace-512, InsightFace-buffalo_s
     created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
 
@@ -253,8 +256,9 @@ class Access_Log(SQLModel, table=True):
     direction: str = Field(default="IN", index=True)  # IN, OUT
     result: str = Field(default="GRANTED", index=True)  # GRANTED, DENIED, EXPIRED, UNREGISTERED, OUT_OF_SCHEDULE
     reason: str = Field(default="Access Granted")
-    event_type: str = Field(default="CARD_SWIPE", index=True)  # CARD_SWIPE, REMOTE_OPEN, MANUAL_BUTTON, ALARM
+    event_type: str = Field(default="CARD_SWIPE", index=True)  # CARD_SWIPE, REMOTE_OPEN, MANUAL_BUTTON, ALARM, FACE_RECOGNITION
     snapshot_url: str = Field(default="")
+    confidence_score: float | None = Field(default=None)  # Face similarity score (0.00 - 1.00)
     reader_id: str = Field(default="")
 
 

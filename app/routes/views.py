@@ -198,6 +198,18 @@ async def zone_presence_view(request: Request):
     )
 
 
+@router.get("/face_review", response_class=HTMLResponse)
+async def face_review_view(request: Request):
+    """Render face recognition access review and audit gallery page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "face_review.html",
+        get_view_context(request, title="Face Recognition Review", active_page="face_review", current_user=user),
+    )
+
+
 @router.get("/sample", response_class=HTMLResponse)
 async def sample_manager_view(request: Request):
     """Render sample CRUD DataTables management page."""

@@ -376,6 +376,150 @@ async def run_all_tests():
             print_error(f"  [FAIL] Zone HTML Views: {e}")
             failed += 1
 
+        # Test 25: Face Engine Status Diagnostic
+        try:
+            r_fs = await client.get("/api/access/event/face-status")
+            assert r_fs.status_code == 200
+            fs_data = r_fs.json()
+            assert fs_data["engine_mode"] in ("mockup", "insightface")
+            assert fs_data["dimension"] == 512
+            assert fs_data["enrolled_members_count"] >= 3
+            assert "MEM-001" in fs_data["enrolled_member_codes"]
+            print_success(f"  [PASS] GET /api/access/event/face-status - Mode: {fs_data['engine_mode']} ({fs_data['enrolled_members_count']} faces enrolled)")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Face Engine Status: {e}")
+            failed += 1
+
+        # Test 26: Camera Face Ingestion - Recognized Member (Somchai MEM-001)
+        try:
+            r_fc = await client.post(
+                "/api/access/event/camera-face",
+                json={
+                    "door_code": "DOOR-01",
+                    "direction": "IN",
+                    "simulate_member_code": "MEM-001",
+                    "reader_id": "TEST-CAM-01",
+                },
+            )
+            assert r_fc.status_code == 200
+            fc_data = r_fc.json()
+            assert fc_data["success"] is True
+            assert fc_data["confidence"] >= 0.65
+            assert "Somchai" in fc_data["member_name"]
+            assert fc_data["engine_mode"] in ("mockup", "insightface")
+            print_success(f"  [PASS] POST /api/access/event/camera-face - Verified Match ({fc_data['confidence_percent']})")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Camera Face Recognition (Member): {e}")
+            failed += 1
+
+        # Test 27: Camera Face Ingestion - Unregistered Stranger
+        try:
+            r_stranger = await client.post(
+                "/api/access/event/camera-face",
+                json={
+                    "door_code": "DOOR-01",
+                    "direction": "IN",
+                    "simulate_member_code": "STRANGER_GUEST_99",
+                    "reader_id": "TEST-CAM-01",
+                },
+            )
+            assert r_stranger.status_code == 200
+            st_data = r_stranger.json()
+            assert st_data["success"] is True
+            assert st_data["result"] == "UNREGISTERED"
+            assert st_data["granted"] is False
+            print_success(f"  [PASS] POST /api/access/event/camera-face - Stranger Correctly Denied ({st_data['confidence_percent']})")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Camera Face Recognition (Stranger): {e}")
+            failed += 1
+
+        # Test 28: Member Face Enrollment & Cache Sync
+        try:
+            r_enr = await client.post(
+                "/api/access/event/face-enroll?member_id=2",
+                cookies={"access_token": token},
+            )
+            assert r_enr.status_code == 200
+            enr_data = r_enr.json()
+            assert enr_data["success"] is True
+            assert "ArcFace-512" in enr_data["face_tag"]
+            print_success("  [PASS] POST /api/access/event/face-enroll - Face Vector Enrolled & Synced")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Member Face Enrollment: {e}")
+            failed += 1
+
+        # Test 29: Face Review Views (Direct & Dynamic Portal Route)
+        try:
+            r_fr1 = await client.get("/face_review", cookies={"access_token": token})
+            assert r_fr1.status_code == 200
+            assert "Face Access Review" in r_fr1.text
+
+            r_fr2 = await client.get("/page?page=face_review", cookies={"access_token": token})
+            assert r_fr2.status_code == 200
+            assert "Face Access Review" in r_fr2.text
+            print_success("  [PASS] GET /face_review & /page?page=face_review - Views Rendered OK")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Face Review Views: {e}")
+            failed += 1
+
+        # Test 30: Face Review Summary Statistics API
+        try:
+            r_stats = await client.get("/api/access/event/face-review/stats")
+            assert r_stats.status_code == 200
+            s_data = r_stats.json()
+            assert s_data["success"] is True
+            assert "total_face_scans" in s_data
+            assert "granted_scans" in s_data
+            assert "avg_confidence_percent" in s_data
+            assert "enrolled_members" in s_data
+            print_success(f"  [PASS] GET /api/access/event/face-review/stats - Total: {s_data['total_face_scans']}, Enrolled: {s_data['enrolled_members']}")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Face Review Stats API: {e}")
+            failed += 1
+
+        # Test 31: Face Review Gallery Paginated API
+        try:
+            r_gal = await client.get("/api/access/event/face-review/gallery?page=1&limit=10")
+            assert r_gal.status_code == 200
+            g_data = r_gal.json()
+            assert g_data["success"] is True
+            assert len(g_data["items"]) > 0
+            first_item = g_data["items"][0]
+            assert "snapshot_url" in first_item
+            assert "confidence_percent" in first_item
+            assert "door_name" in first_item
+            print_success(f"  [PASS] GET /api/access/event/face-review/gallery - Loaded {len(g_data['items'])} audit items")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Face Review Gallery API: {e}")
+            failed += 1
+
+        # Test 32: Face Review Enrolled Registry & DataTables Event Filter
+        try:
+            r_enr_list = await client.get("/api/access/event/face-review/enrolled")
+            assert r_enr_list.status_code == 200
+            el_data = r_enr_list.json()
+            assert el_data["success"] is True
+            assert len(el_data["data"]) > 0
+
+            # Verify DataTables event_type filter
+            r_dt = await client.get(
+                "/api/access/log/datatable?event_type=FACE_RECOGNITION&draw=1&start=0&length=10"
+            )
+            assert r_dt.status_code == 200
+            assert "data" in r_dt.json()
+            print_success("  [PASS] GET /api/access/event/face-review/enrolled & DataTables Filter OK")
+            passed += 1
+        except Exception as e:
+            print_error(f"  [FAIL] Face Review Enrolled & DataTables Filter: {e}")
+            failed += 1
+
     print_debug(f"📊 Results: {passed} PASSED, {failed} FAILED")
     return failed == 0
 

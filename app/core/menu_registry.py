@@ -167,6 +167,17 @@ SYSTEM_MENU_REGISTRY: list[dict[str, Any]] = [
         "description": "Real-time member presence, occupancy density, and emergency muster roll call",
     },
     {
+        "code": "FACE_REVIEW",
+        "page": "face_review",
+        "title": "Face Review",
+        "title_th": "รีวิวภาพใบหน้า (Face Audit)",
+        "url": "/page?page=face_review",
+        "icon": "fa-solid fa-camera-rotate",
+        "category": "access",
+        "default_for_new_role": True,
+        "description": "Face recognition audit gallery, snapshot verification, and confidence review",
+    },
+    {
         "code": "SYSTEM_CONFIG",
         "page": "system_config",
         "title": "Settings",
@@ -247,6 +258,14 @@ HOME_WIDGET_REGISTRY: list[dict[str, Any]] = [
         "title_th": "ติดตามพิกัดผู้ใช้",
         "icon": "fa-solid fa-person-shelter",
         "url": "/page?page=zone_presence",
+        "default_for_new_role": True,
+    },
+    {
+        "code": "FACE_REVIEW",
+        "title": "Face Review",
+        "title_th": "รีวิวภาพใบหน้า Access",
+        "icon": "fa-solid fa-camera-rotate",
+        "url": "/page?page=face_review",
         "default_for_new_role": True,
     },
     {

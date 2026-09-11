@@ -31,20 +31,28 @@
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
                                 <span class="badge badge-primary badge-sm font-bold">Simulator</span>
-                                <span class="text-sm font-bold text-base-content">Card Swipe & Reader Test Console</span>
+                                <span class="text-sm font-bold text-base-content">Hardware Access Simulator</span>
+                                <span id="faceEngineStatusBadge" class="badge badge-warning badge-xs gap-1 font-mono">
+                                    <i class="fa-solid fa-microchip"></i> InsightFace (Mockup)
+                                </span>
                             </div>
-                            <p class="text-xs text-base-content/60">
-                                Simulate card tap events to test real-time validation and gate relay triggers.
-                            </p>
+                            <div class="flex items-center gap-1 pt-1">
+                                <button type="button" id="tabCardBtn" onclick="switchSimTab('card')" class="btn btn-xs btn-primary gap-1">
+                                    <i class="fa-solid fa-id-card"></i> RFID Card
+                                </button>
+                                <button type="button" id="tabFaceBtn" onclick="switchSimTab('face')" class="btn btn-xs btn-outline gap-1">
+                                    <i class="fa-solid fa-camera"></i> Camera Face Scan
+                                </button>
+                            </div>
                         </div>
 
-                        <!-- Simulation Action Form -->
-                        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <!-- Card Simulation Action Form -->
+                        <div id="simCardPanel" class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                             <!-- Quick Test Presets -->
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
                                     <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
-                                    <span>Quick Test Badges</span>
+                                    <span>Quick Badges</span>
                                     <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
                                 </button>
                                 <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-72 z-50 text-xs border border-base-content/10">
@@ -76,6 +84,47 @@
                             <button onclick="triggerSwipe()" id="btnSimulate" class="btn btn-sm btn-primary gap-1 font-bold shadow-sm">
                                 <i class="fa-solid fa-id-card"></i>
                                 <span>Tap Card</span>
+                            </button>
+                        </div>
+
+                        <!-- Face Simulation Action Form -->
+                        <div id="simFacePanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <!-- Quick Face Presets -->
+                            <div class="dropdown dropdown-end">
+                                <button tabindex="0" class="btn btn-sm btn-outline gap-2">
+                                    <i class="fa-solid fa-user-tag text-secondary"></i>
+                                    <span>Face Presets</span>
+                                    <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
+                                </button>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-72 z-50 text-xs border border-base-content/10">
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40">Registered Faces</li>
+                                    <li><a onclick="setSimFace('MEM-001', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somchai (MEM-001 - Match ~95%)</a></li>
+                                    <li><a onclick="setSimFace('MEM-002', 'GATE-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somsri (MEM-002 - Match ~93%)</a></li>
+                                    <li><a onclick="setSimFace('MEM-003', 'DOOR-03', 'IN')"><i class="fa-solid fa-shield text-info"></i> Anan (MEM-003 - Security)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2">Security Cases</li>
+                                    <li><a onclick="setSimFace('MEM-004', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-xmark text-error"></i> John Doe (Inactive Account)</a></li>
+                                    <li><a onclick="setSimFace('STRANGER', 'DOOR-01', 'IN')"><i class="fa-solid fa-user-slash text-warning"></i> Unregistered Stranger (~30%)</a></li>
+                                </ul>
+                            </div>
+
+                            <input type="text" id="simFaceCode" class="input input-bordered input-sm font-mono text-xs w-36" placeholder="Member Code" value="MEM-001" />
+
+                            <select id="simFaceDoor" class="select select-bordered select-sm text-xs w-44">
+                                <option value="DOOR-01">DOOR-01 (Turnstile 1)</option>
+                                <option value="DOOR-02">DOOR-02 (Turnstile 2)</option>
+                                <option value="GATE-01">GATE-01 (Barrier In)</option>
+                                <option value="GATE-02">GATE-02 (Barrier Out)</option>
+                                <option value="DOOR-03">DOOR-03 (Server Room)</option>
+                            </select>
+
+                            <select id="simFaceDirection" class="select select-bordered select-sm text-xs w-24">
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+
+                            <button onclick="triggerFaceScan()" id="btnSimulateFace" class="btn btn-sm btn-secondary gap-1 font-bold shadow-sm">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>Scan Face</span>
                             </button>
                         </div>
                     </div>
@@ -112,11 +161,12 @@
                                 </div>
                                 <div class="text-center sm:text-left space-y-1 flex-1">
                                     <h3 id="spotlightName" class="font-black text-lg text-base-content">System Ready</h3>
-                                    <p id="spotlightDept" class="text-xs text-base-content/60">Swipe a card to view verification</p>
+                                    <p id="spotlightDept" class="text-xs text-base-content/60">Swipe a card or scan face</p>
                                     <div class="flex items-center justify-center sm:justify-start gap-2 pt-1 font-mono text-xs text-base-content/50">
-                                        <i class="fa-solid fa-credit-card text-[10px]"></i>
+                                        <i class="fa-solid fa-id-badge text-[10px]"></i>
                                         <span id="spotlightCardNo">-</span>
                                     </div>
+                                    <div id="spotlightMatchConfidence" class="hidden"></div>
                                 </div>
                             </div>
 
@@ -199,7 +249,100 @@
             loadDoors();
             loadRecentLogs();
             initSSE();
+            loadFaceEngineStatus();
         });
+
+        // Load Face Engine Status
+        async function loadFaceEngineStatus() {
+            try {
+                const res = await fetch('/api/access/event/face-status');
+                const data = await res.json();
+                const badge = document.getElementById('faceEngineStatusBadge');
+                if (badge) {
+                    if (data.engine_mode === 'insightface') {
+                        badge.className = 'badge badge-success badge-xs gap-1 font-mono';
+                        badge.innerHTML = `<i class="fa-solid fa-camera"></i> InsightFace (ONNX)`;
+                    } else {
+                        badge.className = 'badge badge-warning badge-xs gap-1 font-mono';
+                        badge.innerHTML = `<i class="fa-solid fa-microchip"></i> InsightFace (Mockup: ${data.enrolled_members_count} faces)`;
+                    }
+                }
+            } catch (err) {
+                console.warn("Face status check error:", err);
+            }
+        }
+
+        // Switch Simulator Tab
+        function switchSimTab(tab) {
+            const cardPanel = document.getElementById('simCardPanel');
+            const facePanel = document.getElementById('simFacePanel');
+            const tabCardBtn = document.getElementById('tabCardBtn');
+            const tabFaceBtn = document.getElementById('tabFaceBtn');
+
+            if (tab === 'face') {
+                cardPanel.classList.add('hidden');
+                facePanel.classList.remove('hidden');
+                tabCardBtn.className = 'btn btn-xs btn-outline gap-1';
+                tabFaceBtn.className = 'btn btn-xs btn-secondary gap-1';
+            } else {
+                facePanel.classList.add('hidden');
+                cardPanel.classList.remove('hidden');
+                tabFaceBtn.className = 'btn btn-xs btn-outline gap-1';
+                tabCardBtn.className = 'btn btn-xs btn-primary gap-1';
+            }
+        }
+
+        // Face Simulation Helper
+        function setSimFace(memberCode, doorCode, direction) {
+            document.getElementById('simFaceCode').value = memberCode;
+            document.getElementById('simFaceDoor').value = doorCode;
+            document.getElementById('simFaceDirection').value = direction;
+        }
+
+        // Trigger Face Scan Simulation
+        async function triggerFaceScan() {
+            const btn = document.getElementById('btnSimulateFace');
+            const memberCode = document.getElementById('simFaceCode').value.trim();
+            const door = document.getElementById('simFaceDoor').value;
+            const direction = document.getElementById('simFaceDirection').value;
+
+            if (!door) {
+                if (window.toast) toast.warning("Please select a door");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Scanning...';
+
+            try {
+                const res = await fetch('/api/access/event/camera-face', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        door_code: door,
+                        direction: direction,
+                        simulate_member_code: memberCode,
+                        reader_id: 'SIM-CAM-FACE-01'
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) {
+                        if (result.granted) {
+                            toast.success(`Face Recognized: ${result.member_name} (${result.confidence_percent})`);
+                        } else {
+                            toast.info(`Face Event: ${result.result} - ${result.reason}`);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Face simulation error:", err);
+                if (window.toast) toast.error("Face simulation failed");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-camera"></i> <span>Scan Face</span>';
+            }
+        }
 
         // Load Doors for Remote Controls
         async function loadDoors() {
@@ -312,7 +455,6 @@
                     })
                 });
                 const result = await res.json();
-                // UI will be updated automatically via SSE!
             } catch (err) {
                 console.error("Simulation error:", err);
                 if (window.toast) toast.error("Simulation request failed");
@@ -382,7 +524,7 @@
                 : '<i class="fa-solid fa-circle-xmark"></i> <span>ACCESS DENIED</span>';
 
             // Cardholder Info
-            document.getElementById('spotlightName').textContent = d.member_name || 'Unknown Cardholder';
+            document.getElementById('spotlightName').textContent = d.member_name || 'Unknown Person';
             document.getElementById('spotlightDept').textContent = d.department || 'No department assigned';
             document.getElementById('spotlightCardNo').textContent = d.card_number || '-';
             document.getElementById('spotlightDoor').textContent = d.door_name || d.door_code;
@@ -390,10 +532,23 @@
             document.getElementById('spotlightReason').textContent = d.reason || '-';
             document.getElementById('spotlightTime').textContent = d.time || new Date().toLocaleTimeString();
 
-            // Avatar initial or picture
+            // Face Match Confidence Indicator
+            const confEl = document.getElementById('spotlightMatchConfidence');
+            if (confEl) {
+                if (d.event_type === 'FACE_RECOGNITION' && d.confidence_percent) {
+                    confEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-bold bg-secondary/15 text-secondary border border-secondary/25 mt-1';
+                    confEl.innerHTML = `<i class="fa-solid fa-camera"></i> Face Match: ${d.confidence_percent} (${d.engine_mode || 'Mockup'})`;
+                } else {
+                    confEl.className = 'hidden';
+                    confEl.innerHTML = '';
+                }
+            }
+
+            // Avatar / Snapshot Picture
             const avatarContainer = document.getElementById('spotlightAvatar');
-            if (d.picture_url) {
-                avatarContainer.innerHTML = `<img src="${d.picture_url}" class="rounded-2xl w-20 h-20 object-cover shadow-inner" />`;
+            const imgUrl = d.snapshot_url || d.picture_url;
+            if (imgUrl) {
+                avatarContainer.innerHTML = `<img src="${imgUrl}" class="rounded-2xl w-20 h-20 object-cover shadow-inner border border-base-content/10" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'bg-primary/10 text-primary rounded-2xl w-20 h-20 flex items-center justify-center text-3xl font-black\\'><i class=\\'fa-solid fa-user\\'></i></div>';" />`;
             } else {
                 const initial = (d.member_name && d.member_name !== 'Unknown') ? d.member_name.charAt(0).toUpperCase() : '?';
                 avatarContainer.innerHTML = `
@@ -408,6 +563,7 @@
         function appendLogCard(log, animate = true) {
             const feed = document.getElementById('liveFeedList');
             const isGranted = (log.result === 'GRANTED');
+            const isFace = (log.event_type === 'FACE_RECOGNITION' || (log.card_number && log.card_number.startsWith('FACE:')));
             const timeStr = log.time || (log.event_time ? log.event_time.substring(11, 19) : '');
 
             const cardHtml = document.createElement('div');
@@ -419,10 +575,11 @@
                         <i class="${isGranted ? 'fa-solid fa-check' : 'fa-solid fa-xmark'}"></i>
                     </div>
                     <div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <span class="font-bold text-xs text-base-content">${log.member_name || 'Unknown'}</span>
                             <span class="badge badge-xs ${isGranted ? 'badge-success' : 'badge-error'} font-mono">${log.result}</span>
                             <span class="badge badge-xs badge-neutral font-mono">${log.direction || 'IN'}</span>
+                            ${isFace ? `<span class="badge badge-xs badge-secondary font-mono gap-1"><i class="fa-solid fa-camera text-[8px]"></i>${log.confidence_percent || 'FACE'}</span>` : ''}
                         </div>
                         <div class="text-[11px] text-base-content/60 mt-0.5">
                             <span>${log.door_name}</span> • <span class="font-mono">${log.card_number}</span>

@@ -62,6 +62,8 @@ async def get_logs_datatable(req_para: Request, db: AsyncDbDep):
         base_stmt = base_stmt.where(Access_Log.result == params["result"].upper())
     if params.get("direction"):
         base_stmt = base_stmt.where(Access_Log.direction == params["direction"].upper())
+    if params.get("event_type"):
+        base_stmt = base_stmt.where(Access_Log.event_type == params["event_type"].upper())
 
     order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Access_Log)
     if order_expr is None:

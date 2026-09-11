@@ -139,6 +139,143 @@
         </div>
     </dialog>
 
+    <!-- 📸 Face Biometric Enrollment & Management Modal -->
+    <dialog id="faceEnrollModal" class="modal">
+        <div class="modal-box max-w-xl p-6">
+            <form method="dialog">
+                <button type="button" onclick="closeFaceEnrollModal()" class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
+            </form>
+
+            <div class="flex items-center gap-3 border-b border-base-content/10 pb-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-base-content">Face Biometric Enrollment</h3>
+                    <p class="text-xs text-base-content/60" id="faceEnrollSubtitle">Register AI Face Access for Cardholder</p>
+                </div>
+            </div>
+
+            <!-- Member Info & Current Status Banner -->
+            <div class="p-3 rounded-xl bg-base-200/70 border border-base-content/10 flex items-center justify-between mb-4 text-xs">
+                <div class="flex items-center gap-2.5">
+                    <div id="faceModalAvatar" class="avatar">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">
+                            ?
+                        </div>
+                    </div>
+                    <div>
+                        <div id="faceModalMemberName" class="font-bold text-sm text-base-content">Cardholder Name</div>
+                        <div id="faceModalMemberCode" class="font-mono text-base-content/60">MEM-000</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span id="faceModalStatusBadge" class="badge badge-sm badge-ghost font-bold font-mono">Loading...</span>
+                    <div id="faceModalTag" class="text-[10px] text-base-content/50 font-mono mt-0.5">ArcFace 512-dim</div>
+                </div>
+            </div>
+
+            <!-- Enrollment Methods Navigation Tabs -->
+            <div class="tabs tabs-boxed bg-base-200 p-1 mb-4 grid grid-cols-3 text-xs">
+                <button type="button" id="faceTabCameraBtn" onclick="switchFaceMethod('camera')" class="tab tab-active gap-1 font-bold">
+                    <i class="fa-solid fa-video"></i> Web Camera
+                </button>
+                <button type="button" id="faceTabUploadBtn" onclick="switchFaceMethod('upload')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Photo
+                </button>
+                <button type="button" id="faceTabMockupBtn" onclick="switchFaceMethod('mockup')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-microchip"></i> Quick Mockup
+                </button>
+            </div>
+
+            <!-- Section 1: Live Web Camera -->
+            <div id="faceSectionCamera" class="space-y-3">
+                <div class="relative rounded-2xl overflow-hidden bg-black aspect-4/3 flex items-center justify-center border-2 border-dashed border-base-content/20">
+                    <video id="webcamVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                    <canvas id="webcamCanvas" class="hidden"></canvas>
+                    <img id="capturedFaceImg" class="hidden w-full h-full object-cover" />
+                    
+                    <!-- Viewfinder Face Guide Overlay -->
+                    <div id="faceGuideBox" class="absolute pointer-events-none w-48 h-60 rounded-3xl border-2 border-secondary/60 shadow-[0_0_20px_rgba(230,100,200,0.3)] flex flex-col items-center justify-between p-2 animate-pulse hidden">
+                        <span class="text-[10px] uppercase tracking-wider text-secondary font-bold bg-black/60 px-2 py-0.5 rounded-full">Position Face Here</span>
+                        <div class="w-4 h-4 border-b-2 border-r-2 border-secondary self-end"></div>
+                    </div>
+
+                    <!-- Camera Placeholder when stopped -->
+                    <div id="cameraStandbyPrompt" class="absolute inset-0 bg-base-300/90 flex flex-col items-center justify-center gap-2 text-center p-4">
+                        <i class="fa-solid fa-video-slash text-4xl text-base-content/40"></i>
+                        <p class="text-xs font-semibold text-base-content/70">Click 'Start Camera' to open your webcam</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-2 pt-1">
+                    <button type="button" id="btnStartCam" onclick="startWebcam()" class="btn btn-sm btn-outline gap-1 text-xs">
+                        <i class="fa-solid fa-play"></i> Start Camera
+                    </button>
+                    <button type="button" id="btnSnapCam" onclick="captureSnapshot()" class="btn btn-sm btn-secondary gap-1 text-xs font-bold" disabled>
+                        <i class="fa-solid fa-camera"></i> Take Snapshot
+                    </button>
+                    <button type="button" id="btnRetakeCam" onclick="retakeWebcam()" class="btn btn-sm btn-ghost gap-1 text-xs hidden">
+                        <i class="fa-solid fa-rotate-left"></i> Retake
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 2: Upload Photo File -->
+            <div id="faceSectionUpload" class="hidden space-y-3">
+                <div class="border-2 border-dashed border-base-content/20 rounded-2xl p-6 text-center hover:border-secondary/50 transition-colors bg-base-200/30">
+                    <input type="file" id="faceFileInput" accept="image/jpeg,image/png,image/webp" onchange="previewUploadedFile(event)" class="hidden" />
+                    <div id="uploadPlaceholder" onclick="document.getElementById('faceFileInput').click()" class="cursor-pointer space-y-2">
+                        <div class="w-14 h-14 rounded-full bg-secondary/10 text-secondary mx-auto flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <div class="font-bold text-sm text-base-content">Click to select photo or drag here</div>
+                        <p class="text-xs text-base-content/50">Supports JPG, PNG, WebP (Frontal face, clear lighting)</p>
+                    </div>
+
+                    <div id="uploadPreviewContainer" class="hidden flex flex-col items-center gap-3">
+                        <img id="filePreviewImg" class="w-44 h-44 rounded-2xl object-cover shadow-md border-2 border-secondary" />
+                        <button type="button" onclick="document.getElementById('faceFileInput').click()" class="btn btn-xs btn-outline">
+                            Choose another image
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Quick AI Mockup Vector -->
+            <div id="faceSectionMockup" class="hidden space-y-3">
+                <div class="p-5 rounded-2xl bg-secondary/5 border border-secondary/20 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-2xl text-secondary mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-sm text-base-content">Simulated ArcFace 512-dim Embedding</h4>
+                            <p class="text-xs text-base-content/70 mt-0.5">
+                                Generates a deterministic, normalized 512-dimensional vector based on the cardholder's code. 
+                                Ideal for quick development, testing gate simulator, or when camera hardware is offline.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-base-100 font-mono text-[11px] text-base-content/70 border border-base-content/10">
+                        Algorithm: ArcFace L2-Normalized Cosine Metric (512 floats)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="modal-action flex items-center justify-between pt-4 border-t border-base-content/10 mt-4">
+                <button type="button" id="btnDeleteFace" onclick="deleteFaceBiometrics()" class="btn btn-sm btn-ghost text-error gap-1 text-xs hidden">
+                    <i class="fa-solid fa-trash-can"></i> Remove Face
+                </button>
+                <div class="flex items-center gap-2 ml-auto">
+                    <button type="button" class="btn btn-sm btn-ghost text-xs" onclick="closeFaceEnrollModal()">Cancel</button>
+                    <button type="button" id="btnSaveFace" onclick="submitFaceEnrollment()" class="btn btn-sm btn-primary gap-1 font-bold text-xs">
+                        <i class="fa-solid fa-circle-check"></i> <span>Enroll & Activate Access</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
     {% include '_dialog.html' %}
     {% include '_script.html' %}
 
@@ -165,8 +302,12 @@
                             searchable: false,
                             className: "noExport text-center",
                             render: function (data, type, row) {
+                                const fullName = (row.first_name + ' ' + (row.last_name || '')).trim();
                                 return `
                                     <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openFaceEnrollModal(${data}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', ${Boolean(row.face_embedding)})" class="btn btn-ghost btn-xs btn-circle text-secondary hover:bg-secondary/15" title="Enroll / Manage Face Access">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </button>
                                         <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
@@ -187,20 +328,48 @@
                             }
                         },
                         {
-                            data: "member_code",
-                            name: "member_code",
-                            title: "Code",
-                            render: function (data) {
-                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data}</span>`;
+                            data: "first_name",
+                            name: "first_name",
+                            title: "Cardholder",
+                            render: function (data, type, row) {
+                                const last = row.last_name || "";
+                                const pic = row.picture_url;
+                                const initial = data ? data.charAt(0).toUpperCase() : "?";
+                                const avatarHtml = pic 
+                                    ? `<img src="${pic}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-base-content/10 shadow-xs" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0\\'>${initial}</div>';" />`
+                                    : `<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0">${initial}</div>`;
+                                return `
+                                    <div class="flex items-center gap-2.5">
+                                        ${avatarHtml}
+                                        <div>
+                                            <div class="font-bold text-base-content">${data} ${last}</div>
+                                            <div class="text-[10px] text-base-content/50 font-mono">${row.member_code}</div>
+                                        </div>
+                                    </div>
+                                `;
                             }
                         },
                         {
-                            data: "first_name",
-                            name: "first_name",
-                            title: "Full Name",
+                            data: "face_embedding",
+                            name: "face_embedding",
+                            title: "Face Access",
+                            className: "text-center",
                             render: function (data, type, row) {
-                                const last = row.last_name || "";
-                                return `<div class="font-bold text-base-content">${data} ${last}</div>`;
+                                const hasFace = Boolean(data && data.length > 20);
+                                const fullName = (row.first_name + ' ' + (row.last_name || '')).trim();
+                                if (hasFace) {
+                                    return `
+                                        <button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', true)" class="badge badge-xs badge-success gap-1 font-mono font-bold hover:scale-105 transition-transform cursor-pointer" title="${row.face_tag || 'Enrolled'}">
+                                            <i class="fa-solid fa-check text-[9px]"></i> Enrolled
+                                        </button>
+                                    `;
+                                } else {
+                                    return `
+                                        <button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', false)" class="badge badge-xs badge-ghost text-base-content/50 gap-1 font-mono hover:scale-105 transition-transform cursor-pointer">
+                                            <i class="fa-solid fa-plus text-[9px]"></i> Add Face
+                                        </button>
+                                    `;
+                                }
                             }
                         },
                         {
@@ -393,6 +562,233 @@
                 console.error("Delete error:", err);
             }
         }
+
+        // =========================================================================
+        // 📸 FACE BIOMETRICS ENROLLMENT CONTROLLER
+        // =========================================================================
+        let currentMemberForFace = null;
+        let webcamStream = null;
+        let activeFaceMethod = 'camera'; // 'camera', 'upload', 'mockup'
+        let capturedBase64 = null;
+
+        function openFaceEnrollModal(id, name, code, pictureUrl, hasFace) {
+            currentMemberForFace = { id, name, code, pictureUrl, hasFace };
+            capturedBase64 = null;
+
+            document.getElementById('faceModalMemberName').textContent = name || 'Cardholder';
+            document.getElementById('faceModalMemberCode').textContent = code || 'MEM-000';
+            document.getElementById('faceEnrollSubtitle').textContent = `Manage face access for ${name} (${code})`;
+
+            const avatarBox = document.getElementById('faceModalAvatar');
+            if (pictureUrl) {
+                avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-10 h-10 rounded-xl object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary\\'>?</div>';" />`;
+            } else {
+                const initial = name ? name.charAt(0).toUpperCase() : '?';
+                avatarBox.innerHTML = `<div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">${initial}</div>`;
+            }
+
+            const badge = document.getElementById('faceModalStatusBadge');
+            const deleteBtn = document.getElementById('btnDeleteFace');
+            if (hasFace) {
+                badge.className = 'badge badge-sm badge-success font-bold font-mono gap-1';
+                badge.innerHTML = '<i class="fa-solid fa-check"></i> Enrolled';
+                deleteBtn.classList.remove('hidden');
+            } else {
+                badge.className = 'badge badge-sm badge-ghost text-base-content/50 font-bold font-mono gap-1';
+                badge.innerHTML = '<i class="fa-solid fa-minus"></i> Not Enrolled';
+                deleteBtn.classList.add('hidden');
+            }
+
+            // Reset view to camera tab
+            switchFaceMethod('camera');
+            retakeWebcam();
+            const fileInput = document.getElementById('faceFileInput');
+            if (fileInput) fileInput.value = '';
+            document.getElementById('uploadPlaceholder')?.classList.remove('hidden');
+            document.getElementById('uploadPreviewContainer')?.classList.add('hidden');
+
+            faceEnrollModal.showModal();
+        }
+
+        function closeFaceEnrollModal() {
+            stopWebcam();
+            faceEnrollModal.close();
+        }
+
+        function switchFaceMethod(method) {
+            activeFaceMethod = method;
+            document.getElementById('faceTabCameraBtn').className = (method === 'camera') ? 'tab tab-active gap-1 font-bold' : 'tab gap-1 font-bold';
+            document.getElementById('faceTabUploadBtn').className = (method === 'upload') ? 'tab tab-active gap-1 font-bold' : 'tab gap-1 font-bold';
+            document.getElementById('faceTabMockupBtn').className = (method === 'mockup') ? 'tab tab-active gap-1 font-bold' : 'tab gap-1 font-bold';
+
+            document.getElementById('faceSectionCamera').className = (method === 'camera') ? 'space-y-3' : 'hidden';
+            document.getElementById('faceSectionUpload').className = (method === 'upload') ? 'space-y-3' : 'hidden';
+            document.getElementById('faceSectionMockup').className = (method === 'mockup') ? 'space-y-3' : 'hidden';
+
+            if (method !== 'camera') {
+                stopWebcam();
+            }
+        }
+
+        async function startWebcam() {
+            try {
+                const video = document.getElementById('webcamVideo');
+                const prompt = document.getElementById('cameraStandbyPrompt');
+                const btnSnap = document.getElementById('btnSnapCam');
+                const btnStart = document.getElementById('btnStartCam');
+
+                webcamStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" },
+                    audio: false
+                });
+                video.srcObject = webcamStream;
+                await video.play();
+
+                prompt.classList.add('hidden');
+                btnSnap.disabled = false;
+                btnStart.classList.add('hidden');
+                document.getElementById('faceGuideBox').classList.remove('hidden');
+                document.getElementById('capturedFaceImg').classList.add('hidden');
+                video.classList.remove('hidden');
+            } catch (err) {
+                console.error("Webcam error:", err);
+                if (window.toast) toast.error("Camera access failed: " + err.message);
+            }
+        }
+
+        function stopWebcam() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            const prompt = document.getElementById('cameraStandbyPrompt');
+            if (prompt) prompt.classList.remove('hidden');
+            const btnStart = document.getElementById('btnStartCam');
+            if (btnStart) btnStart.classList.remove('hidden');
+            const btnSnap = document.getElementById('btnSnapCam');
+            if (btnSnap) btnSnap.disabled = true;
+            const btnRetake = document.getElementById('btnRetakeCam');
+            if (btnRetake) btnRetake.classList.add('hidden');
+        }
+
+        function captureSnapshot() {
+            const video = document.getElementById('webcamVideo');
+            const canvas = document.getElementById('webcamCanvas');
+            const capturedImg = document.getElementById('capturedFaceImg');
+            const btnRetake = document.getElementById('btnRetakeCam');
+            const btnSnap = document.getElementById('btnSnapCam');
+
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            capturedBase64 = canvas.toDataURL('image/jpeg', 0.90);
+            capturedImg.src = capturedBase64;
+            capturedImg.classList.remove('hidden');
+            video.classList.add('hidden');
+
+            btnSnap.classList.add('hidden');
+            btnRetake.classList.remove('hidden');
+            document.getElementById('faceGuideBox').classList.add('hidden');
+            if (window.toast) toast.info("Snapshot captured! Click 'Enroll & Activate Access' to save.");
+        }
+
+        function retakeWebcam() {
+            const video = document.getElementById('webcamVideo');
+            const capturedImg = document.getElementById('capturedFaceImg');
+            const btnRetake = document.getElementById('btnRetakeCam');
+            const btnSnap = document.getElementById('btnSnapCam');
+
+            capturedBase64 = null;
+            if (capturedImg) capturedImg.classList.add('hidden');
+            if (video) video.classList.remove('hidden');
+            if (btnSnap) {
+                btnSnap.classList.remove('hidden');
+                btnSnap.disabled = !webcamStream;
+            }
+            if (btnRetake) btnRetake.classList.add('hidden');
+            const guide = document.getElementById('faceGuideBox');
+            if (guide && webcamStream) guide.classList.remove('hidden');
+        }
+
+        function previewUploadedFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                capturedBase64 = evt.target.result;
+                document.getElementById('filePreviewImg').src = capturedBase64;
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+                document.getElementById('uploadPreviewContainer').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitFaceEnrollment() {
+            if (!currentMemberForFace) return;
+            const btn = document.getElementById('btnSaveFace');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Enrolling...';
+
+            try {
+                const payload = {
+                    image_base64: (activeFaceMethod !== 'mockup') ? capturedBase64 : null,
+                    simulate_code: currentMemberForFace.code
+                };
+
+                const res = await fetch(`/api/access/member/${currentMemberForFace.id}/enroll-face`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Face biometrics enrolled successfully!");
+                    closeFaceEnrollModal();
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Enrollment failed");
+                }
+            } catch (err) {
+                console.error("Enroll error:", err);
+                if (window.toast) toast.error("Error submitting face enrollment");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Enroll & Activate Access</span>';
+            }
+        }
+
+        async function deleteFaceBiometrics() {
+            if (!currentMemberForFace) return;
+            if (!confirm(`Are you sure you want to remove face biometric access for ${currentMemberForFace.name}?`)) return;
+
+            try {
+                const res = await fetch(`/api/access/member/${currentMemberForFace.id}/remove-face`, {
+                    method: 'DELETE'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Face credential removed");
+                    closeFaceEnrollModal();
+                    reloadTable();
+                }
+            } catch (err) {
+                console.error("Remove face error:", err);
+                if (window.toast) toast.error("Failed to remove face credential");
+            }
+        }
+
+        window.openFaceEnrollModal = openFaceEnrollModal;
+        window.closeFaceEnrollModal = closeFaceEnrollModal;
+        window.switchFaceMethod = switchFaceMethod;
+        window.startWebcam = startWebcam;
+        window.stopWebcam = stopWebcam;
+        window.captureSnapshot = captureSnapshot;
+        window.retakeWebcam = retakeWebcam;
+        window.previewUploadedFile = previewUploadedFile;
+        window.submitFaceEnrollment = submitFaceEnrollment;
+        window.deleteFaceBiometrics = deleteFaceBiometrics;
     </script>
 
 </body>

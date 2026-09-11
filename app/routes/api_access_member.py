@@ -1,5 +1,7 @@
-"""API Endpoints for Access Members (Cardholders) Management."""
-
+import base64
+import json
+import os
+import uuid
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -13,6 +15,7 @@ from app.core.models import (
     build_where_expr,
 )
 from app.core.utility import export_excel_response, get_datatable_select
+from app.module.face_service import face_service
 from app.stdio import parse_datetime_bkk, time_now
 
 router = APIRouter(
@@ -179,3 +182,118 @@ async def delete_member(member_id: int, db: AsyncDbDep):
     await db.delete(member)
     await db.commit()
     return {"success": True, "message": f"Cardholder '{member.first_name} {member.last_name}' deleted successfully"}
+
+
+@router.post("/{member_id}/enroll-face", summary="Enroll or update member face biometrics")
+async def enroll_member_face_endpoint(
+    member_id: int,
+    request: Request,
+    db: AsyncDbDep,
+):
+    """Enroll a face photo & 512-dim embedding for cardholder."""
+    member = await db.get(Access_Member, member_id)
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+
+    content_type = request.headers.get("content-type", "")
+    image_bytes = None
+    simulate_code = None
+
+    if "multipart/form-data" in content_type:
+        form = await request.form()
+        upload_file = form.get("image")
+        simulate_code = form.get("simulate_code")
+        if upload_file and hasattr(upload_file, "read"):
+            image_bytes = await upload_file.read()
+    else:
+        try:
+            body = await request.json()
+        except Exception:
+            body = {}
+        simulate_code = body.get("simulate_code")
+        image_base64 = body.get("image_base64")
+        if image_base64:
+            if "," in image_base64:
+                image_base64 = image_base64.split(",", 1)[1]
+            try:
+                image_bytes = base64.b64decode(image_base64)
+            except Exception:
+                image_bytes = None
+
+    now = time_now()
+    os.makedirs("static/uploads/members", exist_ok=True)
+
+    # Save photo if image bytes provided
+    if image_bytes and len(image_bytes) > 0:
+        filename = f"member_{member_id}_{int(now.timestamp())}_{uuid.uuid4().hex[:6]}.jpg"
+        filepath = os.path.join("static/uploads/members", filename)
+        with open(filepath, "wb") as f:
+            f.write(image_bytes)
+        member.picture_url = f"/static/uploads/members/{filename}"
+
+    # Extract or generate 512-dim embedding
+    target_code = simulate_code or member.member_code
+    target_embedding, meta = face_service.extract_embedding(
+        image_bytes=image_bytes,
+        simulate_member_code=target_code,
+        noise_level=0.0,
+    )
+
+    if target_embedding is not None:
+        member.face_embedding = json.dumps([round(float(x), 6) for x in target_embedding])
+    else:
+        member.face_embedding = face_service.enroll_mock_embedding(target_code)
+
+    member.face_registered_at = now
+    member.face_tag = f"{face_service.engine_mode.title()}-ArcFace-512"
+    member.updated_at = now
+
+    db.add(member)
+    await db.commit()
+    await db.refresh(member)
+
+    # Sync in-memory cache
+    all_members = (await db.exec(select(Access_Member))).all()
+    face_service.sync_cache(all_members)
+
+    return {
+        "success": True,
+        "message": f"Face biometrics enrolled successfully for {member.first_name}",
+        "data": {
+            "id": member.id,
+            "member_code": member.member_code,
+            "first_name": member.first_name,
+            "last_name": member.last_name,
+            "picture_url": member.picture_url,
+            "face_tag": member.face_tag,
+            "face_registered_at": member.face_registered_at,
+            "engine_mode": face_service.engine_mode,
+        },
+    }
+
+
+@router.delete("/{member_id}/remove-face", summary="Delete member face biometrics")
+async def remove_member_face_endpoint(member_id: int, db: AsyncDbDep):
+    """Remove enrolled face biometric credential from cardholder."""
+    member = await db.get(Access_Member, member_id)
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
+
+    member.face_embedding = None
+    member.face_registered_at = None
+    member.face_tag = None
+    member.updated_at = time_now()
+
+    db.add(member)
+    await db.commit()
+    await db.refresh(member)
+
+    # Sync in-memory cache
+    all_members = (await db.exec(select(Access_Member))).all()
+    face_service.sync_cache(all_members)
+
+    return {
+        "success": True,
+        "message": f"Face biometric credential removed for {member.first_name}",
+    }
+

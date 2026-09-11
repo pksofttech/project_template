@@ -490,8 +490,30 @@ async def database_init_default():
                         session.add(m)
                 await session.flush()
 
-            # Fetch members for card linking
+            # Fetch members for card linking & face enrollment
             all_members = (await session.exec(select(Access_Member))).all()
+            
+            # Initialize Mockup Face Embeddings & Photos for Members if not present
+            from app.module.face_service import face_service
+            sample_photos = {
+                "MEM-001": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+                "MEM-002": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80",
+                "MEM-003": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&auto=format&fit=crop&q=80",
+                "MEM-004": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+            }
+            for m in all_members:
+                if not m.picture_url and m.member_code in sample_photos:
+                    m.picture_url = sample_photos[m.member_code]
+                    session.add(m)
+                if not m.face_embedding:
+                    m.face_embedding = face_service.enroll_mock_embedding(m.member_code)
+                    m.face_registered_at = time_now()
+                    m.face_tag = "Mockup-ArcFace-512"
+                    session.add(m)
+            await session.flush()
+
+            # Synchronize In-Memory Vector Cache
+            face_service.sync_cache(all_members)
             mem_map = {m.member_code: m.id for m in all_members}
 
             # 7. Seed Access Cards
@@ -591,6 +613,89 @@ async def database_init_default():
                 session.add_all(default_logs)
                 await session.flush()
                 print_success(f"📋 Seeded {len(default_logs)} sample access event logs")
+
+            # 9. Seed Sample Face Recognition Audit Logs if none exist
+            face_log_stmt = select(Access_Log).where(Access_Log.event_type == "FACE_RECOGNITION")
+            existing_face_log = (await session.exec(face_log_stmt)).first()
+            if not existing_face_log:
+                sample_face_logs = [
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FACE:MEM-001",
+                        member_id=mem_map.get("MEM-001"),
+                        member_name="สมชาย ใจดี (Somchai Jaidee)",
+                        department="Information Technology",
+                        door_id=1,
+                        door_name="Main Entrance Turnstile 1",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="Face Verified (ArcFace 512)",
+                        event_type="FACE_RECOGNITION",
+                        confidence_score=0.974,
+                        snapshot_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FACE:MEM-002",
+                        member_id=mem_map.get("MEM-002"),
+                        member_name="สมศรี รักชาติ (Somsri Rakchart)",
+                        department="Human Resources",
+                        door_id=2,
+                        door_name="Main Entrance Turnstile 2",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="Face Verified (ArcFace 512)",
+                        event_type="FACE_RECOGNITION",
+                        confidence_score=0.958,
+                        snapshot_url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FACE:MEM-003",
+                        member_id=mem_map.get("MEM-003"),
+                        member_name="อนันต์ สุขใจ (Anan Sukjai)",
+                        department="Security Operations",
+                        door_id=5,
+                        door_name="Data Center Server Room",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="Face Verified (ArcFace 512)",
+                        event_type="FACE_RECOGNITION",
+                        confidence_score=0.985,
+                        snapshot_url="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=300&auto=format&fit=crop&q=80",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FACE:MEM-004",
+                        member_id=mem_map.get("MEM-004"),
+                        member_name="John Doe (Contractor)",
+                        department="External Vendor",
+                        door_id=1,
+                        door_name="Main Entrance Turnstile 1",
+                        direction="IN",
+                        result="DENIED",
+                        reason="Cardholder account is INACTIVE",
+                        event_type="FACE_RECOGNITION",
+                        confidence_score=0.942,
+                        snapshot_url="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FACE:UNKNOWN",
+                        member_name="Unknown Stranger",
+                        door_id=1,
+                        door_name="Main Entrance Turnstile 1",
+                        direction="IN",
+                        result="DENIED",
+                        reason="Face Unregistered / Low Confidence (18.5%)",
+                        event_type="FACE_RECOGNITION",
+                        confidence_score=0.185,
+                        snapshot_url="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
+                    ),
+                ]
+                session.add_all(sample_face_logs)
+                await session.flush()
+                print_success(f"📷 Seeded {len(sample_face_logs)} sample face recognition audit logs")
 
             await session.commit()
             print_success("✅ Database initialization and seeding completed successfully.")
