@@ -3424,4 +3424,6 @@ export const en = {
     "xx-xxxx": "xx-xxxx",
     "xxxxxxxxxx": "xxxxxxxxxx",
     "xxxxxxxxxxxx.apps.googleusercontent.com": "xxxxxxxxxxxx.apps.googleusercontent.com",
+    "Monitoring & Audit": "Monitoring & Audit",
+    "All Settings": "All Settings",
 };

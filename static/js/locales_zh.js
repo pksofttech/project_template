@@ -3507,4 +3507,6 @@ export const zh = {
     "Total Net (VAT Incl.):": "含税净总计:",
     "Selected Payment Method": "已选支付方式",
     "Selected Status": "已选状态",
+    "Monitoring & Audit": "监控与审计",
+    "All Settings": "全部设置",
 };

@@ -1,44 +1,86 @@
 <!-- ✅ Responsive Drawer Sidebar -->
 <div class="drawer-side z-50">
     <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <aside class="bg-base-100 w-64 min-h-screen p-4 flex flex-col justify-between border-r border-base-content/10 shadow-xl">
-        <div class="space-y-4">
-            <!-- Sidebar Brand Header -->
-            <a href="/page?page=home" class="flex items-center gap-3 px-2 py-3 border-b border-base-content/10 hover:opacity-80 transition-opacity">
-                <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg">
+    <aside class="bg-base-100 w-64 min-h-screen max-h-screen flex flex-col justify-between border-r border-base-content/10 shadow-xl overflow-hidden p-3 select-none">
+        <!-- Sidebar Brand Header -->
+        <div class="flex-none px-2 py-2.5 border-b border-base-content/10 mb-1">
+            <a href="/page?page=home" class="flex items-center gap-3 hover:opacity-85 transition-opacity group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-content flex items-center justify-center text-lg shadow-sm shadow-primary/30 group-hover:scale-105 transition-transform">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <div>
-                    <h2 class="font-bold text-sm tracking-wide">{{ app_name }}</h2>
-                    <p class="text-[10px] text-base-content/60">Access Control System</p>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <h2 class="font-bold text-sm tracking-wide truncate text-base-content">{{ app_name }}</h2>
+                        <span class="badge badge-xs badge-primary font-bold text-[9px] px-1 py-0 h-3.5 leading-none">PACS</span>
+                    </div>
+                    <p class="text-[10px] text-base-content/60 truncate" data-i18n="Access Control System">Access Control System</p>
                 </div>
             </a>
+        </div>
 
-            <!-- Navigation Links -->
-            <ul class="menu menu-md p-0 gap-1">
+        <!-- Scrollable Navigation Rail -->
+        <div class="flex-1 overflow-y-auto overflow-x-hidden pr-1 -mr-1 space-y-3">
+            <ul class="menu menu-sm p-0 gap-1 w-full">
                 <!-- 📊 Overview -->
                 {% set main_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'main') | list %}
                 {% if main_menus %}
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2" data-i18n="Overview">Overview</li>
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-primary/70"></i>
+                    <span data-i18n="Overview">Overview</span>
+                </li>
                 {% for item in main_menus %}
                 <li>
-                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
-                        <i class="{{ item.icon }} w-5 text-center"></i>
-                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                    <a href="{{ item.url }}" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 {% if active_page == item.page or active_page == item.page ~ '_manager' or active_page ~ '_manager' == item.page %}active font-semibold shadow-sm{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                        <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
                     </a>
                 </li>
                 {% endfor %}
                 {% endif %}
 
-                <!-- 🛡️ Access Control Management -->
-                {% set access_menus = (user_menus | default([])) | selectattr('category', 'in', ['access', 'monitor', 'logs', 'management', 'hardware', 'security']) | list %}
+                <!-- 📡 Monitoring & Audit -->
+                {% set monitor_codes = ['LIVE_MONITOR', 'ZONE_PRESENCE', 'FACE_REVIEW', 'ACCESS_LOGS'] %}
+                {% set monitor_menus = (user_menus | default([])) | selectattr('code', 'in', monitor_codes) | list %}
+                {% if monitor_menus %}
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-wave-square text-error/70"></i>
+                    <span data-i18n="Monitoring & Audit">Monitoring & Audit</span>
+                </li>
+                {% for item in monitor_menus %}
+                <li>
+                    <a href="{{ item.url }}" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 {% if active_page == item.page or active_page == item.page ~ '_manager' or active_page ~ '_manager' == item.page %}active font-semibold shadow-sm{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                        <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
+                        {% if item.code == 'LIVE_MONITOR' %}
+                        <span class="badge badge-xs badge-error text-white font-bold tracking-tight animate-pulse text-[9px] px-1.5 py-0 h-4 leading-none">LIVE</span>
+                        {% elif item.code == 'ZONE_PRESENCE' %}
+                        <span class="badge badge-xs badge-warning text-[9px] font-bold px-1.5 py-0 h-4 leading-none">APB</span>
+                        {% elif item.code == 'FACE_REVIEW' %}
+                        <span class="badge badge-xs badge-secondary text-[9px] font-bold px-1.5 py-0 h-4 leading-none">AI</span>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+                {% endif %}
+
+                <!-- 🛡️ Access Control Entities -->
+                {% set access_codes = ['MEMBERS', 'CARDS', 'ACCESS_GROUPS', 'DOORS', 'ZONES'] %}
+                {% set access_menus = (user_menus | default([])) | selectattr('code', 'in', access_codes) | list %}
                 {% if access_menus %}
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Access Control">Access Control</li>
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-id-badge text-primary/70"></i>
+                    <span data-i18n="Access Control">Access Control</span>
+                </li>
                 {% for item in access_menus %}
                 <li>
-                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
-                        <i class="{{ item.icon }} w-5 text-center"></i>
-                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                    <a href="{{ item.url }}" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 {% if active_page == item.page or active_page == item.page ~ '_manager' or active_page ~ '_manager' == item.page or (item.code == 'MEMBERS' and active_page in ['members', 'members_manager']) %}active font-semibold shadow-sm{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                        <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
+                        {% if item.code == 'MEMBERS' %}
+                        <span class="badge badge-xs badge-primary font-bold text-[9px] px-1.5 py-0 h-4 leading-none">HUB</span>
+                        {% elif item.code == 'CARDS' %}
+                        <span class="badge badge-xs badge-ghost text-base-content/70 font-bold text-[9px] px-1 py-0 h-4 leading-none">RFID</span>
+                        {% endif %}
                     </a>
                 </li>
                 {% endfor %}
@@ -47,25 +89,28 @@
                 <!-- ⚙️ System Settings (with Submenus) -->
                 {% set sys_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'system') | list %}
                 {% if sys_menus %}
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="System">System</li>
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-base-content/50"></i>
+                    <span data-i18n="System">System</span>
+                </li>
                 {% for item in sys_menus %}
                     {% if item.children %}
                     <li>
                         <details {% if active_page == item.page or active_page == item.page ~ '_manager' %}open{% endif %}>
-                            <summary class="font-semibold {% if active_page == item.page %}text-primary font-bold{% endif %}">
-                                <i class="{{ item.icon }} w-5 text-center"></i>
-                                <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                            <summary class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 font-semibold {% if active_page == item.page %}text-primary font-bold{% endif %}">
+                                <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                                <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
                             </summary>
-                            <ul class="ml-1 border-l border-base-content/10 pl-2 space-y-1 mt-1">
+                            <ul class="ml-2 border-l-2 border-base-content/10 pl-2 space-y-1 mt-1">
                                 <li>
-                                    <a href="{{ item.url }}" class="text-xs py-1.5 flex items-center gap-2 hover:text-primary">
+                                    <a href="{{ item.url }}" class="text-xs py-1.5 px-2 flex items-center gap-2 rounded-md hover:text-primary transition-colors">
                                         <i class="fa-solid fa-table-cells-large w-4 text-center text-xs opacity-60"></i>
-                                        <span data-i18n="All Settings">All Settings Overview</span>
+                                        <span data-i18n="All Settings">All Settings</span>
                                     </a>
                                 </li>
                                 {% for sub in item.children %}
                                 <li>
-                                    <a href="{{ sub.url }}" class="text-xs py-1.5 flex items-center gap-2 hover:text-primary">
+                                    <a href="{{ sub.url }}" class="text-xs py-1.5 px-2 flex items-center gap-2 rounded-md hover:text-primary transition-colors">
                                         <i class="{{ sub.icon }} w-4 text-center text-xs opacity-60"></i>
                                         <span data-i18n="{{ sub.title }}">{{ sub.title }}</span>
                                     </a>
@@ -76,9 +121,9 @@
                     </li>
                     {% else %}
                     <li>
-                        <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
-                            <i class="{{ item.icon }} w-5 text-center"></i>
-                            <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                        <a href="{{ item.url }}" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 {% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold shadow-sm{% endif %}">
+                            <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                            <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
                         </a>
                     </li>
                     {% endif %}
@@ -86,40 +131,52 @@
                 {% endif %}
 
                 <!-- Fallback for any other custom menus -->
-                {% set other_menus = (user_menus | default([])) | rejectattr('category', 'in', ['main', 'access', 'monitor', 'logs', 'management', 'hardware', 'security', 'system']) | list %}
+                {% set other_menus = (user_menus | default([])) | rejectattr('category', 'in', ['main', 'system', 'monitor']) | rejectattr('code', 'in', monitor_codes) | rejectattr('code', 'in', access_codes) | list %}
                 {% if other_menus %}
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Other">Other</li>
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-tree text-base-content/50"></i>
+                    <span data-i18n="Other">Other</span>
+                </li>
                 {% for item in other_menus %}
                 <li>
-                    <a href="{{ item.url }}" class="{% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold{% endif %}">
-                        <i class="{{ item.icon }} w-5 text-center"></i>
-                        <span data-i18n="{{ item.title }}">{{ item.title }}</span>
+                    <a href="{{ item.url }}" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 {% if active_page == item.page or active_page == item.page ~ '_manager' %}active font-semibold shadow-sm{% endif %}">
+                        <i class="{{ item.icon }} w-5 text-center text-sm"></i>
+                        <span class="flex-1 truncate" data-i18n="{{ item.title }}">{{ item.title }}</span>
                     </a>
                 </li>
                 {% endfor %}
                 {% endif %}
 
-                <li class="menu-title text-xs font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3" data-i18n="Documentation">Documentation</li>
+                <!-- 📚 Documentation -->
+                <li class="menu-title text-[11px] font-bold uppercase tracking-wider text-base-content/40 px-2 mt-3 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-info/70"></i>
+                    <span data-i18n="Documentation">Documentation</span>
+                </li>
                 <li>
-                    <a href="/docs" target="_blank">
-                        <i class="fa-solid fa-code w-5 text-center"></i>
-                        <span data-i18n="Swagger Docs">Swagger Docs</span>
-                        <span class="badge badge-xs badge-info">API</span>
+                    <a href="/docs" target="_blank" class="flex items-center gap-2.5 rounded-lg py-2 px-2.5 hover:text-info transition-colors">
+                        <i class="fa-solid fa-code w-5 text-center text-sm text-info"></i>
+                        <span class="flex-1 truncate" data-i18n="Swagger Docs">Swagger Docs</span>
+                        <span class="badge badge-xs badge-info font-bold text-[9px] px-1.5 py-0 h-4 leading-none">API</span>
                     </a>
                 </li>
             </ul>
         </div>
 
         <!-- Sidebar Footer Info -->
-        <div class="p-3 bg-base-200/50 rounded-xl border border-base-content/5 text-xs text-base-content/60">
-            <div class="flex items-center justify-between">
-                <span data-i18n="Status">Status</span>
-                <span class="badge badge-success badge-xs gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> <span data-i18n="Online">Online</span>
-                </span>
-            </div>
-            <div class="mt-2 text-[10px] text-center text-base-content/40">
-                PKS Template v{{ version }}
+        <div class="flex-none pt-2 mt-2 border-t border-base-content/10">
+            <div class="p-2.5 bg-base-200/60 rounded-xl border border-base-content/5 text-xs">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5 text-base-content/70">
+                        <i class="fa-solid fa-circle-nodes text-success text-[10px]"></i>
+                        <span class="font-medium text-[11px]" data-i18n="System Core">System Core</span>
+                    </div>
+                    <span class="badge badge-success badge-xs gap-1 text-[10px] font-medium py-0 h-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> <span data-i18n="Online">Online</span>
+                    </span>
+                </div>
+                <div class="mt-1 text-[10px] text-center text-base-content/40 font-mono">
+                    PKS Access v{{ version }}
+                </div>
             </div>
         </div>
     </aside>

@@ -3507,4 +3507,6 @@ export const jp = {
     "Total Net (VAT Incl.):": "税込純合計:",
     "Selected Payment Method": "選択中の決済方法",
     "Selected Status": "選択中のステータス",
+    "Monitoring & Audit": "監視と監査",
+    "All Settings": "すべての設定",
 };

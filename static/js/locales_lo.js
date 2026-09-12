@@ -3507,4 +3507,6 @@ export const lo = {
     "Total Net (VAT Incl.):": "ຍອດສຸດທິລວມອາກອນ:",
     "Selected Payment Method": "ຊ່ອງທາງຊຳລະທີ່ເລືອກ",
     "Selected Status": "ສະຖານະທີ່ເລືອກ",
+    "Monitoring & Audit": "ການຕິດຕາມ ແລະ ບັນທຶກ",
+    "All Settings": "ການຕັ້ງຄ່າທັງໝົດ",
 };

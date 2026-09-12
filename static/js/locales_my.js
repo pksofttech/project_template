@@ -3507,4 +3507,6 @@ export const my = {
     "Total Net (VAT Incl.):": "အခွန်ပါ အသားတင် စုစုပေါင်း:",
     "Selected Payment Method": "ရွေးချယ်ထားသော နည်းလမ်း",
     "Selected Status": "ရွေးချယ်ထားသော အခြေအနေ",
+    "Monitoring & Audit": "စောင့်ကြည့်ခြင်းနှင့် မှတ်တမ်း",
+    "All Settings": "ဆက်တင်အားလုံး",
 };

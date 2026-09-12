@@ -3511,4 +3511,5 @@ export const th = {
     "Total Net (VAT Incl.):": "ยอดสุทธิรวมภาษี:",
     "Selected Payment Method": "ช่องทางชำระที่เลือก",
     "Selected Status": "สถานะที่เลือก",
+    "Monitoring & Audit": "มอนิเตอร์และประวัติ",
 };
