@@ -154,5 +154,12 @@ class Product(SQLModel, table=True):
 
 ---
 
+## 🗺️ แผนการพัฒนาต่อยอด (Future Roadmap)
+
+ดูรายการฟังก์ชันและระบบที่รอการพัฒนาเพิ่มเติมได้ที่เอกสาร:  
+👉 **[`TODO_IMPROVEMENTS.md`](TODO_IMPROVEMENTS.md)** (ครอบคลุม Security Policy 2FA UI, Visitor Management VMS, Time & Attendance HR, Hardware Adapters Hikvision/ZKTeco และอื่นๆ)
+
+---
+
 ## 📜 ลิขสิทธิ์ (License)
 © 2026 PKS Softtech. All rights reserved.

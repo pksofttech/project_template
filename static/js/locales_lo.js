@@ -3509,4 +3509,7 @@ export const lo = {
     "Selected Status": "ສະຖານະທີ່ເລືອກ",
     "Monitoring & Audit": "ການຕິດຕາມ ແລະ ບັນທຶກ",
     "All Settings": "ການຕັ້ງຄ່າທັງໝົດ",
+    "Identity & Credentials": "ຂໍ້ມູນປະຈຳຕົວ ແລະ ບັດຜ່ານ",
+    "Doors & Hardware": "ປະຕູ ແລະ ອຸປະກອນ",
+    "Rules & Policies": "ສິດ ແລະ ນະໂຍບາຍ",
 };

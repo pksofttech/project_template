@@ -299,10 +299,10 @@ function openFaceEnrollModal(id, name, code, pictureUrl, hasFace) {
 
     const avatarBox = document.getElementById("faceModalAvatar");
     if (pictureUrl) {
-        avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-10 h-10 rounded-xl object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary\\'>?</div>';" />`;
+        avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-10 h-10 rounded-box object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-10 h-10 rounded-box bg-primary/10 flex items-center justify-center font-bold text-sm text-primary\\'>?</div>';" />`;
     } else {
         const initial = name ? name.charAt(0).toUpperCase() : "?";
-        avatarBox.innerHTML = `<div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">${initial}</div>`;
+        avatarBox.innerHTML = `<div class="w-10 h-10 rounded-box bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">${initial}</div>`;
     }
 
     const badge = document.getElementById("faceModalStatusBadge");
@@ -526,10 +526,10 @@ async function openCredentialsHub(id, name, code, pictureUrl, department, status
 
     const avatarBox = document.getElementById("credHubAvatar");
     if (pictureUrl) {
-        avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-12 h-12 rounded-xl object-cover border border-base-content/10 shadow-xs" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg\\'>?</div>';" />`;
+        avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-12 h-12 rounded-box object-cover border border-base-content/10 shadow-xs" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-12 h-12 rounded-box bg-primary/10 text-primary flex items-center justify-center font-bold text-lg\\'>?</div>';" />`;
     } else {
         const initial = name ? name.charAt(0).toUpperCase() : "?";
-        avatarBox.innerHTML = `<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">${initial}</div>`;
+        avatarBox.innerHTML = `<div class="w-12 h-12 rounded-box bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">${initial}</div>`;
     }
 
     switchCredTab("rfid");
@@ -616,7 +616,7 @@ async function loadMemberCredentials(memberId) {
                         <tr>
                             <td colspan="5" class="text-center py-6">
                                 <div class="flex flex-col items-center justify-center gap-1.5 text-base-content/40">
-                                    <div class="w-9 h-9 rounded-xl bg-base-200 flex items-center justify-center text-primary/60">
+                                    <div class="w-9 h-9 rounded-box bg-base-200 flex items-center justify-center text-primary/60">
                                         <i class="fa-solid fa-credit-card text-base"></i>
                                     </div>
                                     <div class="text-xs font-semibold text-base-content/70">No RFID cards assigned yet</div>
@@ -631,7 +631,7 @@ async function loadMemberCredentials(memberId) {
                         <tr class="hover:bg-base-200/40 transition-colors">
                             <td>
                                 <div class="font-mono font-bold text-xs flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-[10px] shrink-0">
+                                    <div class="w-6 h-6 rounded-box bg-primary/10 text-primary flex items-center justify-center text-[10px] shrink-0">
                                         <i class="fa-solid fa-credit-card"></i>
                                     </div>
                                     <span class="tracking-wide">${c.card_number}</span>
@@ -659,7 +659,7 @@ async function loadMemberCredentials(memberId) {
                         <tr>
                             <td colspan="6" class="text-center py-6">
                                 <div class="flex flex-col items-center justify-center gap-1.5 text-base-content/40">
-                                    <div class="w-9 h-9 rounded-xl bg-base-200 flex items-center justify-center text-secondary/60">
+                                    <div class="w-9 h-9 rounded-box bg-base-200 flex items-center justify-center text-secondary/60">
                                         <i class="fa-solid fa-mobile-screen text-base"></i>
                                     </div>
                                     <div class="text-xs font-semibold text-base-content/70">No mobile credentials paired yet</div>
@@ -674,7 +674,7 @@ async function loadMemberCredentials(memberId) {
                         <tr class="hover:bg-base-200/40 transition-colors">
                             <td>
                                 <div class="font-mono font-bold text-xs flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center text-[10px] shrink-0">
+                                    <div class="w-6 h-6 rounded-box bg-secondary/10 text-secondary flex items-center justify-center text-[10px] shrink-0">
                                         <i class="fa-solid fa-mobile-screen"></i>
                                     </div>
                                     <span class="tracking-wide">${m.virtual_card_number}</span>
@@ -708,7 +708,7 @@ async function loadMemberCredentials(memberId) {
                         <tr>
                             <td colspan="5" class="text-center py-6">
                                 <div class="flex flex-col items-center justify-center gap-1.5 text-base-content/40">
-                                    <div class="w-9 h-9 rounded-xl bg-base-200 flex items-center justify-center text-accent/60">
+                                    <div class="w-9 h-9 rounded-box bg-base-200 flex items-center justify-center text-accent/60">
                                         <i class="fa-solid fa-fingerprint text-base"></i>
                                     </div>
                                     <div class="text-xs font-semibold text-base-content/70">No fingerprint templates enrolled yet</div>
@@ -723,7 +723,7 @@ async function loadMemberCredentials(memberId) {
                         <tr class="hover:bg-base-200/40 transition-colors">
                             <td>
                                 <div class="font-bold text-xs flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs shrink-0">
+                                    <div class="w-6 h-6 rounded-box bg-accent/10 text-accent flex items-center justify-center text-xs shrink-0">
                                         <i class="fa-solid fa-fingerprint"></i>
                                     </div>
                                     <span>${f.finger_name || "Finger #" + f.finger_index}</span>
@@ -780,7 +780,7 @@ async function loadMemberCredentials(memberId) {
                         <tr>
                             <td colspan="5" class="text-center py-6">
                                 <div class="flex flex-col items-center justify-center gap-1.5 text-base-content/40">
-                                    <div class="w-9 h-9 rounded-xl bg-base-200 flex items-center justify-center text-warning/60">
+                                    <div class="w-9 h-9 rounded-box bg-base-200 flex items-center justify-center text-warning/60">
                                         <i class="fa-solid fa-key text-base"></i>
                                     </div>
                                     <div class="text-xs font-semibold text-base-content/70">No keypad PIN code configured</div>

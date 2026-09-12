@@ -174,10 +174,100 @@ class Access_Door(SQLModel, table=True):
     controller_type: str = Field(default="REST_WEBHOOK", index=True)  # REST_WEBHOOK, TCP_IP, WIEGAND, SIMULATOR
     direction: str = Field(default="IN", index=True)  # IN, OUT, BOTH
     relay_time_sec: int = Field(default=5)
+    relay_wiring: str = Field(default="FAIL_SAFE")  # FAIL_SAFE, FAIL_SECURE
+    has_door_sensor: bool = Field(default=True)
+    door_ajar_timeout_sec: int = Field(default=30)
     status: str = Field(default="ONLINE", index=True)  # ONLINE, OFFLINE, DISABLED
     description: str | None = Field(default=None)
     created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Device(SQLModel, table=True):
+    """
+    Access Device entity: Readers, Terminals, Keypads, Face Kiosks,
+    and Ingest hardware performing access transactions.
+    """
+
+    __tablename__ = "access_device"
+
+    id: int | None = Field(default=None, primary_key=True)
+    code: str = Field(unique=True, index=True, nullable=False)
+    name: str = Field(index=True, nullable=False)
+    door_id: int = Field(foreign_key="access_door.id", index=True, nullable=False)
+    device_category: str = Field(default="READER", index=True)  # READER, TERMINAL, CONTROLLER, CAMERA_AI, KIOSK
+    reader_technology: str = Field(default="MIFARE", index=True)  # RFID_125K, MIFARE, UHF, FACE, FINGERPRINT, PIN, QR, BLE, MULTI_COMBO
+    direction: str = Field(default="IN", index=True)  # IN, OUT, BOTH
+    supported_factors: str = Field(default='["CARD"]')  # JSON string of factors e.g. ["CARD"], ["CARD", "PIN"]
+    comm_protocol: str = Field(default="HTTP_REST", index=True)  # HTTP_REST, MQTT, WEBSOCKET, WIEGAND, OSDP_RS485
+    ip_address: str | None = Field(default=None, index=True)
+    port: int | None = Field(default=None)
+    mac_address: str | None = Field(default=None, index=True)
+    device_token: str | None = Field(default=None, index=True)
+    brand: str | None = Field(default=None)
+    model_name: str | None = Field(default=None)
+    firmware_version: str | None = Field(default=None)
+    status: str = Field(default="ONLINE", index=True)  # ONLINE, OFFLINE, MAINTENANCE, DISABLED
+    last_heartbeat: datetime | None = Field(default=None, sa_type=ISODateTime)
+    description: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Security_Policy(SQLModel, table=True):
+    """Master access security policy (Single Factor, 2FA, Dual-Person, etc.)."""
+
+    __tablename__ = "access_security_policy"
+
+    id: int | None = Field(default=None, primary_key=True)
+    code: str = Field(unique=True, index=True, nullable=False)
+    name: str = Field(index=True, nullable=False)
+    verification_mode: str = Field(default="ANY_SINGLE", index=True)  # ANY_SINGLE, CARD_AND_PIN, CARD_AND_FINGER, FACE_AND_CARD, FACE_AND_PIN, ANY_DUAL, DUAL_PERSON
+    factor_1: str = Field(default="CARD")
+    factor_2: str = Field(default="PIN")
+    inter_factor_timeout_sec: int = Field(default=15)
+    allow_duress_pin: bool = Field(default=True)
+    dual_person_group_id: int | None = Field(default=None)
+    status: str = Field(default="active", index=True)
+    description: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Door_Policy(SQLModel, table=True):
+    """Mapping between Access Door, Time Schedule, and Security Policy."""
+
+    __tablename__ = "access_door_policy"
+
+    id: int | None = Field(default=None, primary_key=True)
+    door_id: int = Field(foreign_key="access_door.id", index=True, nullable=False)
+    policy_id: int = Field(foreign_key="access_security_policy.id", index=True, nullable=False)
+    access_group_id: int | None = Field(default=None, foreign_key="access_group.id", index=True)
+    time_start: str = Field(default="00:00")
+    time_end: str = Field(default="23:59")
+    allowed_days: str = Field(default="MON,TUE,WED,THU,FRI,SAT,SUN")
+    priority: int = Field(default=1, index=True)
+    status: str = Field(default="active", index=True)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Access_Verification_Session(SQLModel, table=True):
+    """Real-time multi-factor verification state machine session."""
+
+    __tablename__ = "access_verification_session"
+
+    id: int | None = Field(default=None, primary_key=True)
+    session_token: str = Field(unique=True, index=True, nullable=False)
+    door_id: int = Field(foreign_key="access_door.id", index=True, nullable=False)
+    device_id: int | None = Field(default=None, foreign_key="access_device.id", index=True)
+    member_id: int = Field(foreign_key="access_member.id", index=True, nullable=False)
+    first_factor_type: str = Field(index=True, nullable=False)
+    first_factor_value: str = Field(default="")
+    expected_second_factor: str = Field(default="PIN")
+    status: str = Field(default="PENDING_SECOND_FACTOR", index=True)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    expires_at: datetime = Field(sa_type=ISODateTime, index=True)
 
 
 class Access_Group(SQLModel, table=True):
@@ -323,6 +413,8 @@ class Access_Log(SQLModel, table=True):
     department: str = Field(default="", index=True)
     door_id: int | None = Field(default=None, index=True)
     door_name: str = Field(default="Unknown Door", index=True)
+    device_id: int | None = Field(default=None, index=True)
+    device_name: str = Field(default="", index=True)
     from_zone_id: int | None = Field(default=None, index=True)
     from_zone_name: str = Field(default="", index=True)
     to_zone_id: int | None = Field(default=None, index=True)

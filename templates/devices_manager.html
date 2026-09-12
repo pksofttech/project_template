@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en"{% if current_theme %} data-theme="{{ current_theme }}"{% endif %}>
+
+<head>
+    {% include '_meta.html' %}
+</head>
+
+<body class="bg-base-200 min-h-screen text-base-content antialiased">
+
+    <div class="drawer lg:drawer-open min-h-screen">
+        <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+
+        <div class="drawer-content flex flex-col">
+            <!-- Navbar -->
+            {% include '_nav_bar.html' %}
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+
+                <!-- Premium Header Card -->
+                {% set header_icon = "fa-solid fa-microchip" %}
+                {% set header_title = "Access Devices & Terminals" %}
+                {% set header_desc = "Manage card readers, facial recognition kiosks, fingerprint scanners, UHF antennas, and IoT access controllers." %}
+                {% set header_badge = "Hardware Ingest" %}
+                {% set show_back_btn = false %}
+                {% include '_header_card.html' %}
+
+                <!-- Action Toolbar Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 rounded-box">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                            <!-- Add New Button -->
+                            <button onclick="openCreateModal()" class="btn btn-primary btn-sm gap-2 shadow-xs rounded-box">
+                                <i class="fa-solid fa-plus"></i>
+                                <span data-i18n="Add New Device">Add New Device</span>
+                            </button>
+                            <!-- Export Excel -->
+                            <a href="/api/access/device/datatable?export=excel" class="btn btn-outline btn-success btn-sm gap-2 rounded-box">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span data-i18n="Export Excel">Export Excel</span>
+                            </a>
+                            <!-- Refresh -->
+                            <button onclick="reloadTable()" class="btn btn-ghost btn-circle btn-sm" title="Refresh Table">
+                                <i class="fa-solid fa-rotate text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 rounded-box">
+                    <div id="tableDevices" class="w-full overflow-x-auto"></div>
+                </div>
+
+            </main>
+
+            <!-- Footer -->
+            {% include '_footer.html' %}
+        </div>
+
+        <!-- Sidebar -->
+        {% include '_side_menu_bar.html' %}
+    </div>
+
+    <!-- Create / Edit Device Modal -->
+    <dialog id="deviceModal" class="modal">
+        <div class="modal-box max-w-2xl rounded-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                <i class="fa-solid fa-microchip"></i>
+                <span data-i18n="Add New Access Device">Add New Access Device</span>
+            </h3>
+
+            <form id="deviceForm" onsubmit="saveDevice(event)" class="space-y-3">
+                <input type="hidden" id="deviceId" value="" />
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Device Code">Device Code *</span></label>
+                        <input type="text" id="deviceCode" class="input input-bordered input-sm font-mono rounded-box" placeholder="e.g. DEV-LOBBY-RDR-01" required />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Device Name">Device Name *</span></label>
+                        <input type="text" id="deviceName" class="input input-bordered input-sm rounded-box" placeholder="e.g. Main Lobby Ingress RFID" required />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Assigned Door / Gate">Assigned Door / Gate *</span></label>
+                        <select id="deviceDoorId" class="select select-bordered select-sm text-xs rounded-box" required>
+                            <option value="" disabled selected>Select Target Door / Gate...</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Category">Category</span></label>
+                        <select id="deviceCategory" class="select select-bordered select-sm text-xs rounded-box">
+                            <option value="READER">READER (Card/Badge Reader)</option>
+                            <option value="TERMINAL">TERMINAL (All-in-one Smart Terminal)</option>
+                            <option value="CONTROLLER">CONTROLLER (Multi-Door Access Controller)</option>
+                            <option value="CAMERA_AI">CAMERA_AI (Face Recognition Camera)</option>
+                            <option value="KIOSK">KIOSK (Self-Service Visitor Kiosk)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Technology">Technology</span></label>
+                        <select id="readerTechnology" class="select select-bordered select-sm text-xs rounded-box">
+                            <option value="MIFARE">MIFARE (13.56MHz NFC/IC)</option>
+                            <option value="RFID_125K">RFID_125K (EM Proximity)</option>
+                            <option value="UHF">UHF (Long-Range Vehicle)</option>
+                            <option value="FACE">FACE (Facial Biometric)</option>
+                            <option value="FINGERPRINT">FINGERPRINT (Biometric)</option>
+                            <option value="PIN">PIN (Keypad Entry)</option>
+                            <option value="QR">QR (Barcode / QR Scanner)</option>
+                            <option value="BLE">BLE (Mobile Bluetooth/NFC)</option>
+                            <option value="MULTI_COMBO">MULTI_COMBO (Card + PIN + Bio)</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Direction">Direction</span></label>
+                        <select id="deviceDirection" class="select select-bordered select-sm text-xs rounded-box">
+                            <option value="IN">IN (Entry Reader)</option>
+                            <option value="OUT">OUT (Exit Reader)</option>
+                            <option value="BOTH">BOTH (Bidirectional Terminal)</option>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Protocol">Protocol</span></label>
+                        <select id="commProtocol" class="select select-bordered select-sm text-xs rounded-box">
+                            <option value="HTTP_REST">HTTP_REST (Webhook)</option>
+                            <option value="MQTT">MQTT (Broker Push)</option>
+                            <option value="WEBSOCKET">WEBSOCKET (Persistent)</option>
+                            <option value="WIEGAND">WIEGAND (via Controller)</option>
+                            <option value="OSDP_RS485">OSDP_RS485 (RS-485)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="form-control sm:col-span-2">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="IP Address">IP Address</span></label>
+                        <input type="text" id="ipAddress" class="input input-bordered input-sm font-mono rounded-box" placeholder="192.168.1.150" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Port">Port</span></label>
+                        <input type="number" id="devicePort" class="input input-bordered input-sm font-mono rounded-box" placeholder="8080" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="MAC Address">MAC Address</span></label>
+                        <input type="text" id="macAddress" class="input input-bordered input-sm font-mono rounded-box" placeholder="00:1A:2B:3C:4D:5E" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Device Auth Token">Device Auth Token</span></label>
+                        <input type="text" id="deviceToken" class="input input-bordered input-sm font-mono rounded-box" placeholder="Optional hardware bearer token" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Brand">Brand</span></label>
+                        <input type="text" id="deviceBrand" class="input input-bordered input-sm rounded-box" placeholder="e.g. Hikvision / ZKTeco" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Model Name">Model Name</span></label>
+                        <input type="text" id="modelName" class="input input-bordered input-sm rounded-box" placeholder="e.g. DS-K1T673" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Status">Status</span></label>
+                        <select id="deviceStatus" class="select select-bordered select-sm text-xs rounded-box">
+                            <option value="ONLINE">ONLINE</option>
+                            <option value="OFFLINE">OFFLINE</option>
+                            <option value="MAINTENANCE">MAINTENANCE</option>
+                            <option value="DISABLED">DISABLED</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Description / Location Notes">Description / Notes</span></label>
+                    <textarea id="deviceDesc" class="textarea textarea-bordered textarea-sm rounded-box" rows="2" placeholder="Hardware placement or configuration notes..."></textarea>
+                </div>
+
+                <div class="modal-action justify-end gap-2 pt-2">
+                    <button type="button" class="btn btn-ghost btn-sm rounded-box" onclick="deviceModal.close()" data-i18n="Cancel">Cancel</button>
+                    <button type="submit" id="saveBtn" class="btn btn-primary btn-sm px-5 rounded-box" data-i18n="Save Device">Save Device</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    {% include '_dialog.html' %}
+    {% include '_script.html' %}
+    <!-- TableModel: Access_Device on #tableDevices via _table_class.js -->
+    <script type="module" src="/static/js/devices_manager.js?t={{ now }}"></script>
+</body>
+</html>

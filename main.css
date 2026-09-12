@@ -320,7 +320,7 @@ select option {
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
-    @apply text-base-content min-w-65 max-w-96 rounded-lg bg-base-100;
+    @apply text-base-content min-w-65 max-w-96 rounded-box bg-base-100;
 }
 
 .custom-toast-item:hover {
@@ -514,7 +514,7 @@ td {
 }
 
 .tab-content-custom {
-    @apply overflow-x-auto p-4 rounded-b-sm bg-base-100 mb-4;
+    @apply overflow-x-auto p-4 rounded-box bg-base-100 mb-4;
 } */
 
 .tabs-lifted {
@@ -577,7 +577,7 @@ td {
 }
 
 .btn_block {
-    @apply rounded-sm border border-primary hover:ring-4;
+    @apply rounded-box border border-primary hover:ring-4;
 }
 
 .badge {
@@ -635,7 +635,7 @@ td {
 } */
 
 .dt-container .dt-button-collection [role="menu"] {
-    @apply flex flex-col rounded-sm gap-2 p-4 fixed bg-base-300 shadow-lg overflow-y-auto top-4 max-h-96 w-60;
+    @apply flex flex-col rounded-box gap-2 p-4 fixed bg-base-300 shadow-lg overflow-y-auto top-4 max-h-96 w-60;
 }
 
 table.dataTable.display tbody {
@@ -686,7 +686,7 @@ div.dts div.dataTables_scrollBody table {
 
 .info-box {
     display: -ms-flexbox;
-    @apply min-w-52 p-2 rounded-md w-full relative min-h-20 flex shadow-lg;
+    @apply min-w-52 p-2 rounded-box w-full relative min-h-20 flex shadow-lg;
 }
 
 .info-box .info-box-icon {
@@ -809,7 +809,7 @@ div.dts div.dataTables_scrollBody table {
 
 .flatpickr-calendar {
     /* z-index: 99999 !important; */
-    @apply bg-base-100 text-base-content border border-base-300 rounded-2xl shadow-2xl;
+    @apply bg-base-100 text-base-content border border-base-300 rounded-box shadow-2xl;
 }
 
 .flatpickr-months,
@@ -844,7 +844,7 @@ div.dts div.dataTables_scrollBody table {
 
 /* day cells */
 .flatpickr-day {
-    @apply text-base-content rounded-xl border border-transparent;
+    @apply text-base-content rounded-box border border-transparent;
 }
 .flatpickr-day:hover {
     @apply bg-base-200 border-base-300;
@@ -898,7 +898,7 @@ div.dts div.dataTables_scrollBody table {
     @apply bg-base-200 border-b border-base-300 p-2 flex flex-wrap gap-2;
 }
 .fp-quick-btn {
-    @apply btn btn-ghost btn-xs rounded-xl;
+    @apply btn btn-ghost btn-xs rounded-box;
 }
 
 .flatpickr-day.inRange,
@@ -929,7 +929,7 @@ div.dts div.dataTables_scrollBody table {
     @apply bg-base-100 p-2 flex flex-wrap gap-2 mt-6 justify-center items-center;
 }
 .fp-quick-btn {
-    @apply btn btn-ghost btn-xs rounded-xl;
+    @apply btn btn-ghost btn-xs rounded-box;
 }
 
 .flatpickr-day.flatpickr-disabled,
@@ -1020,17 +1020,17 @@ div.dts div.dataTables_scrollBody table {
     @apply shadow-2xl shadow-primary/10 -translate-y-1 border-primary/30;
 }
 .icon-box {
-    @apply flex items-center justify-center w-12 h-12 rounded-2xl mb-4 shadow-lg;
+    @apply flex items-center justify-center w-12 h-12 rounded-box mb-4 shadow-lg;
 }
 .section-icon {
-    @apply flex items-center justify-center w-10 h-10 rounded-xl mb-4;
+    @apply flex items-center justify-center w-10 h-10 rounded-box mb-4;
 }
 #pdf-viewer-container canvas {
-    @apply max-w-full h-auto rounded-lg shadow-inner border border-base-300;
+    @apply max-w-full h-auto rounded-box shadow-inner border border-base-300;
 }
 
 .step-item {
-    @apply flex gap-3 items-start p-2 rounded-xl hover:bg-base-200 transition-colors;
+    @apply flex gap-3 items-start p-2 rounded-box hover:bg-base-200 transition-colors;
 }
 .step-number {
     @apply flex-none w-5 h-5 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center font-bold mt-0.5;

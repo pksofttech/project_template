@@ -47,3 +47,36 @@ async def test_get_me_authenticated():
         assert res.status_code == 200
         data = res.json()
         assert data["username"] == "admin"
+
+
+@pytest.mark.asyncio
+async def test_side_menu_bar_categorized_rendering():
+    """Verify that sidebar renders with categorized access control groups and badges."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Login to obtain token
+        login_res = await client.post(
+            "/api/system_user/login",
+            json={"username": "admin", "password": "12341234"},
+        )
+        assert login_res.status_code == 200
+        token = login_res.json()["access_token"]
+        cookies = {"access_token": token}
+
+        # Request /page?page=members
+        res = await client.get("/page?page=members", cookies=cookies)
+        assert res.status_code == 200
+        html = res.text
+
+        # Verify access control categories are rendered
+        assert "Identity &amp; Credentials" in html or "Identity & Credentials" in html
+        assert "Doors &amp; Hardware" in html or "Doors & Hardware" in html
+        assert "Rules &amp; Policies" in html or "Rules & Policies" in html
+
+        # Verify badges are present
+        assert "HUB" in html
+        assert "RFID" in html
+        assert "GATE" in html
+        assert "DEV" in html
+        assert "ZONE" in html
+        assert "RULE" in html

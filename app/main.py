@@ -20,6 +20,7 @@ from app.core.database_init import database_init_default
 from app.core.utility import CompatibleJinja2Templates, broadcast_sse, sse_clients
 from app.routes import (
     api_access_card,
+    api_access_device,
     api_access_door,
     api_access_event,
     api_access_group,
@@ -27,6 +28,7 @@ from app.routes import (
     api_access_member,
     api_access_zone,
     api_credentials,
+    api_emergency,
     api_health,
     api_sample,
     api_system_config,
@@ -172,7 +174,9 @@ async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
 app.include_router(api_health.router)
 app.include_router(api_upload.router)
 app.include_router(api_access_event.router)
+app.include_router(api_emergency.router)
 app.include_router(api_access_door.router)
+app.include_router(api_access_device.router)
 app.include_router(api_access_member.router)
 app.include_router(api_access_card.router)
 app.include_router(api_credentials.router)

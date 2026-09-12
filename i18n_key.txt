@@ -3425,3 +3425,17 @@ xx-xxxx
 xxxxxxxxxx
 xxxxxxxxxxxx.apps.googleusercontent.com
 Monitoring & Audit
+Identity & Credentials
+Doors & Hardware
+Rules & Policies
+Fire Alarm Evacuation
+Global Lockdown
+Normal Operation
+Clear Emergency
+Life Safety & Emergency Operations
+Confirm Fire Alarm Evacuation
+Confirm Global Lockdown
+Emergency Reason
+Activate Fire Alarm
+Activate Lockdown
+Reset to Normal

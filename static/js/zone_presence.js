@@ -9,6 +9,7 @@ let presenceData = null;
             document.getElementById('printTime').innerText = new Date().toLocaleString();
             loadZonePresence();
             initSseListener();
+            checkZoneEmergency();
         });
 
         async function loadZonePresence() {
@@ -294,6 +295,50 @@ let presenceData = null;
             }
         }
 
+        async function checkZoneEmergency() {
+            try {
+                const res = await fetch('/api/access/emergency/status');
+                const data = await res.json();
+                updateZoneEmergencyBanner(data);
+            } catch (err) {}
+        }
+
+        function updateZoneEmergencyBanner(state) {
+            const banner = document.getElementById('zoneEmergencyBanner');
+            const title = document.getElementById('zoneEmergencyTitle');
+            const desc = document.getElementById('zoneEmergencyDesc');
+            const iconBox = document.getElementById('zoneEmergencyIconBox');
+            const icon = document.getElementById('zoneEmergencyIcon');
+            const badge = document.getElementById('zoneEmergencyBadge');
+            if (!banner) return;
+
+            if (state && state.mode === 'FIRE_ALARM') {
+                banner.className = "card border-2 border-error bg-error/15 text-error shadow-xl p-4 rounded-box";
+                title.textContent = "🚨 FIRE ALARM EVACUATION IN PROGRESS";
+                desc.textContent = state.reason || "All doors are unlocked for immediate egress. Verify muster points below.";
+                iconBox.className = "w-10 h-10 rounded-box bg-error text-white flex items-center justify-center text-xl shadow-md animate-bounce";
+                icon.className = "fa-solid fa-fire-flame-curved";
+                badge.className = "badge badge-sm badge-error text-white font-bold animate-pulse";
+                badge.textContent = "FIRE ALARM";
+                banner.classList.remove('hidden');
+            } else if (state && state.mode === 'GLOBAL_LOCKDOWN') {
+                banner.className = "card border-2 border-warning bg-warning/15 text-warning-content shadow-xl p-4 rounded-box";
+                title.textContent = "🔒 FACILITY LOCKDOWN ACTIVE";
+                desc.textContent = state.reason || "Facility secured against active threats. Non-emergency movement prohibited.";
+                iconBox.className = "w-10 h-10 rounded-box bg-warning text-warning-content flex items-center justify-center text-xl shadow-md animate-pulse";
+                icon.className = "fa-solid fa-lock";
+                badge.className = "badge badge-sm badge-warning text-warning-content font-bold animate-pulse";
+                badge.textContent = "LOCKDOWN";
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        window.addEventListener('sse:emergency', (e) => {
+            updateZoneEmergencyBanner(e.detail);
+        });
+
 // Global Window Event Handlers
 window.loadZonePresence = loadZonePresence;
 window.renderKPIs = renderKPIs;
@@ -306,4 +351,6 @@ window.filterMusterTable = filterMusterTable;
 window.openMusterModal = openMusterModal;
 window.promptResetApb = promptResetApb;
 window.initSseListener = initSseListener;
+window.checkZoneEmergency = checkZoneEmergency;
+window.updateZoneEmergencyBanner = updateZoneEmergencyBanner;
 

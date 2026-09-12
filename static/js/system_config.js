@@ -75,6 +75,9 @@ export function handleUrlTab() {
         switch_to_tab("SYSTEM_CONFIG_TAB01");
         setTimeout(() => show_dialog_change_password(), 120);
         return true;
+    } else if (t === "notifications" || t === "notify" || t === "alert" || t === "alerts" || t === "tab05" || t === "system_config_tab05") {
+        switch_to_tab("SYSTEM_CONFIG_TAB05");
+        return true;
     } else if (t === "overview" || t === "all" || t === "tab01" || t === "system_config_tab01") {
         switch_to_tab("SYSTEM_CONFIG_TAB01");
         return true;
@@ -748,6 +751,192 @@ export async function sendBroadcastSSE(e) {
 window.sendBroadcastSSE = sendBroadcastSSE;
 
 // =============================================================================
+// 🔔 MULTI-CHANNEL ALERTS & NOTIFICATIONS
+// =============================================================================
+
+export function show_dialog_test_notification() {
+    const modal = document.getElementById("modal_test_notification");
+    const resBox = document.getElementById("modalTestResult");
+    if (resBox) {
+        resBox.classList.add("hidden");
+        resBox.innerHTML = "";
+    }
+    if (modal) modal.showModal();
+}
+window.show_dialog_test_notification = show_dialog_test_notification;
+
+export async function loadNotificationConfigs() {
+    try {
+        const res = await fetch("/api/system_config/notifications");
+        if (res.ok) {
+            const data = await res.json();
+            // Toggles
+            if (document.getElementById("cfgLineEnabled")) {
+                document.getElementById("cfgLineEnabled").checked = !!data.line_enabled;
+            }
+            if (document.getElementById("cfgTelegramEnabled")) {
+                document.getElementById("cfgTelegramEnabled").checked = !!data.telegram_enabled;
+            }
+            if (document.getElementById("cfgWebhookEnabled")) {
+                document.getElementById("cfgWebhookEnabled").checked = !!data.webhook_enabled;
+            }
+            if (document.getElementById("cfgAlertDuress")) {
+                document.getElementById("cfgAlertDuress").checked = (data.alert_on_duress !== false);
+            }
+            if (document.getElementById("cfgAlertFire")) {
+                document.getElementById("cfgAlertFire").checked = (data.alert_on_fire_alarm !== false);
+            }
+            if (document.getElementById("cfgAlertLockdown")) {
+                document.getElementById("cfgAlertLockdown").checked = (data.alert_on_lockdown !== false);
+            }
+            if (document.getElementById("cfgAlertDenied")) {
+                document.getElementById("cfgAlertDenied").checked = (data.alert_on_denied_limit !== false);
+            }
+
+            // Input fields
+            if (document.getElementById("cfgLineToken")) {
+                document.getElementById("cfgLineToken").value = data.line_token || "";
+            }
+            if (document.getElementById("cfgLineMsgToken")) {
+                document.getElementById("cfgLineMsgToken").value = data.line_messaging_token || "";
+            }
+            if (document.getElementById("cfgLineTargetId")) {
+                document.getElementById("cfgLineTargetId").value = data.line_target_id || "";
+            }
+            if (document.getElementById("cfgTelegramBotToken")) {
+                document.getElementById("cfgTelegramBotToken").value = data.telegram_token || "";
+            }
+            if (document.getElementById("cfgTelegramChatId")) {
+                document.getElementById("cfgTelegramChatId").value = data.telegram_chat_id || "";
+            }
+            if (document.getElementById("cfgWebhookUrl")) {
+                document.getElementById("cfgWebhookUrl").value = data.webhook_url || "";
+            }
+        }
+    } catch (err) {
+        console.warn("Failed to load notification configs:", err);
+    }
+}
+window.loadNotificationConfigs = loadNotificationConfigs;
+
+export async function saveNotificationConfigs(e) {
+    if (e) e.preventDefault();
+    const payload = {
+        line_enabled: document.getElementById("cfgLineEnabled")?.checked || false,
+        line_token: document.getElementById("cfgLineToken")?.value.trim() || "",
+        line_messaging_token: document.getElementById("cfgLineMsgToken")?.value.trim() || "",
+        line_target_id: document.getElementById("cfgLineTargetId")?.value.trim() || "",
+        telegram_enabled: document.getElementById("cfgTelegramEnabled")?.checked || false,
+        telegram_token: document.getElementById("cfgTelegramBotToken")?.value.trim() || "",
+        telegram_chat_id: document.getElementById("cfgTelegramChatId")?.value.trim() || "",
+        webhook_enabled: document.getElementById("cfgWebhookEnabled")?.checked || false,
+        webhook_url: document.getElementById("cfgWebhookUrl")?.value.trim() || "",
+        alert_on_duress: document.getElementById("cfgAlertDuress")?.checked ?? true,
+        alert_on_fire_alarm: document.getElementById("cfgAlertFire")?.checked ?? true,
+        alert_on_lockdown: document.getElementById("cfgAlertLockdown")?.checked ?? true,
+        alert_on_denied_limit: document.getElementById("cfgAlertDenied")?.checked ?? true,
+    };
+
+    try {
+        const res = await fetch("/api/system_config/notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to save notification settings");
+
+        if (typeof toastr !== "undefined") {
+            toastr.success("Alert & Notification configurations saved successfully!");
+        } else {
+            alert("Settings saved successfully!");
+        }
+    } catch (err) {
+        if (typeof toastr !== "undefined") {
+            toastr.error(err.message);
+        } else {
+            alert("Error: " + err.message);
+        }
+    }
+}
+window.saveNotificationConfigs = saveNotificationConfigs;
+
+export async function testNotification(channel = "all", customMessage = "") {
+    try {
+        if (typeof toastr !== "undefined") toastr.info(`Sending test notification via ${channel.toUpperCase()}...`);
+        const res = await fetch("/api/system_config/notifications/test", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ channel: channel, message: customMessage }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to trigger test alert");
+
+        const results = data.results || {};
+        const anySuccess = Object.values(results).some((r) => r.success === true || r === true);
+        if (anySuccess) {
+            if (typeof toastr !== "undefined") {
+                toastr.success(`Test alert dispatched successfully!`);
+            } else {
+                alert(`Test alert dispatched successfully!`);
+            }
+        } else if (data.status === "no_channels_configured") {
+            if (typeof toastr !== "undefined") {
+                toastr.warning(`No active tokens or URLs configured for ${channel.toUpperCase()}.`);
+            } else {
+                alert(`No active tokens or URLs configured for ${channel.toUpperCase()}.`);
+            }
+        } else {
+            if (typeof toastr !== "undefined") {
+                toastr.warning(`Test dispatch completed with warnings.`);
+            }
+        }
+        return data;
+    } catch (err) {
+        if (typeof toastr !== "undefined") toastr.error(err.message);
+        return { success: false, error: err.message };
+    }
+}
+window.testNotification = testNotification;
+
+export async function sendTestNotificationModal(e) {
+    if (e) e.preventDefault();
+    const btn = document.getElementById("btnSubmitTestNotify");
+    const channel = document.getElementById("modalTestChannel")?.value || "all";
+    const msg = document.getElementById("modalTestMessage")?.value.trim() || "";
+    const resBox = document.getElementById("modalTestResult");
+
+    if (btn) btn.disabled = true;
+    if (resBox) {
+        resBox.className = "p-3 rounded-box text-xs font-mono space-y-1 bg-base-200 border border-base-content/10";
+        resBox.classList.remove("hidden");
+        resBox.innerHTML = '<div class="flex items-center gap-2 text-info"><span class="loading loading-spinner loading-xs"></span> Dispatching test alert...</div>';
+    }
+
+    try {
+        const data = await testNotification(channel, msg);
+        if (resBox) {
+            const results = data.results || {};
+            let html = `<div class="font-bold text-base-content mb-1">Status: ${data.status || "completed"}</div>`;
+            for (const [ch, res] of Object.entries(results)) {
+                const isOk = res?.success === true || res === true;
+                const statusBadge = isOk
+                    ? '<span class="badge badge-success badge-xs">PASS</span>'
+                    : '<span class="badge badge-error badge-xs">FAIL</span>';
+                html += `<div class="flex items-center justify-between"><span>${ch}</span> ${statusBadge}</div>`;
+            }
+            if (Object.keys(results).length === 0) {
+                html += `<div class="text-warning">No endpoints configured for ${channel}.</div>`;
+            }
+            resBox.innerHTML = html;
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+window.sendTestNotificationModal = sendTestNotificationModal;
+
+// =============================================================================
 // 🚀 INITIALIZATION
 // =============================================================================
 
@@ -757,6 +946,7 @@ document.addEventListener("DOMContentLoaded", () => {
         restore_active_tab();
     }
     loadConfigs();
+    loadNotificationConfigs();
     initUserTable();
     initUserTypeTable();
     loadBackups();

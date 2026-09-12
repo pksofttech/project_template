@@ -15,6 +15,7 @@ from app.core.database import get_configurations
 from app.core.dependencies import AsyncDbDep, SystemUserDep
 from app.core.menu_registry import (
     HOME_WIDGET_REGISTRY,
+    SYSTEM_MENU_CATEGORIES,
     SYSTEM_MENU_REGISTRY,
     get_default_home_widgets_for_new_role,
     get_default_menus_for_new_role,
@@ -61,6 +62,7 @@ def get_view_context(request: Request, title: str = "", current_user: Any = None
         "current_theme": current_theme,
         "now": time_now().strftime("%Y%m%d%H%M%S"),
         "user_menus": kwargs.pop("user_menus", SYSTEM_MENU_REGISTRY),
+        "menu_categories": kwargs.pop("menu_categories", SYSTEM_MENU_CATEGORIES),
         "card_menu_home": kwargs.pop("card_menu_home", [w["title"] for w in HOME_WIDGET_REGISTRY]),
     }
     context.update(kwargs)
@@ -148,6 +150,18 @@ async def cards_manager_view(request: Request):
     return templates.TemplateResponse(
         "cards_manager.html",
         get_view_context(request, title="Access Cards Management", active_page="cards", current_user=user),
+    )
+
+
+@router.get("/devices", response_class=HTMLResponse)
+async def devices_manager_view(request: Request):
+    """Render access devices (readers, kiosks, keypads) management page."""
+    user = get_authenticated_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(
+        "devices_manager.html",
+        get_view_context(request, title="Access Devices Management", active_page="devices", current_user=user),
     )
 
 

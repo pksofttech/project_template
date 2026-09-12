@@ -3509,4 +3509,7 @@ export const jp = {
     "Selected Status": "選択中のステータス",
     "Monitoring & Audit": "監視と監査",
     "All Settings": "すべての設定",
+    "Identity & Credentials": "IDと認証情報",
+    "Doors & Hardware": "ドアとハードウェア",
+    "Rules & Policies": "ルールとポリシー",
 };

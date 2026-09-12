@@ -36,7 +36,7 @@
                     <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm">
                         <!-- 🌀 Config Selection Menu Cards -->
                         <div class="max-w-7xl px-2 py-4 mx-auto text-center">
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-7 gap-5 py-2 justify-center">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-8 gap-5 py-2 justify-center">
 
                                 <!-- Card 1: General Settings -->
                                 <div class="tooltip tooltip-top w-full" data-tip="Configure App Title, Description & Defaults">
@@ -181,6 +181,27 @@
                                         <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-primary transition-colors duration-300">
                                             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                                             <span class="font-bold uppercase tracking-wider">Open</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 8: Alerts & Notifications -->
+                                <div class="tooltip tooltip-top w-full" data-tip="Configure LINE, Telegram, Webhooks & Duress Alarms">
+                                    <div class="group relative flex flex-col justify-between items-center h-60 sm:h-64 p-5 rounded-box border border-base-content/10 bg-base-100/70 backdrop-blur-md shadow-md hover:shadow-xl hover:border-warning/40 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer text-center"
+                                        onclick="switch_to_tab('SYSTEM_CONFIG_TAB05')">
+                                        <div class="absolute inset-0 rounded-box bg-linear-to-br from-warning/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <div
+                                            class="w-16 h-16 rounded-box bg-base-200/80 border border-base-content/5 flex items-center justify-center shadow-inner mt-2 text-warning group-hover:bg-warning group-hover:text-warning-content group-hover:scale-105 transition-all duration-300">
+                                            <i class="fa-solid fa-bell text-2xl"></i>
+                                        </div>
+                                        <div class="flex-1 flex items-center justify-center mt-3">
+                                            <h3 class="text-sm sm:text-base font-black leading-tight tracking-wide text-base-content/90 group-hover:text-base-content transition-colors" data-i18n="Alerts & Notifications">
+                                                Alerts & Notifications
+                                            </h3>
+                                        </div>
+                                        <div class="mt-4 pt-3 w-full border-t border-base-content/5 flex items-center justify-center gap-1.5 text-[11px] text-base-content/40 group-hover:text-warning transition-colors duration-300">
+                                            <i class="fa-solid fa-sliders text-xs"></i>
+                                            <span class="font-bold uppercase tracking-wider">Configure</span>
                                         </div>
                                     </div>
                                 </div>
@@ -372,6 +393,254 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: Multi-Channel Alerts & Notifications -->
+                    <label class="tab tab-label-custom">
+                        <input type="radio" name="tabs_control" id="SYSTEM_CONFIG_TAB05" onchange="event_tab_active(this)" />
+                        <i class="fa-solid fa-bell text-warning text-sm"></i>
+                        <span class="px-2 font-bold" data-i18n="Alerts & Notifications">Alerts & Notifications</span>
+                    </label>
+                    <div class="tab-content tab-content-custom bg-base-100/60 rounded-box border border-base-content/10 p-6 shadow-sm space-y-6">
+                        <!-- Header Banner -->
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-base-content/10">
+                            <div>
+                                <h3 class="text-xl font-black text-primary flex items-center gap-2 mb-1">
+                                    <i class="fa-solid fa-bell text-warning"></i>
+                                    <span data-i18n="Multi-Channel Alert Dispatch Hub">Multi-Channel Alert Dispatch Hub</span>
+                                </h3>
+                                <p class="text-xs text-base-content/70" data-i18n="Configure automated emergency and silent hostage notifications to LINE, Telegram, and Webhook.">
+                                    Configure automated emergency and silent hostage notifications to LINE, Telegram, and Webhook.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="show_dialog_test_notification()" class="btn btn-outline btn-warning btn-sm gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span data-i18n="Send Test Alert">Send Test Alert</span>
+                                </button>
+                                <button type="button" onclick="saveNotificationConfigs(event)" class="btn btn-primary btn-sm gap-2">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span data-i18n="Save Alert Settings">Save Alert Settings</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 1. Alert Policy Triggers -->
+                        <div class="card bg-base-100 border border-base-content/10 rounded-box p-5 shadow-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-black text-sm text-base-content flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-virus text-error"></i>
+                                    <span data-i18n="Life Safety & Security Event Triggers">Life Safety & Security Event Triggers</span>
+                                </h4>
+                                <span class="badge badge-neutral badge-xs font-mono">AUTOMATED</span>
+                            </div>
+                            <p class="text-xs text-base-content/60">
+                                When any enabled event is detected by the access control engine, an immediate high-priority alert is asynchronously dispatched.
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+                                <!-- Trigger: Duress PIN -->
+                                <div class="card bg-base-200/50 border border-base-content/5 p-4 rounded-box space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="badge badge-error badge-sm font-bold gap-1 text-[11px]">
+                                            <i class="fa-solid fa-user-secret"></i> Silent Alarm
+                                        </span>
+                                        <input type="checkbox" id="cfgAlertDuress" class="toggle toggle-error toggle-sm" checked />
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xs text-base-content" data-i18n="Duress PIN Entry">Duress PIN Entry</div>
+                                        <div class="text-[11px] text-base-content/60 mt-0.5" data-i18n="Grants egress silently while alerting security and police.">
+                                            Grants egress silently while alerting security and police.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Trigger: Fire Alarm -->
+                                <div class="card bg-base-200/50 border border-base-content/5 p-4 rounded-box space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="badge badge-warning badge-sm font-bold gap-1 text-[11px]">
+                                            <i class="fa-solid fa-fire"></i> Evacuation
+                                        </span>
+                                        <input type="checkbox" id="cfgAlertFire" class="toggle toggle-warning toggle-sm" checked />
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xs text-base-content" data-i18n="Fire Alarm Evacuation">Fire Alarm Evacuation</div>
+                                        <div class="text-[11px] text-base-content/60 mt-0.5" data-i18n="Notifies building marshals on fire alarm or reset.">
+                                            Notifies building marshals on fire alarm or reset.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Trigger: Facility Lockdown -->
+                                <div class="card bg-base-200/50 border border-base-content/5 p-4 rounded-box space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="badge badge-info badge-sm font-bold gap-1 text-[11px]">
+                                            <i class="fa-solid fa-lock"></i> Lockdown
+                                        </span>
+                                        <input type="checkbox" id="cfgAlertLockdown" class="toggle toggle-info toggle-sm" checked />
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xs text-base-content" data-i18n="Global Facility Lockdown">Global Facility Lockdown</div>
+                                        <div class="text-[11px] text-base-content/60 mt-0.5" data-i18n="Alerts incident response team during perimeter lockdown.">
+                                            Alerts incident response team during perimeter lockdown.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Trigger: Repeated Denied -->
+                                <div class="card bg-base-200/50 border border-base-content/5 p-4 rounded-box space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="badge badge-secondary badge-sm font-bold gap-1 text-[11px]">
+                                            <i class="fa-solid fa-triangle-exclamation"></i> Threat Breach
+                                        </span>
+                                        <input type="checkbox" id="cfgAlertDenied" class="toggle toggle-secondary toggle-sm" checked />
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-xs text-base-content" data-i18n="Repeated Denied Limit">Repeated Denied Limit</div>
+                                        <div class="text-[11px] text-base-content/60 mt-0.5" data-i18n="Alerts when &gt; 3 failed swipes occur in 5 minutes.">
+                                            Alerts when &gt; 3 failed swipes occur in 5 minutes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Messaging Channels Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                            <!-- Channel A: LINE Notification -->
+                            <div class="card bg-base-100 border border-base-content/10 rounded-box p-5 shadow-sm space-y-4">
+                                <div class="flex items-center justify-between pb-2 border-b border-base-content/10">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-box bg-success/15 text-success flex items-center justify-center font-bold">
+                                            <i class="fa-brands fa-line text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-base-content">LINE Notify & Messaging</h4>
+                                            <p class="text-[10px] text-base-content/60">LINE Notify & Official Bot Push</p>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="cfgLineEnabled" class="toggle toggle-success toggle-sm" />
+                                </div>
+
+                                <div class="space-y-3 text-xs">
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">LINE Notify Token (Legacy)</span>
+                                        </label>
+                                        <input type="password" id="cfgLineToken" class="input input-bordered input-sm font-mono" placeholder="LINE Notify Personal / Group Token" />
+                                    </div>
+
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">LINE Messaging Channel Access Token</span>
+                                        </label>
+                                        <input type="password" id="cfgLineMsgToken" class="input input-bordered input-sm font-mono" placeholder="Channel Access Token (Long-Lived)" />
+                                    </div>
+
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">LINE Target User ID / Group ID</span>
+                                        </label>
+                                        <input type="text" id="cfgLineTargetId" class="input input-bordered input-sm font-mono" placeholder="e.g. U12345678... or C12345678..." />
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-t border-base-content/10 flex items-center justify-between">
+                                    <span class="text-[10px] text-base-content/50">Push rate limit: 100/min</span>
+                                    <button type="button" onclick="testNotification('line')" class="btn btn-xs btn-outline btn-success gap-1">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        <span>Test LINE</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Channel B: Telegram Bot -->
+                            <div class="card bg-base-100 border border-base-content/10 rounded-box p-5 shadow-sm space-y-4">
+                                <div class="flex items-center justify-between pb-2 border-b border-base-content/10">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-box bg-info/15 text-info flex items-center justify-center font-bold">
+                                            <i class="fa-brands fa-telegram text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-base-content">Telegram Bot API</h4>
+                                            <p class="text-[10px] text-base-content/60">Instant Push to Security Channel</p>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="cfgTelegramEnabled" class="toggle toggle-info toggle-sm" />
+                                </div>
+
+                                <div class="space-y-3 text-xs">
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">Bot Token (@BotFather)</span>
+                                        </label>
+                                        <input type="password" id="cfgTelegramBotToken" class="input input-bordered input-sm font-mono" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" />
+                                    </div>
+
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">Chat ID / Channel Username</span>
+                                        </label>
+                                        <input type="text" id="cfgTelegramChatId" class="input input-bordered input-sm font-mono" placeholder="e.g. -100123456789 or @SecurityAlerts" />
+                                    </div>
+
+                                    <div class="alert alert-info/10 border border-info/20 text-[11px] p-2.5 rounded-box flex items-start gap-2">
+                                        <i class="fa-solid fa-circle-info text-info mt-0.5"></i>
+                                        <span>Add bot as Admin in your private security telegram group to receive instant alerts.</span>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-t border-base-content/10 flex items-center justify-between">
+                                    <span class="text-[10px] text-base-content/50">Supports HTML formatting</span>
+                                    <button type="button" onclick="testNotification('telegram')" class="btn btn-xs btn-outline btn-info gap-1">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        <span>Test Telegram</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Channel C: Generic Webhook (SIEM / Discord / Slack) -->
+                            <div class="card bg-base-100 border border-base-content/10 rounded-box p-5 shadow-sm space-y-4">
+                                <div class="flex items-center justify-between pb-2 border-b border-base-content/10">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-box bg-secondary/15 text-secondary flex items-center justify-center font-bold">
+                                            <i class="fa-solid fa-network-wired text-base"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-base-content">Webhook / SIEM / Discord</h4>
+                                            <p class="text-[10px] text-base-content/60">HTTP POST JSON Payload</p>
+                                        </div>
+                                    </div>
+                                    <input type="checkbox" id="cfgWebhookEnabled" class="toggle toggle-secondary toggle-sm" />
+                                </div>
+
+                                <div class="space-y-3 text-xs">
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">Webhook Endpoint URL</span>
+                                        </label>
+                                        <input type="url" id="cfgWebhookUrl" class="input input-bordered input-sm font-mono" placeholder="https://hooks.slack.com/... or Discord/SIEM" />
+                                    </div>
+
+                                    <div class="form-control">
+                                        <label class="label py-1">
+                                            <span class="label-text font-semibold text-[11px]">Payload Schema Preview</span>
+                                        </label>
+                                        <pre class="bg-base-200 p-2 rounded-box text-[10px] font-mono text-base-content/70 overflow-x-auto">{"event": "DURESS_PIN", "title": "...", "timestamp": "...", "metadata": {...}}</pre>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-t border-base-content/10 flex items-center justify-between">
+                                    <span class="text-[10px] text-base-content/50">Expects HTTP 2xx response</span>
+                                    <button type="button" onclick="testNotification('webhook')" class="btn btn-xs btn-outline btn-secondary gap-1">
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                        <span>Test Webhook</span>
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -757,6 +1026,53 @@
                     <button type="submit" class="btn btn-accent btn-sm px-6 gap-2">
                         <i class="fa-solid fa-paper-plane"></i>
                         <span>Send Broadcast</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 5. Modal: Test Multi-Channel Alert Notification -->
+    <dialog id="modal_test_notification" class="modal my-modal">
+        <div class="modal-box my-modal-box max-w-lg w-full p-0 overflow-hidden rounded-box">
+            {% with modal_title="Send Test Notification" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
+
+            <form onsubmit="sendTestNotificationModal(event)" class="p-6 space-y-4">
+                <div class="alert alert-warning/10 border border-warning/20 text-xs text-base-content/80 flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-warning text-base"></i>
+                    <span data-i18n="Sends an immediate diagnostic test message to verified notification channels.">
+                        Sends an immediate diagnostic test message to verified notification channels.
+                    </span>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1">
+                        <span class="label-text text-xs font-semibold" data-i18n="Target Notification Channel">Target Notification Channel</span>
+                    </label>
+                    <select id="modalTestChannel" class="select select-bordered select-sm text-xs font-semibold">
+                        <option value="all">🚀 All Enabled Channels (LINE, Telegram, Webhook)</option>
+                        <option value="line">💬 LINE (Notify & Messaging API)</option>
+                        <option value="telegram">✈️ Telegram Bot API</option>
+                        <option value="webhook">🌐 Generic Webhook</option>
+                    </select>
+                </div>
+
+                <div class="form-control">
+                    <label class="label py-1">
+                        <span class="label-text text-xs font-semibold" data-i18n="Custom Test Message">Custom Test Message</span>
+                    </label>
+                    <textarea id="modalTestMessage" class="textarea textarea-bordered textarea-sm" rows="3" placeholder="This is a test notification from PKS Access Control System."></textarea>
+                </div>
+
+                <div id="modalTestResult" class="hidden p-3 rounded-box text-xs font-mono space-y-1"></div>
+
+                <div class="modal-action flex items-center justify-end gap-2 pt-4 border-t border-base-content/10">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="modal_test_notification.close()">Cancel</button>
+                    <button type="submit" id="btnSubmitTestNotify" class="btn btn-warning btn-sm px-6 gap-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span data-i18n="Send Test">Send Test</span>
                     </button>
                 </div>
             </form>

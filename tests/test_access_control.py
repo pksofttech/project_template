@@ -358,3 +358,143 @@ async def test_access_log_credential_type_filter():
             assert row["credential_type"] == "RFID_CARD"
 
 
+@pytest.mark.asyncio
+async def test_access_device_crud():
+    """Verify full CRUD lifecycle for Access_Device entities."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # 1. Query Devices DataTables
+        res_dt = await client.get("/api/access/device/datatable")
+        assert res_dt.status_code == 200
+        dt_data = res_dt.json()
+        assert "data" in dt_data
+        assert dt_data["recordsTotal"] > 0
+
+        # 2. Create New Device
+        new_dev_code = "DEV-TEST-READER-99"
+        res_create = await client.post(
+            "/api/access/device/",
+            json={
+                "code": new_dev_code,
+                "name": "Testing Ingress Reader",
+                "door_id": 1,
+                "device_category": "READER",
+                "reader_technology": "MIFARE",
+                "direction": "IN",
+                "comm_protocol": "HTTP_REST",
+                "ip_address": "192.168.1.99",
+                "status": "ONLINE",
+            },
+        )
+        assert res_create.status_code == 200
+        create_data = res_create.json()
+        assert create_data["success"] is True
+        dev_id = create_data["device"]["id"]
+
+        # 3. Heartbeat Ping
+        res_ping = await client.post(f"/api/access/device/{dev_id}/ping")
+        assert res_ping.status_code == 200
+        ping_data = res_ping.json()
+        assert ping_data["success"] is True
+        assert ping_data["status"] == "ONLINE"
+
+        # 4. Get Single Device
+        res_get = await client.get(f"/api/access/device/{dev_id}")
+        assert res_get.status_code == 200
+        get_data = res_get.json()
+        assert get_data["code"] == new_dev_code
+        assert get_data["name"] == "Testing Ingress Reader"
+
+        # 5. Update Device
+        res_upd = await client.put(
+            f"/api/access/device/{dev_id}",
+            json={"name": "Testing Ingress Reader Updated", "status": "MAINTENANCE"},
+        )
+        assert res_upd.status_code == 200
+        upd_data = res_upd.json()
+        assert upd_data["success"] is True
+        assert upd_data["device"]["name"] == "Testing Ingress Reader Updated"
+
+        # 6. Delete Device
+        res_del = await client.delete(f"/api/access/device/{dev_id}")
+        assert res_del.status_code == 200
+        del_data = res_del.json()
+        assert del_data["success"] is True
+
+
+@pytest.mark.asyncio
+async def test_access_dual_factor_challenge_and_verification():
+    """Verify 2FA challenge initiation on swipe and verification flow on DOOR-03 (Server Room)."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Step 1: Somchai swipes card at Server Room (DOOR-03) which enforces CARD_AND_PIN
+        res_swipe = await client.post(
+            "/api/access/event/swipe",
+            json={
+                "card_number": "1001234567",
+                "door_code": "DOOR-03",
+                "device_code": "DEV-SERVER-COMBO-01",
+                "direction": "IN",
+            },
+        )
+        assert res_swipe.status_code == 200
+        swipe_data = res_swipe.json()
+        assert swipe_data["success"] is True
+        assert swipe_data["challenge_required"] is True
+        assert swipe_data["result"] == "CHALLENGE_REQUIRED"
+        assert swipe_data["expected_factor"] == "PIN"
+        assert swipe_data["unlock_relay"] is False
+        session_token = swipe_data["session_token"]
+        assert session_token is not None
+
+        # Step 2: Submit WRONG PIN for second factor
+        res_fail = await client.post(
+            "/api/access/event/challenge-verify",
+            json={
+                "session_token": session_token,
+                "factor_type": "PIN",
+                "factor_value": "0000",
+                "device_code": "DEV-SERVER-COMBO-01",
+            },
+        )
+        assert res_fail.status_code == 200
+        fail_data = res_fail.json()
+        assert fail_data["success"] is False
+        assert fail_data["granted"] is False
+        assert fail_data["result"] == "DENIED"
+        assert fail_data["unlock_relay"] is False
+
+        # Step 3: Swipe again to get a new challenge session
+        res_swipe2 = await client.post(
+            "/api/access/event/swipe",
+            json={
+                "card_number": "1001234567",
+                "door_code": "DOOR-03",
+                "device_code": "DEV-SERVER-COMBO-01",
+                "direction": "IN",
+            },
+        )
+        assert res_swipe2.status_code == 200
+        swipe2_data = res_swipe2.json()
+        new_token = swipe2_data["session_token"]
+
+        # Step 4: Submit VALID PIN (Somchai's seeded PIN '1234')
+        res_verify = await client.post(
+            "/api/access/event/challenge-verify",
+            json={
+                "session_token": new_token,
+                "factor_type": "PIN",
+                "factor_value": "1234",
+                "device_code": "DEV-SERVER-COMBO-01",
+            },
+        )
+        assert res_verify.status_code == 200
+        verify_data = res_verify.json()
+        assert verify_data["success"] is True
+        assert verify_data["granted"] is True
+        assert verify_data["result"] == "GRANTED"
+        assert verify_data["unlock_relay"] is True
+        assert verify_data["relay_time"] > 0
+
+
+

@@ -216,7 +216,7 @@
             </form>
 
             <div class="flex items-center gap-3 border-b border-base-content/10 pb-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-xl">
+                <div class="w-10 h-10 rounded-box bg-secondary/10 text-secondary flex items-center justify-center text-xl">
                     <i class="fa-solid fa-camera"></i>
                 </div>
                 <div>
@@ -226,10 +226,10 @@
             </div>
 
             <!-- Member Info & Current Status Banner -->
-            <div class="p-3 rounded-xl bg-base-200/70 border border-base-content/10 flex items-center justify-between mb-4 text-xs">
+            <div class="p-3 rounded-box bg-base-200/70 border border-base-content/10 flex items-center justify-between mb-4 text-xs">
                 <div class="flex items-center gap-2.5">
                     <div id="faceModalAvatar" class="avatar">
-                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">
+                        <div class="w-10 h-10 rounded-box bg-primary/10 flex items-center justify-center font-bold text-sm text-primary">
                             ?
                         </div>
                     </div>
@@ -259,13 +259,13 @@
 
             <!-- Section 1: Live Web Camera -->
             <div id="faceSectionCamera" class="space-y-3">
-                <div class="relative rounded-2xl overflow-hidden bg-black aspect-4/3 flex items-center justify-center border-2 border-dashed border-base-content/20">
+                <div class="relative rounded-box overflow-hidden bg-black aspect-4/3 flex items-center justify-center border-2 border-dashed border-base-content/20">
                     <video id="webcamVideo" autoplay playsinline class="w-full h-full object-cover"></video>
                     <canvas id="webcamCanvas" class="hidden"></canvas>
                     <img id="capturedFaceImg" class="hidden w-full h-full object-cover" />
                     
                     <!-- Viewfinder Face Guide Overlay -->
-                    <div id="faceGuideBox" class="absolute pointer-events-none w-48 h-60 rounded-3xl border-2 border-secondary/60 shadow-[0_0_20px_rgba(230,100,200,0.3)] flex flex-col items-center justify-between p-2 animate-pulse hidden">
+                    <div id="faceGuideBox" class="absolute pointer-events-none w-48 h-60 rounded-box border-2 border-secondary/60 shadow-[0_0_20px_rgba(230,100,200,0.3)] flex flex-col items-center justify-between p-2 animate-pulse hidden">
                         <span class="text-[10px] uppercase tracking-wider text-secondary font-bold bg-black/60 px-2 py-0.5 rounded-full">Position Face Here</span>
                         <div class="w-4 h-4 border-b-2 border-r-2 border-secondary self-end"></div>
                     </div>
@@ -292,7 +292,7 @@
 
             <!-- Section 2: Upload Photo File -->
             <div id="faceSectionUpload" class="hidden space-y-3">
-                <div class="border-2 border-dashed border-base-content/20 rounded-2xl p-6 text-center hover:border-secondary/50 transition-colors bg-base-200/30">
+                <div class="border-2 border-dashed border-base-content/20 rounded-box p-6 text-center hover:border-secondary/50 transition-colors bg-base-200/30">
                     <input type="file" id="faceFileInput" accept="image/jpeg,image/png,image/webp" onchange="previewUploadedFile(event)" class="hidden" />
                     <div id="uploadPlaceholder" onclick="document.getElementById('faceFileInput').click()" class="cursor-pointer space-y-2">
                         <div class="w-14 h-14 rounded-full bg-secondary/10 text-secondary mx-auto flex items-center justify-center text-2xl">
@@ -303,7 +303,7 @@
                     </div>
 
                     <div id="uploadPreviewContainer" class="hidden flex flex-col items-center gap-3">
-                        <img id="filePreviewImg" class="w-44 h-44 rounded-2xl object-cover shadow-md border-2 border-secondary" />
+                        <img id="filePreviewImg" class="w-44 h-44 rounded-box object-cover shadow-md border-2 border-secondary" />
                         <button type="button" onclick="document.getElementById('faceFileInput').click()" class="btn btn-xs btn-outline">
                             Choose another image
                         </button>
@@ -313,7 +313,7 @@
 
             <!-- Section 3: Quick AI Mockup Vector -->
             <div id="faceSectionMockup" class="hidden space-y-3">
-                <div class="p-5 rounded-2xl bg-secondary/5 border border-secondary/20 space-y-3">
+                <div class="p-5 rounded-box bg-secondary/5 border border-secondary/20 space-y-3">
                     <div class="flex items-start gap-3">
                         <i class="fa-solid fa-wand-magic-sparkles text-2xl text-secondary mt-1"></i>
                         <div>
@@ -324,7 +324,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="p-2.5 rounded-xl bg-base-100 font-mono text-[11px] text-base-content/70 border border-base-content/10">
+                    <div class="p-2.5 rounded-box bg-base-100 font-mono text-[11px] text-base-content/70 border border-base-content/10">
                         Algorithm: ArcFace L2-Normalized Cosine Metric (512 floats)
                     </div>
                 </div>
@@ -347,11 +347,11 @@
 
     <!-- 🔑 Modern All-in-One Multi-Credential Management Hub Modal -->
     <dialog id="credentialsModal" class="modal">
-        <div class="modal-box cred-modal-box max-w-5xl p-0 overflow-hidden rounded-3xl shadow-2xl border border-base-content/10 bg-base-100 flex flex-col max-h-[92vh]">
+        <div class="modal-box cred-modal-box max-w-5xl p-0 overflow-hidden rounded-box shadow-2xl border border-base-content/10 bg-base-100 flex flex-col max-h-[92vh]">
             <!-- Top Gradient Header Banner -->
-            <div class="bg-gradient-to-r from-primary/15 via-base-100 to-secondary/15 px-6 py-4.5 border-b border-base-content/10 relative flex items-center justify-between">
+            <div class="bg-linear-to-r from-primary/15 via-base-100 to-secondary/15 px-6 py-4.5 border-b border-base-content/10 relative flex items-center justify-between">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-focus text-primary-content flex items-center justify-center text-xl shadow-md shadow-primary/20">
+                    <div class="w-12 h-12 rounded-box bg-linear-to-br from-primary to-primary/80 text-primary-content flex items-center justify-center text-xl shadow-md shadow-primary/20">
                         <i class="fa-solid fa-id-card-clip"></i>
                     </div>
                     <div>
@@ -370,11 +370,11 @@
 
             <!-- Member Profile Banner & Interactive KPI Stat Cards -->
             <div class="px-6 pt-4 pb-2">
-                <div class="p-4 rounded-2xl bg-base-200/50 border border-base-content/10 shadow-xs">
+                <div class="p-4 rounded-box bg-base-200/50 border border-base-content/10 shadow-xs">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-3.5">
                             <div id="credHubAvatar" class="avatar">
-                                <div class="w-13 h-13 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-black text-xl shadow-sm ring-2 ring-primary/20">?</div>
+                                <div class="w-13 h-13 rounded-box bg-primary/10 text-primary flex items-center justify-center font-black text-xl shadow-sm ring-2 ring-primary/20">?</div>
                             </div>
                             <div class="space-y-0.5">
                                 <div id="credHubMemberName" class="font-black text-base text-base-content tracking-tight">Cardholder Name</div>
@@ -400,10 +400,10 @@
                     <!-- 5 Interactive Modality KPI Cards -->
                     <div class="kpi-cards-grid mt-3.5 pt-3 border-t border-base-content/10">
                         <!-- KPI 1: RFID -->
-                        <div id="kpiCardRfid" onclick="switchCredTab('rfid')" class="card kpi-card kpi-card-rfid bg-base-100 p-3 rounded-2xl border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
+                        <div id="kpiCardRfid" onclick="switchCredTab('rfid')" class="card kpi-card kpi-card-rfid bg-base-100 p-3 rounded-box border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
                             <div class="absolute -right-3 -top-3 w-12 h-12 rounded-full bg-primary/10 blur-sm pointer-events-none group-hover:bg-primary/20 transition-colors"></div>
                             <div class="flex items-center justify-between relative z-1">
-                                <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-8 h-8 rounded-box bg-primary/10 text-primary flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
                                     <i class="fa-solid fa-credit-card"></i>
                                 </div>
                                 <span id="cntRfid" class="text-2xl font-black font-mono text-primary tracking-tight">0</span>
@@ -424,10 +424,10 @@
                         </div>
 
                         <!-- KPI 2: Mobile -->
-                        <div id="kpiCardMobile" onclick="switchCredTab('mobile')" class="card kpi-card kpi-card-mobile bg-base-100 p-3 rounded-2xl border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
+                        <div id="kpiCardMobile" onclick="switchCredTab('mobile')" class="card kpi-card kpi-card-mobile bg-base-100 p-3 rounded-box border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
                             <div class="absolute -right-3 -top-3 w-12 h-12 rounded-full bg-secondary/10 blur-sm pointer-events-none group-hover:bg-secondary/20 transition-colors"></div>
                             <div class="flex items-center justify-between relative z-1">
-                                <div class="w-8 h-8 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-8 h-8 rounded-box bg-secondary/10 text-secondary flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
                                     <i class="fa-solid fa-mobile-screen"></i>
                                 </div>
                                 <span id="cntMobile" class="text-2xl font-black font-mono text-secondary tracking-tight">0</span>
@@ -448,10 +448,10 @@
                         </div>
 
                         <!-- KPI 3: Fingerprint -->
-                        <div id="kpiCardFp" onclick="switchCredTab('fingerprint')" class="card kpi-card kpi-card-fingerprint bg-base-100 p-3 rounded-2xl border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
+                        <div id="kpiCardFp" onclick="switchCredTab('fingerprint')" class="card kpi-card kpi-card-fingerprint bg-base-100 p-3 rounded-box border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
                             <div class="absolute -right-3 -top-3 w-12 h-12 rounded-full bg-accent/10 blur-sm pointer-events-none group-hover:bg-accent/20 transition-colors"></div>
                             <div class="flex items-center justify-between relative z-1">
-                                <div class="w-8 h-8 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-8 h-8 rounded-box bg-accent/10 text-accent flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
                                     <i class="fa-solid fa-fingerprint"></i>
                                 </div>
                                 <span id="cntFp" class="text-2xl font-black font-mono text-accent tracking-tight">0</span>
@@ -472,10 +472,10 @@
                         </div>
 
                         <!-- KPI 4: Face -->
-                        <div id="kpiCardFace" onclick="switchCredTab('face')" class="card kpi-card kpi-card-face bg-base-100 p-3 rounded-2xl border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
+                        <div id="kpiCardFace" onclick="switchCredTab('face')" class="card kpi-card kpi-card-face bg-base-100 p-3 rounded-box border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
                             <div class="absolute -right-3 -top-3 w-12 h-12 rounded-full bg-info/10 blur-sm pointer-events-none group-hover:bg-info/20 transition-colors"></div>
                             <div class="flex items-center justify-between relative z-1">
-                                <div class="w-8 h-8 rounded-xl bg-info/10 text-info flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-8 h-8 rounded-box bg-info/10 text-info flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
                                     <i class="fa-solid fa-camera"></i>
                                 </div>
                                 <span id="cntFace" class="text-2xl font-black font-mono text-info tracking-tight">0</span>
@@ -496,10 +496,10 @@
                         </div>
 
                         <!-- KPI 5: PIN -->
-                        <div id="kpiCardPin" onclick="switchCredTab('pin')" class="card kpi-card kpi-card-pin kpi-card-5 bg-base-100 p-3 rounded-2xl border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
+                        <div id="kpiCardPin" onclick="switchCredTab('pin')" class="card kpi-card kpi-card-pin kpi-card-5 bg-base-100 p-3 rounded-box border border-base-content/10 cursor-pointer shadow-2xs hover:shadow-md relative overflow-hidden group select-none">
                             <div class="absolute -right-3 -top-3 w-12 h-12 rounded-full bg-warning/10 blur-sm pointer-events-none group-hover:bg-warning/20 transition-colors"></div>
                             <div class="flex items-center justify-between relative z-1">
-                                <div class="w-8 h-8 rounded-xl bg-warning/10 text-warning flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-8 h-8 rounded-box bg-warning/10 text-warning flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
                                     <i class="fa-solid fa-hashtag"></i>
                                 </div>
                                 <span id="cntPin" class="text-2xl font-black font-mono text-warning tracking-tight">0</span>
@@ -525,20 +525,20 @@
             <!-- Segmented Modern DaisyUI 5 Tab Bar -->
             <div class="px-6 pt-1 pb-3">
                 <div class="overflow-x-auto w-full">
-                    <div role="tablist" class="tabs tabs-box cred-tabs-horizontal bg-base-200/90 p-1.5 rounded-2xl text-xs font-bold gap-1 shadow-inner min-w-[500px] sm:min-w-0">
-                        <button type="button" role="tab" id="tabCredRfid" onclick="switchCredTab('rfid')" class="tab tab-active gap-1.5 font-bold rounded-xl transition-all" aria-selected="true">
+                    <div role="tablist" class="tabs tabs-box cred-tabs-horizontal bg-base-200/90 p-1.5 rounded-box text-xs font-bold gap-1 shadow-inner min-w-[500px] sm:min-w-0">
+                        <button type="button" role="tab" id="tabCredRfid" onclick="switchCredTab('rfid')" class="tab tab-active gap-1.5 font-bold rounded-box transition-all" aria-selected="true">
                             <i class="fa-solid fa-credit-card text-xs"></i> <span class="hidden sm:inline">RFID Cards</span><span class="sm:hidden">RFID</span>
                         </button>
-                        <button type="button" role="tab" id="tabCredMobile" onclick="switchCredTab('mobile')" class="tab gap-1.5 font-bold rounded-xl transition-all" aria-selected="false">
+                        <button type="button" role="tab" id="tabCredMobile" onclick="switchCredTab('mobile')" class="tab gap-1.5 font-bold rounded-box transition-all" aria-selected="false">
                             <i class="fa-solid fa-mobile-screen text-xs"></i> <span class="hidden sm:inline">Mobile (BLE/NFC)</span><span class="sm:hidden">Mobile</span>
                         </button>
-                        <button type="button" role="tab" id="tabCredFp" onclick="switchCredTab('fingerprint')" class="tab gap-1.5 font-bold rounded-xl transition-all" aria-selected="false">
+                        <button type="button" role="tab" id="tabCredFp" onclick="switchCredTab('fingerprint')" class="tab gap-1.5 font-bold rounded-box transition-all" aria-selected="false">
                             <i class="fa-solid fa-fingerprint text-xs"></i> <span class="hidden sm:inline">Fingerprints</span><span class="sm:hidden">Finger</span>
                         </button>
-                        <button type="button" role="tab" id="tabCredFace" onclick="switchCredTab('face')" class="tab gap-1.5 font-bold rounded-xl transition-all" aria-selected="false">
+                        <button type="button" role="tab" id="tabCredFace" onclick="switchCredTab('face')" class="tab gap-1.5 font-bold rounded-box transition-all" aria-selected="false">
                             <i class="fa-solid fa-camera text-xs"></i> <span class="hidden sm:inline">Face Biometrics</span><span class="sm:hidden">Face</span>
                         </button>
-                        <button type="button" role="tab" id="tabCredPin" onclick="switchCredTab('pin')" class="tab gap-1.5 font-bold rounded-xl transition-all" aria-selected="false">
+                        <button type="button" role="tab" id="tabCredPin" onclick="switchCredTab('pin')" class="tab gap-1.5 font-bold rounded-box transition-all" aria-selected="false">
                             <i class="fa-solid fa-hashtag text-xs"></i> <span class="hidden sm:inline">Keypad PINs</span><span class="sm:hidden">PIN</span>
                         </button>
                     </div>
@@ -549,7 +549,7 @@
             <div class="px-6 pb-6 overflow-y-auto max-h-[520px] space-y-4">
                 <!-- Tab 1: RFID Cards -->
                 <div id="credPanelRfid" class="space-y-4">
-                    <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100 shadow-xs">
+                    <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100 shadow-xs">
                         <table class="table table-sm table-zebra w-full">
                             <thead>
                                 <tr class="bg-base-200/70 text-[10px] uppercase font-bold tracking-wider text-base-content/60">
@@ -567,7 +567,7 @@
                     </div>
 
                     <!-- Add RFID Card Inline Form -->
-                    <div class="card bg-gradient-to-br from-primary/5 via-base-200/50 to-base-100 p-4 rounded-2xl border border-base-content/10 shadow-xs">
+                    <div class="card bg-linear-to-br from-primary/5 via-base-200/50 to-base-100 p-4 rounded-box border border-base-content/10 shadow-xs">
                         <div class="font-bold text-xs text-base-content mb-2.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-plus-circle text-primary text-sm"></i>
@@ -576,14 +576,14 @@
                             <span class="badge badge-xs badge-ghost font-mono">125KHz / 13.56MHz / UHF</span>
                         </div>
                         <form onsubmit="submitNewRfidCard(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                            <input type="text" id="newRfidNumber" placeholder="Card No (e.g. 1001234570)" class="input input-bordered input-sm font-mono text-xs rounded-xl" required />
-                            <input type="text" id="newRfidFacility" placeholder="Facility Code (e.g. 101)" class="input input-bordered input-sm font-mono text-xs rounded-xl" />
-                            <select id="newRfidType" class="select select-bordered select-sm text-xs rounded-xl">
+                            <input type="text" id="newRfidNumber" placeholder="Card No (e.g. 1001234570)" class="input input-bordered input-sm font-mono text-xs rounded-box" required />
+                            <input type="text" id="newRfidFacility" placeholder="Facility Code (e.g. 101)" class="input input-bordered input-sm font-mono text-xs rounded-box" />
+                            <select id="newRfidType" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="RFID_125K">RFID 125KHz (Proximity)</option>
                                 <option value="MIFARE">Mifare 13.56MHz (Smartcard)</option>
                                 <option value="UHF">UHF Long Range (Parking)</option>
                             </select>
-                            <button type="submit" class="btn btn-primary btn-sm font-bold gap-1.5 rounded-xl shadow-xs">
+                            <button type="submit" class="btn btn-primary btn-sm font-bold gap-1.5 rounded-box shadow-xs">
                                 <i class="fa-solid fa-plus"></i> Assign Card
                             </button>
                         </form>
@@ -592,7 +592,7 @@
 
                 <!-- Tab 2: Mobile Credentials -->
                 <div id="credPanelMobile" class="hidden space-y-4">
-                    <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100 shadow-xs">
+                    <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100 shadow-xs">
                         <table class="table table-sm table-zebra w-full">
                             <thead>
                                 <tr class="bg-base-200/70 text-[10px] uppercase font-bold tracking-wider text-base-content/60">
@@ -611,7 +611,7 @@
                     </div>
 
                     <!-- Pair Mobile Device Inline Form -->
-                    <div class="card bg-gradient-to-br from-secondary/5 via-base-200/50 to-base-100 p-4 rounded-2xl border border-base-content/10 shadow-xs">
+                    <div class="card bg-linear-to-br from-secondary/5 via-base-200/50 to-base-100 p-4 rounded-box border border-base-content/10 shadow-xs">
                         <div class="font-bold text-xs text-base-content mb-2.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-mobile-screen-button text-secondary text-sm"></i>
@@ -620,17 +620,17 @@
                             <span class="badge badge-xs badge-ghost font-mono">BLE 5.0 / NFC HCE</span>
                         </div>
                         <form onsubmit="submitNewMobileCred(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
-                            <input type="text" id="newMobileVCard" placeholder="Virtual Card #" class="input input-bordered input-sm font-mono text-xs rounded-xl" required />
-                            <input type="text" id="newMobileUuid" placeholder="Device UUID / App Key" class="input input-bordered input-sm font-mono text-xs rounded-xl" required />
-                            <select id="newMobileTech" class="select select-bordered select-sm text-xs rounded-xl">
+                            <input type="text" id="newMobileVCard" placeholder="Virtual Card #" class="input input-bordered input-sm font-mono text-xs rounded-box" required />
+                            <input type="text" id="newMobileUuid" placeholder="Device UUID / App Key" class="input input-bordered input-sm font-mono text-xs rounded-box" required />
+                            <select id="newMobileTech" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="BLE">BLE (Bluetooth)</option>
                                 <option value="NFC">NFC (HCE Emulation)</option>
                             </select>
-                            <select id="newMobilePlatform" class="select select-bordered select-sm text-xs rounded-xl">
+                            <select id="newMobilePlatform" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="iOS">Apple iOS</option>
                                 <option value="Android">Google Android</option>
                             </select>
-                            <button type="submit" class="btn btn-secondary btn-sm font-bold gap-1.5 rounded-xl shadow-xs">
+                            <button type="submit" class="btn btn-secondary btn-sm font-bold gap-1.5 rounded-box shadow-xs">
                                 <i class="fa-solid fa-link"></i> Pair Device
                             </button>
                         </form>
@@ -639,7 +639,7 @@
 
                 <!-- Tab 3: Fingerprints -->
                 <div id="credPanelFp" class="hidden space-y-4">
-                    <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100 shadow-xs">
+                    <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100 shadow-xs">
                         <table class="table table-sm table-zebra w-full">
                             <thead>
                                 <tr class="bg-base-200/70 text-[10px] uppercase font-bold tracking-wider text-base-content/60">
@@ -657,7 +657,7 @@
                     </div>
 
                     <!-- Enroll Fingerprint Inline Form -->
-                    <div class="card bg-gradient-to-br from-accent/5 via-base-200/50 to-base-100 p-4 rounded-2xl border border-base-content/10 shadow-xs">
+                    <div class="card bg-linear-to-br from-accent/5 via-base-200/50 to-base-100 p-4 rounded-box border border-base-content/10 shadow-xs">
                         <div class="font-bold text-xs text-base-content mb-2.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-fingerprint text-accent text-sm"></i>
@@ -666,19 +666,19 @@
                             <span class="badge badge-xs badge-ghost font-mono">ISO 19794-2 Minutiae</span>
                         </div>
                         <form onsubmit="submitNewFingerprint(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                            <select id="newFpFingerIndex" class="select select-bordered select-sm text-xs rounded-xl">
+                            <select id="newFpFingerIndex" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="1">1 - Right Thumb (นิ้วโป้งขวา)</option>
                                 <option value="2" selected>2 - Right Index (นิ้วชี้ขวา)</option>
                                 <option value="3">3 - Right Middle (นิ้วกลางขวา)</option>
                                 <option value="6">6 - Left Thumb (นิ้วโป้งซ้าย)</option>
                                 <option value="7">7 - Left Index (นิ้วชี้ซ้าย)</option>
                             </select>
-                            <input type="number" id="newFpQuality" min="50" max="100" value="92" class="input input-bordered input-sm font-mono text-xs rounded-xl" placeholder="Quality Score (1-100)" />
-                            <select id="newFpAlgo" class="select select-bordered select-sm text-xs rounded-xl">
+                            <input type="number" id="newFpQuality" min="50" max="100" value="92" class="input input-bordered input-sm font-mono text-xs rounded-box" placeholder="Quality Score (1-100)" />
+                            <select id="newFpAlgo" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="ISO_19794_2">ISO 19794-2 (Standard)</option>
                                 <option value="ANSI_378">ANSI-378</option>
                             </select>
-                            <button type="submit" class="btn btn-accent btn-sm font-bold gap-1.5 rounded-xl shadow-xs">
+                            <button type="submit" class="btn btn-accent btn-sm font-bold gap-1.5 rounded-box shadow-xs">
                                 <i class="fa-solid fa-plus"></i> Enroll Finger
                             </button>
                         </form>
@@ -687,9 +687,9 @@
 
                 <!-- Tab 4: Face Biometrics -->
                 <div id="credPanelFace" class="hidden space-y-4">
-                    <div class="p-6 rounded-2xl bg-gradient-to-br from-info/5 via-base-200/50 to-base-100 border border-base-content/10 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs">
+                    <div class="p-6 rounded-box bg-linear-to-br from-info/5 via-base-200/50 to-base-100 border border-base-content/10 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs">
                         <div class="flex items-center gap-4">
-                            <div id="credFacePreviewContainer" class="w-22 h-22 rounded-2xl bg-base-300 border-2 border-info/30 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
+                            <div id="credFacePreviewContainer" class="w-22 h-22 rounded-box bg-base-300 border-2 border-info/30 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
                                 <i class="fa-solid fa-camera text-3xl text-base-content/30"></i>
                             </div>
                             <div class="space-y-1.5">
@@ -702,10 +702,10 @@
                             </div>
                         </div>
                         <div class="flex flex-col gap-2 shrink-0 w-full sm:w-auto">
-                            <button type="button" onclick="launchFaceEnrollFromHub()" class="btn btn-secondary btn-sm gap-2 font-bold rounded-xl shadow-xs">
+                            <button type="button" onclick="launchFaceEnrollFromHub()" class="btn btn-secondary btn-sm gap-2 font-bold rounded-box shadow-xs">
                                 <i class="fa-solid fa-camera"></i> <span>Open Camera / Enroll</span>
                             </button>
-                            <button type="button" id="btnHubRemoveFace" onclick="removeFaceFromHub()" class="btn btn-ghost btn-xs text-error gap-1.5 rounded-xl hidden">
+                            <button type="button" id="btnHubRemoveFace" onclick="removeFaceFromHub()" class="btn btn-ghost btn-xs text-error gap-1.5 rounded-box hidden">
                                 <i class="fa-solid fa-trash-can"></i> <span>Remove Face Vector</span>
                             </button>
                         </div>
@@ -715,7 +715,7 @@
                 <!-- Tab 5: PIN Code Credentials -->
                 <div id="credPanelPin" class="hidden space-y-4">
                     <!-- Duress Security Guidance Alert -->
-                    <div class="alert alert-warning/15 border border-warning/30 rounded-2xl p-3 flex items-start gap-2.5 text-xs shadow-2xs">
+                    <div class="alert alert-warning/15 border border-warning/30 rounded-box p-3 flex items-start gap-2.5 text-xs shadow-2xs">
                         <i class="fa-solid fa-shield-cat text-warning mt-0.5 shrink-0 text-sm"></i>
                         <div>
                             <span class="font-bold text-base-content">Duress Code Policy (สัญญาณแจ้งภัยเงียบ):</span>
@@ -725,7 +725,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100 shadow-xs">
+                    <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-100 shadow-xs">
                         <table class="table table-sm table-zebra w-full">
                             <thead>
                                 <tr class="bg-base-200/70 text-[10px] uppercase font-bold tracking-wider text-base-content/60">
@@ -743,7 +743,7 @@
                     </div>
 
                     <!-- Set Member PIN Form -->
-                    <div class="card bg-gradient-to-br from-warning/5 via-base-200/50 to-base-100 p-4 rounded-2xl border border-base-content/10 shadow-xs">
+                    <div class="card bg-linear-to-br from-warning/5 via-base-200/50 to-base-100 p-4 rounded-box border border-base-content/10 shadow-xs">
                         <div class="font-bold text-xs text-base-content mb-2.5 flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-key text-warning text-sm"></i>
@@ -752,15 +752,15 @@
                             <span class="badge badge-xs badge-ghost font-mono">Bcrypt / Argon2 Salted Hash</span>
                         </div>
                         <form onsubmit="submitNewPin(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                            <input type="password" id="newPinCode" minlength="4" maxlength="12" placeholder="PIN Code (4-12 digits)" class="input input-bordered input-sm font-mono text-xs rounded-xl" required />
-                            <select id="newPinType" class="select select-bordered select-sm text-xs rounded-xl">
+                            <input type="password" id="newPinCode" minlength="4" maxlength="12" placeholder="PIN Code (4-12 digits)" class="input input-bordered input-sm font-mono text-xs rounded-box" required />
+                            <select id="newPinType" class="select select-bordered select-sm text-xs rounded-box">
                                 <option value="STANDARD">STANDARD (รหัสผ่านปกติ)</option>
                                 <option value="DURESS">DURESS (รหัสแจ้งภัยเงียบ)</option>
                             </select>
                             <div class="text-[11px] text-base-content/60 flex items-center">
                                 <i class="fa-solid fa-shield-halved text-success mr-1.5"></i> One-way Salted Hash
                             </div>
-                            <button type="submit" class="btn btn-warning btn-sm font-bold gap-1.5 rounded-xl shadow-xs text-warning-content">
+                            <button type="submit" class="btn btn-warning btn-sm font-bold gap-1.5 rounded-box shadow-xs text-warning-content">
                                 <i class="fa-solid fa-check"></i> Set PIN
                             </button>
                         </form>
@@ -774,7 +774,7 @@
                     <i class="fa-solid fa-lock text-success text-[10px]"></i>
                     <span>All credentials synchronized with distributed edge door controllers</span>
                 </div>
-                <button type="button" onclick="credentialsModal.close()" class="btn btn-sm btn-primary px-5 rounded-xl font-bold shadow-xs">
+                <button type="button" onclick="credentialsModal.close()" class="btn btn-sm btn-primary px-5 rounded-box font-bold shadow-xs">
                     Done
                 </button>
             </div>

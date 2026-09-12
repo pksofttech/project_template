@@ -3509,4 +3509,7 @@ export const my = {
     "Selected Status": "ရွေးချယ်ထားသော အခြေအနေ",
     "Monitoring & Audit": "စောင့်ကြည့်ခြင်းနှင့် မှတ်တမ်း",
     "All Settings": "ဆက်တင်အားလုံး",
+    "Identity & Credentials": "အထောက်အထားနှင့် ကတ်ပြားများ",
+    "Doors & Hardware": "တံခါးများနှင့် စက်ပစ္စည်းများ",
+    "Rules & Policies": "စည်းမျဉ်းများနှင့် မူဝါဒများ",
 };

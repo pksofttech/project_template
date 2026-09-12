@@ -7,10 +7,14 @@ from app.core.auth import get_password_hash
 from app.core.database import async_engine
 from app.core.models import (
     Access_Card,
+    Access_Device,
     Access_Door,
+    Access_Door_Policy,
     Access_Group,
     Access_Log,
     Access_Member,
+    Access_Security_Policy,
+    Access_Verification_Session,
     Access_Zone,
     App_Configurations,
     Member_Face_Credential,
@@ -368,7 +372,230 @@ async def database_init_default():
                         session.add(d)
                 await session.flush()
 
-            # 5. Seed Access Permission Groups
+            # 5.1 Seed Security Policies & Devices
+            policy_stmt = select(Access_Security_Policy)
+            existing_policies = (await session.exec(policy_stmt)).all()
+            if not existing_policies:
+                default_policies = [
+                    Access_Security_Policy(
+                        code="POL_NORMAL",
+                        name="Standard Single Credential (Any)",
+                        verification_mode="ANY_SINGLE",
+                        factor_1="CARD",
+                        factor_2="NONE",
+                        inter_factor_timeout_sec=0,
+                        allow_duress_pin=True,
+                        description="Access granted via any single valid credential (Card, Face, Mobile, or PIN)",
+                    ),
+                    Access_Security_Policy(
+                        code="POL_STRICT_2FA",
+                        name="Card + PIN Strict 2FA",
+                        verification_mode="CARD_AND_PIN",
+                        factor_1="CARD",
+                        factor_2="PIN",
+                        inter_factor_timeout_sec=15,
+                        allow_duress_pin=True,
+                        description="Mandatory 2-Factor Authentication: Swipe card followed by keypad PIN within 15s",
+                    ),
+                    Access_Security_Policy(
+                        code="POL_FACE_2FA",
+                        name="Face Recognition + Card Confirmation",
+                        verification_mode="FACE_AND_CARD",
+                        factor_1="FACE",
+                        factor_2="CARD",
+                        inter_factor_timeout_sec=15,
+                        allow_duress_pin=False,
+                        description="Biometric face identification confirmed with physical badge swipe",
+                    ),
+                ]
+                session.add_all(default_policies)
+                await session.flush()
+                print_success(f"🛡️ Seeded {len(default_policies)} access security policies")
+
+            # Seed Access Devices if empty
+            all_doors = (await session.exec(select(Access_Door))).all()
+            door_code_map = {d.code: d.id for d in all_doors}
+
+            device_stmt = select(Access_Device)
+            existing_devices = (await session.exec(device_stmt)).all()
+            if not existing_devices and door_code_map:
+                default_devices = []
+                # DOOR-01 Devices (Turnstile 1: RFID Reader In + Face AI Terminal In)
+                if "DOOR-01" in door_code_map:
+                    default_devices.extend([
+                        Access_Device(
+                            code="DEV-LOBBY-RDR-01",
+                            name="Turnstile 1 RFID Reader",
+                            door_id=door_code_map["DOOR-01"],
+                            device_category="READER",
+                            reader_technology="MIFARE",
+                            direction="IN",
+                            supported_factors='["CARD"]',
+                            comm_protocol="WIEGAND",
+                            brand="ZKTeco",
+                            model_name="KR602M",
+                            status="ONLINE",
+                            description="Inbound contactless smartcard reader",
+                        ),
+                        Access_Device(
+                            code="DEV-LOBBY-FACE-01",
+                            name="Turnstile 1 Face Recognition Kiosk",
+                            door_id=door_code_map["DOOR-01"],
+                            device_category="TERMINAL",
+                            reader_technology="FACE",
+                            direction="IN",
+                            supported_factors='["FACE", "CARD"]',
+                            comm_protocol="HTTP_REST",
+                            ip_address="192.168.1.201",
+                            brand="Hikvision",
+                            model_name="DS-K1T671",
+                            status="ONLINE",
+                            description="AI Camera kiosk with ArcFace biometric recognition",
+                        ),
+                    ])
+
+                # DOOR-02 Devices (Turnstile 2: RFID Reader Out)
+                if "DOOR-02" in door_code_map:
+                    default_devices.append(
+                        Access_Device(
+                            code="DEV-LOBBY-RDR-02",
+                            name="Turnstile 2 RFID Reader",
+                            door_id=door_code_map["DOOR-02"],
+                            device_category="READER",
+                            reader_technology="MIFARE",
+                            direction="OUT",
+                            supported_factors='["CARD"]',
+                            comm_protocol="WIEGAND",
+                            brand="ZKTeco",
+                            model_name="KR602M",
+                            status="ONLINE",
+                            description="Outbound contactless smartcard reader",
+                        )
+                    )
+
+                # GATE-01 Devices (Barrier Gate Entry: UHF Reader + QR Scanner)
+                if "GATE-01" in door_code_map:
+                    default_devices.extend([
+                        Access_Device(
+                            code="DEV-GATE-UHF-01",
+                            name="North Gate UHF Long-Range Reader",
+                            door_id=door_code_map["GATE-01"],
+                            device_category="READER",
+                            reader_technology="UHF",
+                            direction="IN",
+                            supported_factors='["CARD"]',
+                            comm_protocol="WIEGAND",
+                            brand="Hopeland",
+                            model_name="CL7206C",
+                            status="ONLINE",
+                            description="Vehicle windshield long-range RFID tag scanner (5-8m)",
+                        ),
+                        Access_Device(
+                            code="DEV-GATE-QR-01",
+                            name="North Gate Visitor QR Scanner",
+                            door_id=door_code_map["GATE-01"],
+                            device_category="READER",
+                            reader_technology="QR",
+                            direction="IN",
+                            supported_factors='["CARD"]',
+                            comm_protocol="HTTP_REST",
+                            brand="Newland",
+                            model_name="FM430",
+                            status="ONLINE",
+                            description="Barcode/QR Scanner for visitor pass and dynamic OTP",
+                        ),
+                    ])
+
+                # GATE-02 Devices (Barrier Gate Exit: UHF Reader)
+                if "GATE-02" in door_code_map:
+                    default_devices.append(
+                        Access_Device(
+                            code="DEV-GATE-UHF-02",
+                            name="North Gate UHF Exit Reader",
+                            door_id=door_code_map["GATE-02"],
+                            device_category="READER",
+                            reader_technology="UHF",
+                            direction="OUT",
+                            supported_factors='["CARD"]',
+                            comm_protocol="WIEGAND",
+                            brand="Hopeland",
+                            model_name="CL7206C",
+                            status="ONLINE",
+                            description="Vehicle exit long-range tag reader",
+                        )
+                    )
+
+                # DOOR-03 Devices (Server Room: Multi-Modal Card + Keypad Combo)
+                if "DOOR-03" in door_code_map:
+                    default_devices.append(
+                        Access_Device(
+                            code="DEV-SERVER-COMBO-01",
+                            name="Server Room Smartcard + Keypad Terminal",
+                            door_id=door_code_map["DOOR-03"],
+                            device_category="TERMINAL",
+                            reader_technology="MULTI_COMBO",
+                            direction="BOTH",
+                            supported_factors='["CARD", "PIN"]',
+                            comm_protocol="HTTP_REST",
+                            ip_address="192.168.1.210",
+                            brand="PKS-Hardware",
+                            model_name="ESP32-PoE-SecureReader",
+                            status="ONLINE",
+                            description="High-security terminal supporting 2FA Card + PIN entry",
+                        )
+                    )
+
+                if default_devices:
+                    session.add_all(default_devices)
+                    await session.flush()
+                    print_success(f"📟 Seeded {len(default_devices)} default access devices (readers & terminals)")
+
+            # Seed Door Policies
+            door_policy_stmt = select(Access_Door_Policy)
+            existing_door_policies = (await session.exec(door_policy_stmt)).all()
+            if not existing_door_policies and door_code_map:
+                all_policies = (await session.exec(select(Access_Security_Policy))).all()
+                policy_code_map = {p.code: p.id for p in all_policies}
+
+                default_door_policies = []
+                normal_pol_id = policy_code_map.get("POL_NORMAL")
+                strict_pol_id = policy_code_map.get("POL_STRICT_2FA")
+
+                if normal_pol_id:
+                    for d_code in ("DOOR-01", "DOOR-02", "GATE-01", "GATE-02"):
+                        if d_code in door_code_map:
+                            default_door_policies.append(
+                                Access_Door_Policy(
+                                    door_id=door_code_map[d_code],
+                                    policy_id=normal_pol_id,
+                                    time_start="00:00",
+                                    time_end="23:59",
+                                    allowed_days="MON,TUE,WED,THU,FRI,SAT,SUN",
+                                    priority=1,
+                                    status="active",
+                                )
+                            )
+
+                if strict_pol_id and "DOOR-03" in door_code_map:
+                    # Server room defaults to 2FA Card+PIN!
+                    default_door_policies.append(
+                        Access_Door_Policy(
+                            door_id=door_code_map["DOOR-03"],
+                            policy_id=strict_pol_id,
+                            time_start="00:00",
+                            time_end="23:59",
+                            allowed_days="MON,TUE,WED,THU,FRI,SAT,SUN",
+                            priority=1,
+                            status="active",
+                        )
+                    )
+
+                if default_door_policies:
+                    session.add_all(default_door_policies)
+                    await session.flush()
+                    print_success(f"📋 Seeded {len(default_door_policies)} door security policy mappings")
+
+            # 6. Seed Access Permission Groups
             group_stmt = select(Access_Group)
             existing_groups = (await session.exec(group_stmt)).all()
             if not existing_groups:

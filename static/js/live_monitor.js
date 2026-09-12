@@ -10,6 +10,7 @@ let eventCount = 0;
             loadRecentLogs();
             initSSE();
             loadFaceEngineStatus();
+            initEmergencyStatus();
         });
 
         // Load Face Engine Status
@@ -298,9 +299,9 @@ let eventCount = 0;
             }
 
             container.innerHTML = doors.map(d => `
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-base-200/50 hover:bg-base-200 transition-colors border border-base-content/5">
+                <div class="flex items-center justify-between p-2.5 rounded-box bg-base-200/50 hover:bg-base-200 transition-colors border border-base-content/5">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs">
+                        <div class="w-7 h-7 rounded-box bg-primary/10 text-primary flex items-center justify-center text-xs">
                             <i class="${d.door_type === 'BARRIER_GATE' ? 'fa-solid fa-road-barrier' : 'fa-solid fa-door-closed'}"></i>
                         </div>
                         <div>
@@ -421,6 +422,15 @@ let eventCount = 0;
                 }
             });
 
+            evtSource.addEventListener('emergency_event', function (e) {
+                try {
+                    const payload = JSON.parse(e.data);
+                    applyEmergencyState(payload);
+                } catch (err) {
+                    console.error("Emergency SSE parse error:", err);
+                }
+            });
+
             evtSource.onerror = function () {
                 console.warn("SSE connection lost. Reconnecting...");
             };
@@ -503,7 +513,7 @@ let eventCount = 0;
             const confEl = document.getElementById('spotlightMatchConfidence');
             if (confEl) {
                 if (d.event_type === 'FACE_RECOGNITION' && d.confidence_percent) {
-                    confEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-bold bg-secondary/15 text-secondary border border-secondary/25 mt-1';
+                    confEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-box text-[11px] font-bold bg-secondary/15 text-secondary border border-secondary/25 mt-1';
                     confEl.innerHTML = `<i class="fa-solid fa-camera"></i> Face Match: ${d.confidence_percent} (${d.engine_mode || 'Mockup'})`;
                 } else {
                     confEl.className = 'hidden';
@@ -515,11 +525,11 @@ let eventCount = 0;
             const avatarContainer = document.getElementById('spotlightAvatar');
             const imgUrl = d.snapshot_url || d.picture_url;
             if (imgUrl) {
-                avatarContainer.innerHTML = `<img src="${imgUrl}" class="rounded-2xl w-20 h-20 object-cover shadow-inner border border-base-content/10" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'bg-primary/10 text-primary rounded-2xl w-20 h-20 flex items-center justify-center text-3xl font-black\\'><i class=\\'fa-solid fa-user\\'></i></div>';" />`;
+                avatarContainer.innerHTML = `<img src="${imgUrl}" class="rounded-box w-20 h-20 object-cover shadow-inner border border-base-content/10" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'bg-primary/10 text-primary rounded-box w-20 h-20 flex items-center justify-center text-3xl font-black\\'><i class=\\'fa-solid fa-user\\'></i></div>';" />`;
             } else {
                 const initial = (d.member_name && d.member_name !== 'Unknown') ? d.member_name.charAt(0).toUpperCase() : '?';
                 avatarContainer.innerHTML = `
-                    <div class="${isGranted ? 'bg-success/15 text-success' : 'bg-error/15 text-error'} rounded-2xl w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
+                    <div class="${isGranted ? 'bg-success/15 text-success' : 'bg-error/15 text-error'} rounded-box w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
                         ${initial}
                     </div>
                 `;
@@ -535,7 +545,7 @@ let eventCount = 0;
             const credBadge = getCredentialBadgeHtml(log.credential_type, isDuress);
 
             const cardHtml = document.createElement('div');
-            cardHtml.className = `p-3 rounded-xl border ${isDuress ? 'bg-error/15 border-error' : (isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20')} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
+            cardHtml.className = `p-3 rounded-box border ${isDuress ? 'bg-error/15 border-error' : (isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20')} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
             
             cardHtml.innerHTML = `
                 <div class="flex items-center gap-3">
@@ -579,6 +589,218 @@ let eventCount = 0;
             document.getElementById('streamCounter').textContent = '0 events';
         }
 
+        let emergencyTimerInterval = null;
+        let emergencyTriggerTime = null;
+
+        async function initEmergencyStatus() {
+            try {
+                const res = await fetch('/api/access/emergency/status');
+                const data = await res.json();
+                applyEmergencyState(data);
+            } catch (err) {
+                console.error("Failed to fetch emergency status:", err);
+            }
+        }
+
+        function applyEmergencyState(state) {
+            const banner = document.getElementById('emergencyAlertBanner');
+            const title = document.getElementById('emergencyBannerTitle');
+            const desc = document.getElementById('emergencyBannerDesc');
+            const timeEl = document.getElementById('emergencyBannerTime');
+            const opEl = document.getElementById('emergencyBannerOperator');
+            const iconBox = document.getElementById('emergencyBannerIconBox');
+            const icon = document.getElementById('emergencyBannerIcon');
+            const badge = document.getElementById('emergencyBannerBadge');
+            const statusPill = document.getElementById('emergencyStatusPill');
+            const statusPillText = document.getElementById('emergencyStatusPillText');
+            const toolbarResetBtn = document.getElementById('emergencyToolbarResetBtn');
+
+            // Navbar elements
+            const navPill = document.getElementById('globalEmergencyNavbarPill');
+            const navText = document.getElementById('globalEmergencyNavbarText');
+            const navIcon = document.getElementById('globalEmergencyNavbarIcon');
+            const navLink = document.getElementById('globalEmergencyNavbarLink');
+
+            if (!banner) return;
+
+            if (state.mode === 'FIRE_ALARM') {
+                banner.className = "card border-2 border-error bg-error/15 text-error shadow-xl p-4 rounded-box";
+                title.textContent = "🚨 FIRE ALARM EVACUATION IN PROGRESS";
+                title.className = "text-base sm:text-lg font-black tracking-wide uppercase text-error";
+                desc.textContent = state.reason || "All doors and barrier gates are currently UNLOCKED for immediate life safety evacuation.";
+                timeEl.textContent = state.triggered_at ? dayjs(state.triggered_at).format("HH:mm:ss") : "";
+                opEl.textContent = state.triggered_by || "FACP / System Operator";
+                iconBox.className = "w-12 h-12 rounded-box bg-error text-white flex items-center justify-center text-2xl shadow-md animate-bounce";
+                icon.className = "fa-solid fa-fire-flame-curved";
+                badge.className = "badge badge-sm badge-error text-white font-bold animate-pulse";
+                badge.textContent = "FIRE ALARM";
+                banner.classList.remove('hidden');
+
+                if (statusPill) {
+                    statusPill.className = "badge badge-xs badge-error text-white gap-1 font-bold text-[10px] py-0 h-4 animate-pulse";
+                }
+                if (statusPillText) {
+                    statusPillText.textContent = "FIRE ALARM ACTIVE";
+                }
+                if (toolbarResetBtn) toolbarResetBtn.classList.remove('hidden');
+
+                if (navPill) {
+                    navPill.classList.remove('hidden');
+                    if (navLink) navLink.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold border border-error bg-error text-white animate-pulse shadow-sm";
+                    if (navIcon) navIcon.className = "fa-solid fa-fire-flame-curved";
+                    if (navText) navText.textContent = "FIRE ALARM";
+                }
+
+                emergencyTriggerTime = state.triggered_at ? new Date(state.triggered_at) : new Date();
+                startEmergencyTimer();
+
+                if (window.toastr) {
+                    toastr.error(state.reason || "Fire alarm activated! All doors unlocked.", "FIRE ALARM EVACUATION", { timeOut: 8000 });
+                }
+            } else if (state.mode === 'GLOBAL_LOCKDOWN') {
+                banner.className = "card border-2 border-warning bg-warning/15 text-warning-content shadow-xl p-4 rounded-box";
+                title.textContent = "🔒 FACILITY LOCKDOWN ACTIVE";
+                title.className = "text-base sm:text-lg font-black tracking-wide uppercase text-warning";
+                desc.textContent = state.reason || "All perimeter and interior doors are SECURED. Entry and exit strictly prohibited.";
+                timeEl.textContent = state.triggered_at ? dayjs(state.triggered_at).format("HH:mm:ss") : "";
+                opEl.textContent = state.triggered_by || "Security Command";
+                iconBox.className = "w-12 h-12 rounded-box bg-warning text-warning-content flex items-center justify-center text-2xl shadow-md animate-pulse";
+                icon.className = "fa-solid fa-lock";
+                badge.className = "badge badge-sm badge-warning text-warning-content font-bold animate-pulse";
+                badge.textContent = "LOCKDOWN";
+                banner.classList.remove('hidden');
+
+                if (statusPill) {
+                    statusPill.className = "badge badge-xs badge-warning text-warning-content gap-1 font-bold text-[10px] py-0 h-4 animate-pulse";
+                }
+                if (statusPillText) {
+                    statusPillText.textContent = "LOCKDOWN ACTIVE";
+                }
+                if (toolbarResetBtn) toolbarResetBtn.classList.remove('hidden');
+
+                if (navPill) {
+                    navPill.classList.remove('hidden');
+                    if (navLink) navLink.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold border border-warning bg-warning text-warning-content animate-pulse shadow-sm";
+                    if (navIcon) navIcon.className = "fa-solid fa-lock";
+                    if (navText) navText.textContent = "LOCKDOWN";
+                }
+
+                emergencyTriggerTime = state.triggered_at ? new Date(state.triggered_at) : new Date();
+                startEmergencyTimer();
+
+                if (window.toastr) {
+                    toastr.warning(state.reason || "Facility lockdown active! All doors secured.", "GLOBAL LOCKDOWN", { timeOut: 8000 });
+                }
+            } else {
+                // NORMAL
+                banner.classList.add('hidden');
+                if (statusPill) {
+                    statusPill.className = "badge badge-xs badge-success gap-1 font-semibold text-[10px] py-0 h-4";
+                }
+                if (statusPillText) {
+                    statusPillText.textContent = "Normal Operation";
+                }
+                if (toolbarResetBtn) toolbarResetBtn.classList.add('hidden');
+                if (navPill) navPill.classList.add('hidden');
+                stopEmergencyTimer();
+
+                if (state.previous_mode && window.toastr) {
+                    toastr.success("Emergency cleared. Normal access schedules restored.", "NORMAL RESTORED");
+                }
+            }
+        }
+
+        function startEmergencyTimer() {
+            stopEmergencyTimer();
+            updateTimerDisplay();
+            emergencyTimerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        function stopEmergencyTimer() {
+            if (emergencyTimerInterval) {
+                clearInterval(emergencyTimerInterval);
+                emergencyTimerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('emergencyElapsedTimer');
+            if (!timerEl || !emergencyTriggerTime) return;
+            const now = new Date();
+            const elapsedMs = Math.max(0, now - emergencyTriggerTime);
+            const totalSec = Math.floor(elapsedMs / 1000);
+            const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+            const secs = String(totalSec % 60).padStart(2, '0');
+            timerEl.textContent = `${mins}:${secs}`;
+        }
+
+        function openFireAlarmModal() {
+            const modal = document.getElementById('fireAlarmModal');
+            if (modal) modal.showModal();
+        }
+
+        async function submitFireAlarm() {
+            const reason = (document.getElementById('fireAlarmReasonInput')?.value || '').trim();
+            const modal = document.getElementById('fireAlarmModal');
+            try {
+                const res = await fetch('/api/access/emergency/fire-alarm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: reason, source: 'MANUAL_WEB' })
+                });
+                const data = await res.json();
+                if (modal) modal.close();
+                applyEmergencyState(data);
+            } catch (err) {
+                console.error("Fire Alarm trigger failed:", err);
+                alert("Failed to trigger Fire Alarm: " + err.message);
+            }
+        }
+
+        function openLockdownModal() {
+            const modal = document.getElementById('lockdownModal');
+            if (modal) modal.showModal();
+        }
+
+        async function submitLockdown() {
+            const reason = (document.getElementById('lockdownReasonInput')?.value || '').trim();
+            const modal = document.getElementById('lockdownModal');
+            try {
+                const res = await fetch('/api/access/emergency/lockdown', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: reason, source: 'MANUAL_WEB' })
+                });
+                const data = await res.json();
+                if (modal) modal.close();
+                applyEmergencyState(data);
+            } catch (err) {
+                console.error("Lockdown trigger failed:", err);
+                alert("Failed to trigger Lockdown: " + err.message);
+            }
+        }
+
+        function confirmResetEmergency() {
+            const modal = document.getElementById('resetEmergencyModal');
+            if (modal) modal.showModal();
+        }
+
+        async function submitResetEmergency() {
+            const modal = document.getElementById('resetEmergencyModal');
+            try {
+                const res = await fetch('/api/access/emergency/reset', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                if (modal) modal.close();
+                applyEmergencyState(data);
+            } catch (err) {
+                console.error("Reset emergency failed:", err);
+                alert("Failed to reset emergency: " + err.message);
+            }
+        }
+
 // Global Window Event Handlers
 window.loadDoors = loadDoors;
 window.loadRecentLogs = loadRecentLogs;
@@ -596,4 +818,13 @@ window.setSimPin = setSimPin;
 window.triggerPinEntry = triggerPinEntry;
 window.clearStream = clearStream;
 window.remoteUnlock = remoteUnlock;
+window.initEmergencyStatus = initEmergencyStatus;
+window.applyEmergencyState = applyEmergencyState;
+window.openFireAlarmModal = openFireAlarmModal;
+window.submitFireAlarm = submitFireAlarm;
+window.openLockdownModal = openLockdownModal;
+window.submitLockdown = submitLockdown;
+window.confirmResetEmergency = confirmResetEmergency;
+window.submitResetEmergency = submitResetEmergency;
+
 

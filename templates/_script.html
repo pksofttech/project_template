@@ -52,6 +52,45 @@
             }
         };
 
+        source.addEventListener('emergency_event', function(e) {
+            try {
+                const data = JSON.parse(e.data);
+                console.warn("🚨 Global Emergency SSE Event:", data);
+                window.dispatchEvent(new CustomEvent('sse:emergency', { detail: data }));
+                updateGlobalEmergencyNavbar(data);
+            } catch(err) {}
+        });
+
+        // Global Navbar Updater Function
+        function updateGlobalEmergencyNavbar(state) {
+            const navPill = document.getElementById('globalEmergencyNavbarPill');
+            const navText = document.getElementById('globalEmergencyNavbarText');
+            const navIcon = document.getElementById('globalEmergencyNavbarIcon');
+            const navLink = document.getElementById('globalEmergencyNavbarLink');
+            if (!navPill) return;
+
+            if (state && state.mode === 'FIRE_ALARM') {
+                navPill.classList.remove('hidden');
+                if (navLink) navLink.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold border border-error bg-error text-white animate-pulse shadow-sm";
+                if (navIcon) navIcon.className = "fa-solid fa-fire-flame-curved";
+                if (navText) navText.textContent = "FIRE ALARM";
+            } else if (state && state.mode === 'GLOBAL_LOCKDOWN') {
+                navPill.classList.remove('hidden');
+                if (navLink) navLink.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold border border-warning bg-warning text-warning-content animate-pulse shadow-sm";
+                if (navIcon) navIcon.className = "fa-solid fa-lock";
+                if (navText) navText.textContent = "LOCKDOWN";
+            } else {
+                navPill.classList.add('hidden');
+            }
+        }
+        window.updateGlobalEmergencyNavbar = updateGlobalEmergencyNavbar;
+
+        // Initial emergency check on page load
+        fetch('/api/access/emergency/status')
+            .then(r => r.json())
+            .then(d => updateGlobalEmergencyNavbar(d))
+            .catch(() => {});
+
         source.onerror = function(err) {
             // Only log if connection was permanently closed (not temporary reconnect)
             if (source.readyState === EventSource.CLOSED) {

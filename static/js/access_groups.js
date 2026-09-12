@@ -129,7 +129,7 @@ export async function loadRegisteredDoors() {
             const container = document.getElementById('doorCheckboxes');
             if (container) {
                 container.innerHTML = registeredDoors.map(d => `
-                    <label class="label cursor-pointer justify-start gap-2 p-1 rounded hover:bg-base-200">
+                    <label class="label cursor-pointer justify-start gap-2 p-1 rounded-box hover:bg-base-200">
                         <input type="checkbox" name="specificDoor" value="${d.id}" class="checkbox checkbox-xs" />
                         <span class="text-xs text-base-content">${d.name} (${d.code})</span>
                     </label>

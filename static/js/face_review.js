@@ -127,7 +127,7 @@ import { TableModel } from "./_table_class.js";
                             <!-- Side-by-side Dual Image Preview -->
                             <div class="p-3 grid grid-cols-2 gap-2 bg-base-200/20">
                                 <!-- Camera Snapshot -->
-                                <div class="relative rounded-xl overflow-hidden aspect-square bg-base-300 border border-base-content/10 group-hover:border-primary/30 transition-colors">
+                                <div class="relative rounded-box overflow-hidden aspect-square bg-base-300 border border-base-content/10 group-hover:border-primary/30 transition-colors">
                                     <img src="${snapImg}" alt="Snapshot" class="w-full h-full object-cover" 
                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';" />
                                     <div class="absolute bottom-1 left-1 badge badge-neutral badge-xs text-[9px] font-mono opacity-80">
@@ -136,7 +136,7 @@ import { TableModel } from "./_table_class.js";
                                 </div>
 
                                 <!-- Registered Master -->
-                                <div class="relative rounded-xl overflow-hidden aspect-square bg-base-300 border border-base-content/10 group-hover:border-primary/30 transition-colors">
+                                <div class="relative rounded-box overflow-hidden aspect-square bg-base-300 border border-base-content/10 group-hover:border-primary/30 transition-colors">
                                     <img src="${masterImg}" alt="Master" class="w-full h-full object-cover"
                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';" />
                                     <div class="absolute bottom-1 left-1 badge badge-primary badge-xs text-[9px] font-mono opacity-90">
@@ -299,7 +299,7 @@ import { TableModel } from "./_table_class.js";
                                 const img = data || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80";
                                 return `
                                     <div class="avatar flex justify-center">
-                                        <div class="w-10 h-10 rounded-lg ring-1 ring-base-content/10 shadow-xs">
+                                        <div class="w-10 h-10 rounded-box ring-1 ring-base-content/10 shadow-xs">
                                             <img src="${img}" alt="Snap" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80';" />
                                         </div>
                                     </div>
@@ -465,7 +465,7 @@ import { TableModel } from "./_table_class.js";
                     html += `
                         <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 hover:border-secondary/40 transition-all flex flex-col items-center text-center">
                             <div class="relative mb-3">
-                                <div class="w-20 h-20 rounded-2xl overflow-hidden ring-2 ${hasFace ? 'ring-success' : 'ring-base-content/20'} bg-base-300 shadow-sm">
+                                <div class="w-20 h-20 rounded-box overflow-hidden ring-2 ${hasFace ? 'ring-success' : 'ring-base-content/20'} bg-base-300 shadow-sm">
                                     <img src="${avatar}" alt="${m.name}" class="w-full h-full object-cover" 
                                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';" />
                                 </div>

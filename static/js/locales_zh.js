@@ -3509,4 +3509,7 @@ export const zh = {
     "Selected Status": "已选状态",
     "Monitoring & Audit": "监控与审计",
     "All Settings": "全部设置",
+    "Identity & Credentials": "身份与凭证",
+    "Doors & Hardware": "门禁与硬件",
+    "Rules & Policies": "规则与策略",
 };

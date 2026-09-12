@@ -52,6 +52,30 @@
                 {% set show_back_btn = false %}
                 {% include '_header_card.html' %}
 
+                <!-- 🚨 Active Emergency Banner in Zone Presence -->
+                <div id="zoneEmergencyBanner" class="hidden card border-2 shadow-lg p-4 rounded-box">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div id="zoneEmergencyIconBox" class="w-10 h-10 rounded-box flex items-center justify-center text-xl shadow-inner animate-bounce">
+                                <i id="zoneEmergencyIcon" class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 id="zoneEmergencyTitle" class="text-sm sm:text-base font-black tracking-wide uppercase"></h3>
+                                    <span id="zoneEmergencyBadge" class="badge badge-sm font-bold animate-pulse">ACTIVE</span>
+                                </div>
+                                <p id="zoneEmergencyDesc" class="text-xs opacity-90 mt-0.5"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="/page?page=live_monitor" class="btn btn-sm btn-outline gap-1.5 rounded-box">
+                                <i class="fa-solid fa-tower-broadcast"></i>
+                                <span>Go to Live Monitor</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Action Toolbar Card -->
                 <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 action-toolbar">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -103,7 +127,7 @@
                                 <h3 id="kpiInside" class="text-2xl font-black text-primary mt-1">--</h3>
                                 <p class="text-[11px] text-base-content/60 mt-0.5">Personnel on-site</p>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-lg">
+                            <div class="w-10 h-10 rounded-box bg-primary/10 flex items-center justify-center text-primary text-lg">
                                 <i class="fa-solid fa-building-user"></i>
                             </div>
                         </div>
@@ -117,7 +141,7 @@
                                 <h3 id="kpiOutside" class="text-2xl font-black text-base-content mt-1">--</h3>
                                 <p class="text-[11px] text-base-content/60 mt-0.5">Checked out / External</p>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-base-content/5 flex items-center justify-center text-base-content/70 text-lg">
+                            <div class="w-10 h-10 rounded-box bg-base-content/5 flex items-center justify-center text-base-content/70 text-lg">
                                 <i class="fa-solid fa-person-walking-arrow-right"></i>
                             </div>
                         </div>
@@ -131,7 +155,7 @@
                                 <h3 id="kpiZones" class="text-2xl font-black text-info mt-1">--</h3>
                                 <p class="text-[11px] text-base-content/60 mt-0.5">Monitored areas</p>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-info/10 flex items-center justify-center text-info text-lg">
+                            <div class="w-10 h-10 rounded-box bg-info/10 flex items-center justify-center text-info text-lg">
                                 <i class="fa-solid fa-layer-group"></i>
                             </div>
                         </div>
@@ -145,7 +169,7 @@
                                 <h3 id="kpiRegistered" class="text-2xl font-black text-secondary mt-1">--</h3>
                                 <p class="text-[11px] text-base-content/60 mt-0.5">Active cardholders</p>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary text-lg">
+                            <div class="w-10 h-10 rounded-box bg-secondary/10 flex items-center justify-center text-secondary text-lg">
                                 <i class="fa-solid fa-id-card-clip"></i>
                             </div>
                         </div>
