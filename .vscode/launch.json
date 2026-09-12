@@ -1,4 +1,5 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
             "name": "Fastapi-Debug",
@@ -7,11 +8,12 @@
             "program": "start_server.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "python": "${workspaceFolder}/venv/bin/python",
             "args": [
                 "--dev",
                 "--workers",
                 "4"
-            ],
+            ]
         }
     ]
 }

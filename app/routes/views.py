@@ -20,10 +20,11 @@ from app.core.menu_registry import (
     get_default_menus_for_new_role,
 )
 from app.core.models import System_User_Type, System_Users
+from app.core.utility import CompatibleJinja2Templates
 from app.stdio import print_error, time_now
 
 router = APIRouter(tags=["Frontend Views"])
-templates = Jinja2Templates(directory="templates")
+templates = CompatibleJinja2Templates(directory="templates")
 
 
 def get_authenticated_user(request: Request) -> dict | None:
@@ -282,7 +283,7 @@ async def ep_page(
         active_home_widgets = get_default_home_widgets_for_new_role()
     else:
         # User role with saved menu configuration
-        allowed_codes = set(menu_config)
+        allowed_codes = {m if isinstance(m, str) else m.get("code", "") for m in menu_config if m}
         active_menus = [m for m in SYSTEM_MENU_REGISTRY if m["code"] in allowed_codes]
         allowed_pages = {m["page"] for m in active_menus} | {"home", "dashboard", "404", "403"}
         active_home_widgets = home_item_config if home_item_config else get_default_home_widgets_for_new_role()

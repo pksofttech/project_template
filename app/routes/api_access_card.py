@@ -24,6 +24,7 @@ router = APIRouter(
 class CardCreate(BaseModel):
     card_number: str = Field(..., description="Unique card number, e.g. 1001234567")
     card_type: str = Field(default="RFID_125K")  # RFID_125K, MIFARE, UHF, QR_CODE, PIN
+    facility_code: str | None = None
     member_id: int | None = None
     pin_code: str | None = None
     status: str = Field(default="active")  # active, blocked, lost, expired
@@ -35,6 +36,7 @@ class CardCreate(BaseModel):
 class CardUpdate(BaseModel):
     card_number: str | None = None
     card_type: str | None = None
+    facility_code: str | None = None
     member_id: int | None = None
     pin_code: str | None = None
     status: str | None = None

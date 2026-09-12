@@ -227,6 +227,7 @@ class Access_Card(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     card_number: str = Field(unique=True, index=True, nullable=False)
+    facility_code: str | None = Field(default=None, index=True)
     card_type: str = Field(default="RFID_125K", index=True)  # RFID_125K, MIFARE, UHF, QR_CODE, PIN
     member_id: int | None = Field(default=None, foreign_key="access_member.id", index=True)
     pin_code: str | None = Field(default=None)
@@ -234,6 +235,79 @@ class Access_Card(SQLModel, table=True):
     issue_date: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
     expire_date: datetime | None = Field(default=None, sa_type=ISODateTime)
     remark: str | None = Field(default=None)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+Member_RFID_Card = Access_Card
+
+
+class Member_Mobile_Credential(SQLModel, table=True):
+    """Smart Phone Virtual Credential (BLE / NFC / HCE / Dynamic QR)."""
+
+    __tablename__ = "member_mobile_credential"
+
+    id: int | None = Field(default=None, primary_key=True)
+    member_id: int = Field(foreign_key="access_member.id", index=True, nullable=False)
+    virtual_card_number: str = Field(unique=True, index=True, nullable=False)
+    device_uuid: str = Field(unique=True, index=True, nullable=False)
+    comm_tech: str = Field(default="BLE", index=True)  # BLE, NFC, DYNAMIC_QR
+    os_platform: str = Field(default="Android", index=True)  # iOS, Android
+    device_model: str | None = Field(default=None)
+    app_version: str | None = Field(default=None)
+    public_key: str | None = Field(default=None)
+    status: str = Field(default="active", index=True)  # active, suspended, unlinked
+    last_sync_time: datetime | None = Field(default=None, sa_type=ISODateTime)
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Member_Fingerprint(SQLModel, table=True):
+    """Biometric Fingerprint Minutiae Template (ISO/IEC 19794-2 Base64)."""
+
+    __tablename__ = "member_fingerprint"
+
+    id: int | None = Field(default=None, primary_key=True)
+    member_id: int = Field(foreign_key="access_member.id", index=True, nullable=False)
+    finger_index: int = Field(default=1, index=True)  # 1=R.Thumb, 2=R.Index... 10=L.Little
+    finger_name: str = Field(default="Right Index", index=True)
+    template_data: str = Field(nullable=False)  # Base64 ISO/ANSI template
+    algorithm_version: str = Field(default="ISO_19794_2", index=True)
+    quality_score: int = Field(default=80)
+    status: str = Field(default="active", index=True)  # active, disabled
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Member_Face_Credential(SQLModel, table=True):
+    """Biometric Facial Embedding Feature Vectors (ArcFace / InsightFace 512-dim)."""
+
+    __tablename__ = "member_face_credential"
+
+    id: int | None = Field(default=None, primary_key=True)
+    member_id: int = Field(foreign_key="access_member.id", index=True, nullable=False)
+    embedding_vector: str = Field(nullable=False)  # JSON string of 512-dim normalized floats
+    model_name: str = Field(default="InsightFace-buffalo_s", index=True)
+    pose_angle: str = Field(default="FRONT", index=True)  # FRONT, LEFT, RIGHT, GLASSES
+    photo_url: str | None = Field(default=None)
+    liveness_score: float | None = Field(default=1.0)
+    status: str = Field(default="active", index=True)  # active, disabled
+    created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+    updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
+
+
+class Member_Pin_Credential(SQLModel, table=True):
+    """Salted hashed PIN for keypad entry or 2-Factor Authentication."""
+
+    __tablename__ = "member_pin_credential"
+
+    id: int | None = Field(default=None, primary_key=True)
+    member_id: int = Field(foreign_key="access_member.id", index=True, nullable=False)
+    pin_hash: str = Field(nullable=False)  # Hashed PIN (never plaintext)
+    pin_type: str = Field(default="STANDARD", index=True)  # STANDARD, DURESS
+    failed_attempts: int = Field(default=0)
+    locked_until: datetime | None = Field(default=None, sa_type=ISODateTime)
+    status: str = Field(default="active", index=True)  # active, locked, disabled
     created_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
     updated_at: datetime = Field(default_factory=time_now, sa_type=ISODateTime)
 
@@ -260,6 +334,8 @@ class Access_Log(SQLModel, table=True):
     snapshot_url: str = Field(default="")
     confidence_score: float | None = Field(default=None)  # Face similarity score (0.00 - 1.00)
     reader_id: str = Field(default="")
+    credential_type: str = Field(default="RFID", index=True)  # RFID, MOBILE_BLE, MOBILE_NFC, FINGERPRINT, FACE, PIN, REMOTE, MANUAL
+    credential_identifier: str = Field(default="", index=True)
 
 
 class _DynamicModelMap(dict):
@@ -320,6 +396,16 @@ MODEL_MAP = _DynamicModelMap(
         "access_member": Access_Member,
         "Access_Card": Access_Card,
         "access_card": Access_Card,
+        "Member_RFID_Card": Access_Card,
+        "member_rfid_card": Access_Card,
+        "Member_Mobile_Credential": Member_Mobile_Credential,
+        "member_mobile_credential": Member_Mobile_Credential,
+        "Member_Fingerprint": Member_Fingerprint,
+        "member_fingerprint": Member_Fingerprint,
+        "Member_Face_Credential": Member_Face_Credential,
+        "member_face_credential": Member_Face_Credential,
+        "Member_Pin_Credential": Member_Pin_Credential,
+        "member_pin_credential": Member_Pin_Credential,
         "Access_Log": Access_Log,
         "access_log": Access_Log,
     }

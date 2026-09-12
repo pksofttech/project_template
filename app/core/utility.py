@@ -305,3 +305,22 @@ async def export_excel_response(
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{filename_prefix}_{_now}.xlsx"'},
     )
+
+
+from fastapi.templating import Jinja2Templates
+
+
+class CompatibleJinja2Templates(Jinja2Templates):
+    """
+    Jinja2Templates subclass compatible across Starlette <=0.41, 0.46+, and 1.x.
+    Allows TemplateResponse("template.html", context) where context contains request,
+    as well as modern TemplateResponse(request=request, name="template.html", context=context).
+    """
+
+    def TemplateResponse(self, *args, **kwargs):
+        if len(args) >= 1 and isinstance(args[0], str):
+            name = args[0]
+            context = args[1] if len(args) > 1 else kwargs.pop("context", {})
+            request = kwargs.pop("request", None) or (context.get("request") if isinstance(context, dict) else None)
+            return super().TemplateResponse(request=request, name=name, context=context, **kwargs)
+        return super().TemplateResponse(*args, **kwargs)

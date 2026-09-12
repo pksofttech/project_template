@@ -13,6 +13,10 @@ from app.core.models import (
     Access_Member,
     Access_Zone,
     App_Configurations,
+    Member_Face_Credential,
+    Member_Fingerprint,
+    Member_Mobile_Credential,
+    Member_Pin_Credential,
     Sample_Item,
     System_User_Type,
     System_Users,
@@ -554,6 +558,117 @@ async def database_init_default():
                 await session.flush()
                 print_success(f"💳 Seeded {len(default_cards)} access cards")
 
+            # 7.1 Seed Mobile Credentials (BLE / NFC)
+            mobile_stmt = select(Member_Mobile_Credential)
+            existing_mobiles = (await session.exec(mobile_stmt)).all()
+            if not existing_mobiles and mem_map.get("MEM-001"):
+                default_mobiles = [
+                    Member_Mobile_Credential(
+                        member_id=mem_map.get("MEM-001"),
+                        virtual_card_number="V-CARD-001",
+                        device_uuid="uuid-apple-ble-somchai-001",
+                        comm_tech="BLE",
+                        os_platform="iOS",
+                        device_model="iPhone 15 Pro",
+                        app_version="5.1.0",
+                        status="active",
+                        last_sync_time=time_now(),
+                    ),
+                    Member_Mobile_Credential(
+                        member_id=mem_map.get("MEM-002"),
+                        virtual_card_number="V-CARD-002",
+                        device_uuid="uuid-samsung-nfc-somsri-002",
+                        comm_tech="NFC",
+                        os_platform="Android",
+                        device_model="Samsung Galaxy S24",
+                        app_version="5.1.0",
+                        status="active",
+                        last_sync_time=time_now(),
+                    ),
+                ]
+                session.add_all(default_mobiles)
+                await session.flush()
+                print_success(f"📱 Seeded {len(default_mobiles)} mobile credentials (BLE/NFC)")
+
+            # 7.2 Seed Fingerprint Biometrics
+            fp_stmt = select(Member_Fingerprint)
+            existing_fps = (await session.exec(fp_stmt)).all()
+            if not existing_fps and mem_map.get("MEM-001"):
+                default_fps = [
+                    Member_Fingerprint(
+                        member_id=mem_map.get("MEM-001"),
+                        finger_index=2,
+                        finger_name="Right Index",
+                        template_data="RklOR0VSUFJJTlRfSVNPXzE5Nzk0XzJfVEVNUExBVEVfU09NQ0hBSV8wMDE=",
+                        algorithm_version="ISO_19794_2",
+                        quality_score=94,
+                        status="active",
+                    ),
+                    Member_Fingerprint(
+                        member_id=mem_map.get("MEM-003"),
+                        finger_index=1,
+                        finger_name="Right Thumb",
+                        template_data="RklOR0VSUFJJTlRfSVNPXzE5Nzk0XzJfVEVNUExBVEVfQU5BTl8wMDM=",
+                        algorithm_version="ISO_19794_2",
+                        quality_score=88,
+                        status="active",
+                    ),
+                ]
+                session.add_all(default_fps)
+                await session.flush()
+                print_success(f"👆 Seeded {len(default_fps)} fingerprint biometric templates")
+
+            # 7.3 Seed Face Credentials
+            face_cred_stmt = select(Member_Face_Credential)
+            existing_face_creds = (await session.exec(face_cred_stmt)).all()
+            if not existing_face_creds:
+                default_face_creds = []
+                for m in all_members:
+                    if m.face_embedding:
+                        default_face_creds.append(
+                            Member_Face_Credential(
+                                member_id=m.id,
+                                embedding_vector=m.face_embedding,
+                                model_name="InsightFace-buffalo_s",
+                                pose_angle="FRONT",
+                                photo_url=m.picture_url,
+                                liveness_score=0.98,
+                                status="active" if m.status == "active" else "disabled",
+                            )
+                        )
+                if default_face_creds:
+                    session.add_all(default_face_creds)
+                    await session.flush()
+                    print_success(f"👤 Seeded {len(default_face_creds)} face credentials")
+
+            # 7.4 Seed PIN Credentials (Salted Hashes)
+            pin_stmt = select(Member_Pin_Credential)
+            existing_pins = (await session.exec(pin_stmt)).all()
+            if not existing_pins and mem_map.get("MEM-001"):
+                default_pins = [
+                    Member_Pin_Credential(
+                        member_id=mem_map.get("MEM-001"),
+                        pin_hash=get_password_hash("1234"),
+                        pin_type="STANDARD",
+                        status="active",
+                    ),
+                    Member_Pin_Credential(
+                        member_id=mem_map.get("MEM-003"),
+                        pin_hash=get_password_hash("8888"),
+                        pin_type="STANDARD",
+                        status="active",
+                    ),
+                    Member_Pin_Credential(
+                        member_id=mem_map.get("MEM-003"),
+                        pin_hash=get_password_hash("9999"),
+                        pin_type="DURESS",
+                        status="active",
+                    ),
+                ]
+                session.add_all(default_pins)
+                await session.flush()
+                print_success(f"🔢 Seeded {len(default_pins)} PIN credentials (Salted Hashes)")
+
             # 8. Seed Initial Access Logs for immediate Dashboard/Live view
             log_stmt = select(Access_Log)
             existing_logs = (await session.exec(log_stmt)).first()
@@ -571,6 +686,8 @@ async def database_init_default():
                         result="GRANTED",
                         reason="Access Granted (GRP-IT)",
                         event_type="CARD_SWIPE",
+                        credential_type="RFID",
+                        credential_identifier="1001234567",
                     ),
                     Access_Log(
                         event_time=time_now(),
@@ -584,6 +701,8 @@ async def database_init_default():
                         result="GRANTED",
                         reason="Access Granted (GRP-STAFF)",
                         event_type="CARD_SWIPE",
+                        credential_type="RFID",
+                        credential_identifier="1001234568",
                     ),
                     Access_Log(
                         event_time=time_now(),
@@ -597,6 +716,8 @@ async def database_init_default():
                         result="DENIED",
                         reason="Card is Blocked or Member Inactive",
                         event_type="CARD_SWIPE",
+                        credential_type="RFID",
+                        credential_identifier="9990001111",
                     ),
                     Access_Log(
                         event_time=time_now(),
@@ -608,6 +729,53 @@ async def database_init_default():
                         result="DENIED",
                         reason="Unregistered Card Number",
                         event_type="CARD_SWIPE",
+                        credential_type="RFID",
+                        credential_identifier="UNKNOWN_9988",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="V-CARD-001",
+                        member_id=mem_map.get("MEM-001"),
+                        member_name="สมชาย ใจดี (Somchai Jaidee)",
+                        department="Information Technology",
+                        door_id=1,
+                        door_name="Main Entrance Turnstile 1",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="Mobile BLE Verified (iPhone 15 Pro)",
+                        event_type="MOBILE_TAP",
+                        credential_type="MOBILE_BLE",
+                        credential_identifier="uuid-apple-ble-somchai-001",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="FP:MEM-001",
+                        member_id=mem_map.get("MEM-001"),
+                        member_name="สมชาย ใจดี (Somchai Jaidee)",
+                        department="Information Technology",
+                        door_id=5,
+                        door_name="Data Center Server Room",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="Fingerprint Verified (Right Index, Score 94)",
+                        event_type="FINGERPRINT_SCAN",
+                        credential_type="FINGERPRINT",
+                        credential_identifier="Right Index",
+                    ),
+                    Access_Log(
+                        event_time=time_now(),
+                        card_number="PIN:MEM-003",
+                        member_id=mem_map.get("MEM-003"),
+                        member_name="อนันต์ สุขใจ (Anan Sukjai)",
+                        department="Security Operations",
+                        door_id=5,
+                        door_name="Data Center Server Room",
+                        direction="IN",
+                        result="GRANTED",
+                        reason="PIN Code Authenticated",
+                        event_type="PIN_ENTRY",
+                        credential_type="PIN",
+                        credential_identifier="STANDARD_PIN",
                     ),
                 ]
                 session.add_all(default_logs)
@@ -631,6 +799,8 @@ async def database_init_default():
                         result="GRANTED",
                         reason="Face Verified (ArcFace 512)",
                         event_type="FACE_RECOGNITION",
+                        credential_type="FACE",
+                        credential_identifier="FACE:MEM-001",
                         confidence_score=0.974,
                         snapshot_url="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300&auto=format&fit=crop&q=80",
                     ),
@@ -646,6 +816,8 @@ async def database_init_default():
                         result="GRANTED",
                         reason="Face Verified (ArcFace 512)",
                         event_type="FACE_RECOGNITION",
+                        credential_type="FACE",
+                        credential_identifier="FACE:MEM-002",
                         confidence_score=0.958,
                         snapshot_url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&auto=format&fit=crop&q=80",
                     ),
@@ -661,6 +833,8 @@ async def database_init_default():
                         result="GRANTED",
                         reason="Face Verified (ArcFace 512)",
                         event_type="FACE_RECOGNITION",
+                        credential_type="FACE",
+                        credential_identifier="FACE:MEM-003",
                         confidence_score=0.985,
                         snapshot_url="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=300&auto=format&fit=crop&q=80",
                     ),
@@ -676,6 +850,8 @@ async def database_init_default():
                         result="DENIED",
                         reason="Cardholder account is INACTIVE",
                         event_type="FACE_RECOGNITION",
+                        credential_type="FACE",
+                        credential_identifier="FACE:MEM-004",
                         confidence_score=0.942,
                         snapshot_url="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80",
                     ),
@@ -689,6 +865,8 @@ async def database_init_default():
                         result="DENIED",
                         reason="Face Unregistered / Low Confidence (18.5%)",
                         event_type="FACE_RECOGNITION",
+                        credential_type="FACE",
+                        credential_identifier="FACE:UNKNOWN",
                         confidence_score=0.185,
                         snapshot_url="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&auto=format&fit=crop&q=80",
                     ),

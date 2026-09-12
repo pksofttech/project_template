@@ -9,6 +9,7 @@ import json
 import os
 import time
 from typing import Any
+
 import numpy as np
 
 from app.stdio import print_debug, print_error, print_info, print_success
@@ -20,6 +21,7 @@ _FaceAnalysis = None
 try:
     import insightface
     from insightface.app import FaceAnalysis as _FaceAnalysis
+
     _INSIGHTFACE_AVAILABLE = True
 except ImportError:
     _INSIGHTFACE_AVAILABLE = False
@@ -118,6 +120,7 @@ class FaceRecognitionService:
         if self.engine_mode == "insightface" and self.app is not None and image_bytes:
             try:
                 import cv2
+
                 nparr = np.frombuffer(image_bytes, np.uint8)
                 img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                 if img is None:
@@ -142,7 +145,9 @@ class FaceRecognitionService:
         # 2. Mockup Mode
         if simulate_member_code:
             # Simulated member scan with realistic camera noise (Cosine Sim ~0.88 - 0.95)
-            if simulate_member_code.upper().startswith("STRANGER") or simulate_member_code.upper().startswith("UNKNOWN"):
+            if simulate_member_code.upper().startswith("STRANGER") or simulate_member_code.upper().startswith(
+                "UNKNOWN"
+            ):
                 # Unregistered stranger: generate random orthogonal vector
                 stranger_seed = f"stranger_{time.time()}_{os.urandom(4).hex()}"
                 embedding = self.generate_mock_embedding(stranger_seed, noise_level=0.0)

@@ -17,7 +17,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.config_app import AppConfig
 from app.core.database import init_sqlite_pragmas
 from app.core.database_init import database_init_default
-from app.core.utility import broadcast_sse, sse_clients
+from app.core.utility import CompatibleJinja2Templates, broadcast_sse, sse_clients
 from app.routes import (
     api_access_card,
     api_access_door,
@@ -26,6 +26,7 @@ from app.routes import (
     api_access_log,
     api_access_member,
     api_access_zone,
+    api_credentials,
     api_health,
     api_sample,
     api_system_config,
@@ -174,6 +175,7 @@ app.include_router(api_access_event.router)
 app.include_router(api_access_door.router)
 app.include_router(api_access_member.router)
 app.include_router(api_access_card.router)
+app.include_router(api_credentials.router)
 app.include_router(api_access_group.router)
 app.include_router(api_access_zone.router)
 app.include_router(api_access_log.router)
@@ -187,7 +189,7 @@ app.include_router(views.router)
 # --------------------------------------------------------
 # 🚨 ERROR & EXCEPTION HANDLERS (404 / 403)
 # --------------------------------------------------------
-templates = Jinja2Templates(directory="templates")
+templates = CompatibleJinja2Templates(directory="templates")
 
 
 @app.exception_handler(StarletteHTTPException)

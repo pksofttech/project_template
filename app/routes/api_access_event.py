@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from fastapi import APIRouter, HTTPException, Request
 from sqlmodel import func, or_, select
 
+from app.core.auth import verify_password
 from app.core.dependencies import AsyncDbDep
 from app.core.models import (
     Access_Card,
@@ -16,6 +17,9 @@ from app.core.models import (
     Access_Log,
     Access_Member,
     Access_Zone,
+    Member_Fingerprint,
+    Member_Mobile_Credential,
+    Member_Pin_Credential,
 )
 from app.core.utility import broadcast_sse
 from app.module.face_service import face_service
@@ -233,6 +237,8 @@ async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
         result=result,
         reason=reason,
         event_type="CARD_SWIPE",
+        credential_type="RFID",
+        credential_identifier=card_number,
         snapshot_url=picture_url,
         reader_id=reader_id,
     )
@@ -604,6 +610,8 @@ async def handle_camera_face(request: Request, db: AsyncDbDep):
         result=result,
         reason=reason,
         event_type="FACE_RECOGNITION",
+        credential_type="FACE",
+        credential_identifier=f"FACE:{matched_code or 'UNKNOWN'}",
         snapshot_url=display_snapshot,
         confidence_score=confidence,
         reader_id=reader_id,
@@ -916,5 +924,598 @@ async def get_face_enrolled_members(db: AsyncDbDep):
             "face_registered_at": m.face_registered_at.strftime("%Y-%m-%d %H:%M") if m.face_registered_at else "-",
         })
     return {"success": True, "data": results, "count": len(results)}
+
+
+# =========================================================================
+# 📱 MOBILE CREDENTIAL ACCESS EVENT (BLE / NFC)
+# =========================================================================
+
+class MobileSwipeRequest(BaseModel):
+    device_uuid: str = Field(..., description="Device UUID or Virtual Card Number")
+    door_code: str = Field(..., description="Door identifier code")
+    comm_tech: str = Field(default="BLE", description="BLE, NFC, DYNAMIC_QR")
+    direction: str = Field(default="IN", description="IN or OUT")
+    reader_id: str | None = Field(default="BLE-READER-01")
+
+
+@router.post("/mobile-credential", summary="Mobile Credential Event (BLE / NFC)")
+async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
+    """
+    Authenticate smartphone virtual credentials via BLE (Bluetooth Low Energy)
+    or NFC (Host Card Emulation).
+    """
+    now = time_now()
+    door_code = payload.door_code.strip().upper()
+    direction = payload.direction.strip().upper()
+    device_id = payload.device_uuid.strip()
+    reader_id = payload.reader_id or "BLE-READER-01"
+
+    # 1. Lookup Door
+    door_stmt = select(Access_Door).where(Access_Door.code == door_code)
+    door = (await db.exec(door_stmt)).first()
+    if not door and door_code.isdigit():
+        door = await db.get(Access_Door, int(door_code))
+
+    door_id = door.id if door else None
+    door_name = door.name if door else f"Unknown Door ({door_code})"
+
+    result = "DENIED"
+    reason = "Access Denied"
+    member = None
+    member_id = None
+    member_name = "Unknown Mobile User"
+    department = ""
+    picture_url = ""
+
+    if not door:
+        reason = f"Door not registered: {door_code}"
+    elif door.status.upper() != "ONLINE":
+        reason = f"Door '{door.name}' is currently {door.status}"
+    else:
+        # 2. Lookup Mobile Credential
+        cred_stmt = select(Member_Mobile_Credential).where(
+            or_(
+                Member_Mobile_Credential.device_uuid == device_id,
+                Member_Mobile_Credential.virtual_card_number == device_id,
+            )
+        )
+        cred = (await db.exec(cred_stmt)).first()
+
+        if not cred:
+            reason = f"Unregistered Mobile Device: {device_id}"
+        elif cred.status.lower() != "active":
+            reason = f"Mobile Credential is {cred.status.upper()}"
+        else:
+            member = await db.get(Access_Member, cred.member_id)
+            if not member:
+                reason = "Mobile Credential is not assigned to any member"
+            elif member.status.lower() != "active":
+                member_id = member.id
+                member_name = f"{member.first_name} {member.last_name}".strip()
+                department = member.department
+                picture_url = member.picture_url or ""
+                reason = f"Cardholder account is {member.status.upper()}"
+            elif member.expire_date and member.expire_date < now:
+                member_id = member.id
+                member_name = f"{member.first_name} {member.last_name}".strip()
+                department = member.department
+                picture_url = member.picture_url or ""
+                reason = "Cardholder membership has expired"
+            else:
+                member_id = member.id
+                member_name = f"{member.first_name} {member.last_name}".strip()
+                department = member.department
+                picture_url = member.picture_url or ""
+
+                # Check Access Group
+                if not member.access_group_id:
+                    reason = "No access group assigned to cardholder"
+                else:
+                    access_group = await db.get(Access_Group, member.access_group_id)
+                    if not access_group or access_group.status.lower() != "active":
+                        reason = "Access group is inactive or disabled"
+                    else:
+                        allowed_doors_raw = access_group.doors_allowed or "[]"
+                        is_door_allowed = False
+                        if allowed_doors_raw.strip() == "*":
+                            is_door_allowed = True
+                        else:
+                            try:
+                                allowed_doors_list = json.loads(allowed_doors_raw)
+                                if (
+                                    door.id in allowed_doors_list
+                                    or str(door.id) in allowed_doors_list
+                                    or door.code in allowed_doors_list
+                                ):
+                                    is_door_allowed = True
+                            except Exception:
+                                is_door_allowed = False
+
+                        if not is_door_allowed:
+                            reason = f"Door not permitted for group '{access_group.name}'"
+                        else:
+                            day_map = {0: "MON", 1: "TUE", 2: "WED", 3: "THU", 4: "FRI", 5: "SAT", 6: "SUN"}
+                            current_day = day_map[now.weekday()]
+                            allowed_days = [d.strip().upper() for d in access_group.allowed_days.split(",")]
+                            if current_day not in allowed_days:
+                                reason = f"Access restricted on {current_day}"
+                            else:
+                                current_hh_mm = now.strftime("%H:%M")
+                                if not (access_group.time_start <= current_hh_mm <= access_group.time_end):
+                                    reason = f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                else:
+                                    result = "GRANTED"
+                                    reason = f"Mobile Access Granted ({access_group.name})"
+                                    cred.last_sync_time = now
+                                    db.add(cred)
+
+    # 3. Zone Tracking
+    from_zone_id = None
+    to_zone_id = None
+    from_zone_name = ""
+    to_zone_name = ""
+    target_zone = None
+
+    if door:
+        if direction == "IN":
+            from_zone_id = door.from_zone_id
+            to_zone_id = door.to_zone_id
+        else:
+            from_zone_id = door.to_zone_id
+            to_zone_id = door.from_zone_id
+
+        if from_zone_id:
+            from_zone = await db.get(Access_Zone, from_zone_id)
+            from_zone_name = from_zone.name if from_zone else ""
+        if to_zone_id:
+            target_zone = await db.get(Access_Zone, to_zone_id)
+            to_zone_name = target_zone.name if target_zone else (door.zone or "")
+
+    if result == "GRANTED" and member:
+        member.current_zone_id = to_zone_id
+        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.last_access_door_id = door_id
+        member.last_access_time = now
+        member.last_direction = direction
+        db.add(member)
+
+    # 4. Log Event
+    log_entry = Access_Log(
+        event_time=now,
+        card_number=device_id,
+        member_id=member_id,
+        member_name=member_name,
+        department=department,
+        door_id=door_id,
+        door_name=door_name,
+        from_zone_id=from_zone_id,
+        from_zone_name=from_zone_name,
+        to_zone_id=to_zone_id,
+        to_zone_name=to_zone_name,
+        direction=direction,
+        result=result,
+        reason=reason,
+        event_type="MOBILE_TAP",
+        credential_type=f"MOBILE_{payload.comm_tech.upper()}",
+        credential_identifier=device_id,
+        snapshot_url=picture_url,
+        reader_id=reader_id,
+    )
+    db.add(log_entry)
+    await db.commit()
+    await db.refresh(log_entry)
+
+    # 5. Broadcast SSE
+    broadcast_sse({
+        "event": "access_swipe",
+        "data": {
+            "id": log_entry.id,
+            "time": now.strftime("%H:%M:%S"),
+            "date": now.strftime("%Y-%m-%d"),
+            "card_number": device_id,
+            "member_id": member_id,
+            "member_name": member_name,
+            "department": department,
+            "door_id": door_id,
+            "door_code": door_code,
+            "door_name": door_name,
+            "from_zone_name": from_zone_name,
+            "to_zone_name": to_zone_name,
+            "direction": direction,
+            "result": result,
+            "reason": reason,
+            "event_type": "MOBILE_TAP",
+            "credential_type": f"MOBILE_{payload.comm_tech.upper()}",
+            "picture_url": picture_url,
+            "unlock_relay": (result == "GRANTED"),
+            "relay_time_sec": door.relay_time_sec if door else 5,
+        },
+    })
+
+    return {
+        "success": True,
+        "granted": (result == "GRANTED"),
+        "result": result,
+        "reason": reason,
+        "member_name": member_name,
+        "door_name": door_name,
+        "unlock_relay": (result == "GRANTED"),
+        "relay_time": door.relay_time_sec if (door and result == "GRANTED") else 0,
+        "log_id": log_entry.id,
+    }
+
+
+# =========================================================================
+# 👆 FINGERPRINT BIOMETRIC ACCESS EVENT
+# =========================================================================
+
+class FingerprintSwipeRequest(BaseModel):
+    door_code: str = Field(..., description="Door identifier code")
+    member_code: str = Field(..., description="Member code or employee ID")
+    finger_index: int = Field(default=1, description="Finger index (1-10)")
+    direction: str = Field(default="IN", description="IN or OUT")
+    reader_id: str | None = Field(default="FP-READER-01")
+
+
+@router.post("/fingerprint", summary="Fingerprint Biometric Event")
+async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
+    """Authenticate biometric fingerprint verification against registered template."""
+    now = time_now()
+    door_code = payload.door_code.strip().upper()
+    direction = payload.direction.strip().upper()
+    member_code = payload.member_code.strip()
+    reader_id = payload.reader_id or "FP-READER-01"
+
+    door_stmt = select(Access_Door).where(Access_Door.code == door_code)
+    door = (await db.exec(door_stmt)).first()
+    if not door and door_code.isdigit():
+        door = await db.get(Access_Door, int(door_code))
+
+    door_id = door.id if door else None
+    door_name = door.name if door else f"Unknown Door ({door_code})"
+
+    result = "DENIED"
+    reason = "Access Denied"
+    member = None
+    member_id = None
+    member_name = "Unknown Fingerprint"
+    department = ""
+    picture_url = ""
+
+    if not door:
+        reason = f"Door not registered: {door_code}"
+    elif door.status.upper() != "ONLINE":
+        reason = f"Door '{door.name}' is currently {door.status}"
+    else:
+        member = (
+            await db.exec(
+                select(Access_Member).where(Access_Member.member_code == member_code)
+            )
+        ).first()
+
+        if not member:
+            reason = f"Unregistered Member: {member_code}"
+        elif member.status.lower() != "active":
+            member_id = member.id
+            member_name = f"{member.first_name} {member.last_name}".strip()
+            department = member.department
+            picture_url = member.picture_url or ""
+            reason = f"Cardholder account is {member.status.upper()}"
+        else:
+            member_id = member.id
+            member_name = f"{member.first_name} {member.last_name}".strip()
+            department = member.department
+            picture_url = member.picture_url or ""
+
+            # Check if member has active enrolled fingerprint
+            fp_cred = (
+                await db.exec(
+                    select(Member_Fingerprint).where(
+                        Member_Fingerprint.member_id == member.id,
+                        Member_Fingerprint.finger_index == payload.finger_index,
+                        Member_Fingerprint.status == "active",
+                    )
+                )
+            ).first()
+
+            if not fp_cred:
+                # Fallback to any active fingerprint for this member
+                fp_cred = (
+                    await db.exec(
+                        select(Member_Fingerprint).where(
+                            Member_Fingerprint.member_id == member.id,
+                            Member_Fingerprint.status == "active",
+                        )
+                    )
+                ).first()
+
+            if not fp_cred:
+                reason = f"No enrolled fingerprint template for {member_name}"
+            else:
+                # Check Access Group
+                if not member.access_group_id:
+                    reason = "No access group assigned to cardholder"
+                else:
+                    access_group = await db.get(Access_Group, member.access_group_id)
+                    if not access_group or access_group.status.lower() != "active":
+                        reason = "Access group is inactive or disabled"
+                    else:
+                        allowed_doors_raw = access_group.doors_allowed or "[]"
+                        is_door_allowed = False
+                        if allowed_doors_raw.strip() == "*":
+                            is_door_allowed = True
+                        else:
+                            try:
+                                allowed_doors_list = json.loads(allowed_doors_raw)
+                                if (
+                                    door.id in allowed_doors_list
+                                    or str(door.id) in allowed_doors_list
+                                    or door.code in allowed_doors_list
+                                ):
+                                    is_door_allowed = True
+                            except Exception:
+                                is_door_allowed = False
+
+                        if not is_door_allowed:
+                            reason = f"Door not permitted for group '{access_group.name}'"
+                        else:
+                            result = "GRANTED"
+                            reason = f"Fingerprint Verified (Finger {payload.finger_index}, {access_group.name})"
+
+    # Zone tracking
+    from_zone_id = None
+    to_zone_id = None
+    from_zone_name = ""
+    to_zone_name = ""
+    target_zone = None
+
+    if door:
+        if direction == "IN":
+            from_zone_id = door.from_zone_id
+            to_zone_id = door.to_zone_id
+        else:
+            from_zone_id = door.to_zone_id
+            to_zone_id = door.from_zone_id
+
+        if to_zone_id:
+            target_zone = await db.get(Access_Zone, to_zone_id)
+            to_zone_name = target_zone.name if target_zone else (door.zone or "")
+
+    if result == "GRANTED" and member:
+        member.current_zone_id = to_zone_id
+        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.last_access_door_id = door_id
+        member.last_access_time = now
+        member.last_direction = direction
+        db.add(member)
+
+    log_entry = Access_Log(
+        event_time=now,
+        card_number=f"FP:{member_code}",
+        member_id=member_id,
+        member_name=member_name,
+        department=department,
+        door_id=door_id,
+        door_name=door_name,
+        from_zone_id=from_zone_id,
+        from_zone_name=from_zone_name,
+        to_zone_id=to_zone_id,
+        to_zone_name=to_zone_name,
+        direction=direction,
+        result=result,
+        reason=reason,
+        event_type="FINGERPRINT_SCAN",
+        credential_type="FINGERPRINT",
+        credential_identifier=f"Finger {payload.finger_index}",
+        snapshot_url=picture_url,
+        reader_id=reader_id,
+    )
+    db.add(log_entry)
+    await db.commit()
+    await db.refresh(log_entry)
+
+    broadcast_sse({
+        "event": "access_swipe",
+        "data": {
+            "id": log_entry.id,
+            "time": now.strftime("%H:%M:%S"),
+            "date": now.strftime("%Y-%m-%d"),
+            "card_number": f"FP:{member_code}",
+            "member_id": member_id,
+            "member_name": member_name,
+            "door_id": door_id,
+            "door_name": door_name,
+            "result": result,
+            "reason": reason,
+            "event_type": "FINGERPRINT_SCAN",
+            "credential_type": "FINGERPRINT",
+            "unlock_relay": (result == "GRANTED"),
+            "relay_time_sec": door.relay_time_sec if door else 5,
+        },
+    })
+
+    return {
+        "success": True,
+        "granted": (result == "GRANTED"),
+        "result": result,
+        "reason": reason,
+        "member_name": member_name,
+        "door_name": door_name,
+        "unlock_relay": (result == "GRANTED"),
+        "relay_time": door.relay_time_sec if (door and result == "GRANTED") else 0,
+        "log_id": log_entry.id,
+    }
+
+
+# =========================================================================
+# 🔢 PIN CODE / KEYPAD ACCESS EVENT
+# =========================================================================
+
+class PinEntryRequest(BaseModel):
+    door_code: str = Field(..., description="Door identifier code")
+    pin_code: str = Field(..., description="Keypad PIN")
+    member_code: str | None = Field(default=None, description="Optional member code for 1:1 PIN match")
+    direction: str = Field(default="IN", description="IN or OUT")
+    reader_id: str | None = Field(default="KEYPAD-01")
+
+
+@router.post("/pin-code", summary="PIN Code / Keypad Entry Event")
+async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
+    """Authenticate Keypad PIN Entry with Duress Alarm detection."""
+    now = time_now()
+    door_code = payload.door_code.strip().upper()
+    direction = payload.direction.strip().upper()
+    pin_str = payload.pin_code.strip()
+    reader_id = payload.reader_id or "KEYPAD-01"
+
+    door_stmt = select(Access_Door).where(Access_Door.code == door_code)
+    door = (await db.exec(door_stmt)).first()
+    if not door and door_code.isdigit():
+        door = await db.get(Access_Door, int(door_code))
+
+    door_id = door.id if door else None
+    door_name = door.name if door else f"Unknown Door ({door_code})"
+
+    result = "DENIED"
+    reason = "Access Denied"
+    member = None
+    member_id = None
+    member_name = "Unknown Keypad User"
+    department = ""
+    picture_url = ""
+    pin_type = "STANDARD"
+
+    if not door:
+        reason = f"Door not registered: {door_code}"
+    elif door.status.upper() != "ONLINE":
+        reason = f"Door '{door.name}' is currently {door.status}"
+    else:
+        # Find matching PIN
+        query = select(Member_Pin_Credential).where(
+            Member_Pin_Credential.status == "active"
+        )
+        if payload.member_code:
+            target_mem = (
+                await db.exec(
+                    select(Access_Member).where(
+                        Access_Member.member_code == payload.member_code.strip()
+                    )
+                )
+            ).first()
+            if target_mem:
+                query = query.where(Member_Pin_Credential.member_id == target_mem.id)
+
+        all_pins = (await db.exec(query)).all()
+        matched_pin = None
+        for p in all_pins:
+            if verify_password(pin_str, p.pin_hash):
+                matched_pin = p
+                break
+
+        if not matched_pin:
+            reason = "Invalid PIN code"
+        else:
+            pin_type = matched_pin.pin_type
+            member = await db.get(Access_Member, matched_pin.member_id)
+            if not member or member.status.lower() != "active":
+                reason = "Cardholder account is inactive or revoked"
+            else:
+                member_id = member.id
+                member_name = f"{member.first_name} {member.last_name}".strip()
+                department = member.department
+                picture_url = member.picture_url or ""
+
+                result = "GRANTED"
+                if pin_type == "DURESS":
+                    reason = "DURESS PIN TRIGGERED: Access Granted (Silent Alarm Sent)"
+                else:
+                    reason = "PIN Authenticated Successfully"
+
+    # Zone tracking
+    from_zone_id = None
+    to_zone_id = None
+    from_zone_name = ""
+    to_zone_name = ""
+    target_zone = None
+
+    if door:
+        if direction == "IN":
+            from_zone_id = door.from_zone_id
+            to_zone_id = door.to_zone_id
+        else:
+            from_zone_id = door.to_zone_id
+            to_zone_id = door.from_zone_id
+
+        if to_zone_id:
+            target_zone = await db.get(Access_Zone, to_zone_id)
+            to_zone_name = target_zone.name if target_zone else (door.zone or "")
+
+    if result == "GRANTED" and member:
+        member.current_zone_id = to_zone_id
+        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.last_access_door_id = door_id
+        member.last_access_time = now
+        member.last_direction = direction
+        db.add(member)
+
+    log_entry = Access_Log(
+        event_time=now,
+        card_number=f"PIN:{pin_type}",
+        member_id=member_id,
+        member_name=member_name,
+        department=department,
+        door_id=door_id,
+        door_name=door_name,
+        from_zone_id=from_zone_id,
+        from_zone_name=from_zone_name,
+        to_zone_id=to_zone_id,
+        to_zone_name=to_zone_name,
+        direction=direction,
+        result=result,
+        reason=reason,
+        event_type="PIN_ENTRY",
+        credential_type="PIN",
+        credential_identifier=f"PIN_{pin_type}",
+        snapshot_url=picture_url,
+        reader_id=reader_id,
+    )
+    db.add(log_entry)
+    await db.commit()
+    await db.refresh(log_entry)
+
+    broadcast_sse({
+        "event": "access_swipe",
+        "data": {
+            "id": log_entry.id,
+            "time": now.strftime("%H:%M:%S"),
+            "date": now.strftime("%Y-%m-%d"),
+            "card_number": f"PIN:{pin_type}",
+            "member_id": member_id,
+            "member_name": member_name,
+            "door_id": door_id,
+            "door_name": door_name,
+            "result": result,
+            "reason": reason,
+            "event_type": "PIN_ENTRY",
+            "credential_type": "PIN",
+            "is_duress": (pin_type == "DURESS"),
+            "unlock_relay": (result == "GRANTED"),
+            "relay_time_sec": door.relay_time_sec if door else 5,
+        },
+    })
+
+    return {
+        "success": True,
+        "granted": (result == "GRANTED"),
+        "result": result,
+        "reason": reason,
+        "is_duress": (pin_type == "DURESS"),
+        "member_name": member_name,
+        "door_name": door_name,
+        "unlock_relay": (result == "GRANTED"),
+        "relay_time": door.relay_time_sec if (door and result == "GRANTED") else 0,
+        "log_id": log_entry.id,
+    }
+
 
 

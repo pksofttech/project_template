@@ -42,6 +42,17 @@
 
                         <!-- Multi-column Filters -->
                         <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                            <!-- Credential Modality Filter -->
+                            <select id="filterCredType" onchange="reloadTable()" class="select select-bordered select-sm text-xs">
+                                <option value="">All Credentials (ทุกประเภท)</option>
+                                <option value="RFID_CARD">RFID Cards</option>
+                                <option value="MOBILE_BLE">Mobile BLE</option>
+                                <option value="MOBILE_NFC">Mobile NFC</option>
+                                <option value="FINGERPRINT">Fingerprint Biometrics</option>
+                                <option value="FACE_BIOMETRIC">Face Biometrics</option>
+                                <option value="PIN">Keypad PINs</option>
+                            </select>
+
                             <!-- Result Filter -->
                             <select id="filterResult" onchange="reloadTable()" class="select select-bordered select-sm text-xs">
                                 <option value="">All Results (ทั้งหมด)</option>
@@ -111,11 +122,40 @@
                             }
                         },
                         {
+                            data: "credential_type",
+                            name: "credential_type",
+                            title: "Modality",
+                            className: "text-center",
+                            render: function (data, type, row) {
+                                const t = (data || "RFID_CARD").toUpperCase();
+                                const isDuress = Boolean(row.credential_identifier && row.credential_identifier.includes('DURESS'));
+                                if (isDuress) {
+                                    return '<span class="badge badge-xs badge-error font-bold font-mono gap-1 animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> DURESS PIN</span>';
+                                }
+                                if (t.includes("BLE")) {
+                                    return '<span class="badge badge-xs badge-secondary font-bold font-mono gap-1"><i class="fa-brands fa-bluetooth-b"></i> BLE</span>';
+                                } else if (t.includes("NFC")) {
+                                    return '<span class="badge badge-xs badge-secondary font-bold font-mono gap-1"><i class="fa-solid fa-nfc-symbol"></i> NFC</span>';
+                                } else if (t.includes("MOBILE")) {
+                                    return '<span class="badge badge-xs badge-secondary font-bold font-mono gap-1"><i class="fa-solid fa-mobile-screen"></i> Mobile</span>';
+                                } else if (t.includes("FINGER")) {
+                                    return '<span class="badge badge-xs badge-accent font-bold font-mono gap-1"><i class="fa-solid fa-fingerprint"></i> Finger</span>';
+                                } else if (t.includes("FACE")) {
+                                    return '<span class="badge badge-xs badge-info font-bold font-mono gap-1"><i class="fa-solid fa-camera"></i> Face</span>';
+                                } else if (t.includes("PIN")) {
+                                    return '<span class="badge badge-xs badge-warning font-bold font-mono gap-1"><i class="fa-solid fa-hashtag"></i> PIN</span>';
+                                } else {
+                                    return '<span class="badge badge-xs badge-primary font-bold font-mono gap-1"><i class="fa-solid fa-id-card"></i> RFID</span>';
+                                }
+                            }
+                        },
+                        {
                             data: "card_number",
                             name: "card_number",
-                            title: "Card Number",
-                            render: function (data) {
-                                return `<span class="font-mono badge badge-sm badge-neutral font-bold">${data || "-"}</span>`;
+                            title: "Identifier / Card",
+                            render: function (data, type, row) {
+                                const ident = row.credential_identifier ? `<div class="text-[10px] text-base-content/50 font-mono">${row.credential_identifier}</div>` : '';
+                                return `<div><span class="font-mono badge badge-sm badge-neutral font-bold">${data || "-"}</span>${ident}</div>`;
                             }
                         },
                         {
@@ -184,22 +224,35 @@
             );
 
             // Set initial filters
-            tableModel.data_custom_filter = {
-                result: $("#filterResult").val(),
-                direction: $("#filterDirection").val()
-            };
-
+            syncFilters();
             tableModel.init();
             window.table = tableModel.table;
             window.tableModel = tableModel;
         });
 
+        function syncFilters() {
+            if (!tableModel) return;
+            const res = $("#filterResult").val();
+            const dir = $("#filterDirection").val();
+            const cred = $("#filterCredType").val();
+
+            tableModel.data_custom_filter = {
+                result: res,
+                direction: dir,
+                credential_type: cred
+            };
+
+            // Update Excel export href
+            let exportUrl = "/api/access/log/datatable?export=excel";
+            if (res) exportUrl += `&result=${encodeURIComponent(res)}`;
+            if (dir) exportUrl += `&direction=${encodeURIComponent(dir)}`;
+            if (cred) exportUrl += `&credential_type=${encodeURIComponent(cred)}`;
+            $("#btnExportExcel").attr("href", exportUrl);
+        }
+
         window.reloadTable = function () {
             if (tableModel) {
-                tableModel.data_custom_filter = {
-                    result: $("#filterResult").val(),
-                    direction: $("#filterDirection").val()
-                };
+                syncFilters();
                 tableModel.reload();
             }
         };

@@ -24,9 +24,11 @@ python-multipart>=0.0.9
 psutil>=5.9.8
 openpyxl>=3.1.2
 
-# Image Processing
+# Image & Vector Processing
 Pillow>=10.2.0
+numpy>=1.26.0
 
-# Testing & Quality Assurance
+# Testing & Debugging
 pytest>=8.0.0
 pytest-asyncio>=0.23.0
+debugpy>=1.8.0

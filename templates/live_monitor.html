@@ -36,17 +36,26 @@
                                     <i class="fa-solid fa-microchip"></i> InsightFace (Mockup)
                                 </span>
                             </div>
-                            <div class="flex items-center gap-1 pt-1">
+                            <div class="flex items-center gap-1 pt-1 flex-wrap">
                                 <button type="button" id="tabCardBtn" onclick="switchSimTab('card')" class="btn btn-xs btn-primary gap-1">
                                     <i class="fa-solid fa-id-card"></i> RFID Card
                                 </button>
+                                <button type="button" id="tabMobileBtn" onclick="switchSimTab('mobile')" class="btn btn-xs btn-outline gap-1">
+                                    <i class="fa-solid fa-mobile-screen"></i> Mobile (BLE/NFC)
+                                </button>
+                                <button type="button" id="tabFpBtn" onclick="switchSimTab('fingerprint')" class="btn btn-xs btn-outline gap-1">
+                                    <i class="fa-solid fa-fingerprint"></i> Fingerprint
+                                </button>
                                 <button type="button" id="tabFaceBtn" onclick="switchSimTab('face')" class="btn btn-xs btn-outline gap-1">
-                                    <i class="fa-solid fa-camera"></i> Camera Face Scan
+                                    <i class="fa-solid fa-camera"></i> Face Scan
+                                </button>
+                                <button type="button" id="tabPinBtn" onclick="switchSimTab('pin')" class="btn btn-xs btn-outline gap-1">
+                                    <i class="fa-solid fa-hashtag"></i> Keypad PIN
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Card Simulation Action Form -->
+                        <!-- 1. Card Simulation Action Form -->
                         <div id="simCardPanel" class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                             <!-- Quick Test Presets -->
                             <div class="dropdown dropdown-end">
@@ -87,7 +96,98 @@
                             </button>
                         </div>
 
-                        <!-- Face Simulation Action Form -->
+                        <!-- 2. Mobile Simulation Action Form -->
+                        <div id="simMobilePanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <div class="dropdown dropdown-end">
+                                <button tabindex="0" class="btn btn-sm btn-outline gap-2">
+                                    <i class="fa-solid fa-mobile-screen-button text-secondary"></i>
+                                    <span>Mobile Presets</span>
+                                    <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
+                                </button>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-76 z-50 text-xs border border-base-content/10">
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40">Paired Smartphones</li>
+                                    <li><a onclick="setSimMobile('550e8400-e29b-41d4-a716-446655440001', 'BLE', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somchai (iPhone 15 - BLE)</a></li>
+                                    <li><a onclick="setSimMobile('550e8400-e29b-41d4-a716-446655440002', 'NFC', 'GATE-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somsri (Galaxy S24 - NFC)</a></li>
+                                    <li><a onclick="setSimMobile('VC-MEM001', 'BLE', 'DOOR-01', 'IN')"><i class="fa-solid fa-link text-info"></i> Somchai (Virtual Card #)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2">Security Cases</li>
+                                    <li><a onclick="setSimMobile('UNREGISTERED_PHONE_99', 'BLE', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-xmark text-error"></i> Unpaired Device</a></li>
+                                </ul>
+                            </div>
+
+                            <input type="text" id="simMobileId" class="input input-bordered input-sm font-mono text-xs w-48" placeholder="UUID or Virtual Card #" value="550e8400-e29b-41d4-a716-446655440001" />
+
+                            <select id="simMobileTech" class="select select-bordered select-sm text-xs w-24">
+                                <option value="BLE" selected>BLE</option>
+                                <option value="NFC">NFC</option>
+                            </select>
+
+                            <select id="simMobileDoor" class="select select-bordered select-sm text-xs w-44">
+                                <option value="DOOR-01">DOOR-01 (Turnstile 1)</option>
+                                <option value="DOOR-02">DOOR-02 (Turnstile 2)</option>
+                                <option value="GATE-01">GATE-01 (Barrier In)</option>
+                                <option value="GATE-02">GATE-02 (Barrier Out)</option>
+                                <option value="DOOR-03">DOOR-03 (Server Room)</option>
+                            </select>
+
+                            <select id="simMobileDirection" class="select select-bordered select-sm text-xs w-24">
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+
+                            <button onclick="triggerMobileTap()" id="btnSimulateMobile" class="btn btn-sm btn-secondary gap-1 font-bold shadow-sm">
+                                <i class="fa-solid fa-mobile-screen"></i>
+                                <span>Tap Phone</span>
+                            </button>
+                        </div>
+
+                        <!-- 3. Fingerprint Simulation Action Form -->
+                        <div id="simFpPanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <div class="dropdown dropdown-end">
+                                <button tabindex="0" class="btn btn-sm btn-outline gap-2">
+                                    <i class="fa-solid fa-fingerprint text-accent"></i>
+                                    <span>Finger Presets</span>
+                                    <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
+                                </button>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-76 z-50 text-xs border border-base-content/10">
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40">Enrolled Fingers</li>
+                                    <li><a onclick="setSimFp('MEM-001', 2, 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somchai (MEM-001: Right Index)</a></li>
+                                    <li><a onclick="setSimFp('MEM-002', 2, 'GATE-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somsri (MEM-002: Right Index)</a></li>
+                                    <li><a onclick="setSimFp('MEM-003', 1, 'DOOR-03', 'IN')"><i class="fa-solid fa-shield text-info"></i> Anan (MEM-003: Right Thumb)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2">Security Cases</li>
+                                    <li><a onclick="setSimFp('MEM-999', 1, 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-xmark text-error"></i> Unregistered Fingerprint</a></li>
+                                </ul>
+                            </div>
+
+                            <input type="text" id="simFpMemberCode" class="input input-bordered input-sm font-mono text-xs w-28" placeholder="Member Code" value="MEM-001" />
+
+                            <select id="simFpFingerIndex" class="select select-bordered select-sm text-xs w-36">
+                                <option value="2" selected>Index 2 (Right Index)</option>
+                                <option value="1">Index 1 (Right Thumb)</option>
+                                <option value="3">Index 3 (Right Middle)</option>
+                                <option value="6">Index 6 (Left Thumb)</option>
+                                <option value="7">Index 7 (Left Index)</option>
+                            </select>
+
+                            <select id="simFpDoor" class="select select-bordered select-sm text-xs w-44">
+                                <option value="DOOR-01">DOOR-01 (Turnstile 1)</option>
+                                <option value="DOOR-02">DOOR-02 (Turnstile 2)</option>
+                                <option value="GATE-01">GATE-01 (Barrier In)</option>
+                                <option value="GATE-02">GATE-02 (Barrier Out)</option>
+                                <option value="DOOR-03">DOOR-03 (Server Room)</option>
+                            </select>
+
+                            <select id="simFpDirection" class="select select-bordered select-sm text-xs w-24">
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+
+                            <button onclick="triggerFingerprintScan()" id="btnSimulateFp" class="btn btn-sm btn-accent gap-1 font-bold shadow-sm">
+                                <i class="fa-solid fa-fingerprint"></i>
+                                <span>Scan Finger</span>
+                            </button>
+                        </div>
+
+                        <!-- 4. Face Simulation Action Form -->
                         <div id="simFacePanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
                             <!-- Quick Face Presets -->
                             <div class="dropdown dropdown-end">
@@ -127,6 +227,48 @@
                                 <span>Scan Face</span>
                             </button>
                         </div>
+
+                        <!-- 5. Keypad PIN Simulation Action Form -->
+                        <div id="simPinPanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <div class="dropdown dropdown-end">
+                                <button tabindex="0" class="btn btn-sm btn-outline gap-2">
+                                    <i class="fa-solid fa-hashtag text-warning"></i>
+                                    <span>PIN Presets</span>
+                                    <i class="fa-solid fa-chevron-down text-xs opacity-50"></i>
+                                </button>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-76 z-50 text-xs border border-base-content/10">
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40">Standard Access</li>
+                                    <li><a onclick="setSimPin('123456', 'MEM-001', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somchai (PIN: 123456)</a></li>
+                                    <li><a onclick="setSimPin('654321', 'MEM-002', 'GATE-01', 'IN')"><i class="fa-solid fa-circle-check text-success"></i> Somsri (PIN: 654321)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2 text-error">Silent Alarm / Duress</li>
+                                    <li><a onclick="setSimPin('911911', 'MEM-001', 'DOOR-01', 'IN')"><i class="fa-solid fa-triangle-exclamation text-error animate-pulse"></i> Somchai (DURESS: 911911)</a></li>
+                                    <li class="menu-title text-[10px] uppercase font-bold text-base-content/40 mt-2">Security Cases</li>
+                                    <li><a onclick="setSimPin('000000', '', 'DOOR-01', 'IN')"><i class="fa-solid fa-circle-xmark text-error"></i> Invalid PIN (000000)</a></li>
+                                </ul>
+                            </div>
+
+                            <input type="password" id="simPinCode" class="input input-bordered input-sm font-mono text-xs w-28" placeholder="PIN Code" value="123456" />
+
+                            <input type="text" id="simPinMemberCode" class="input input-bordered input-sm font-mono text-xs w-28" placeholder="Member (Opt)" value="MEM-001" />
+
+                            <select id="simPinDoor" class="select select-bordered select-sm text-xs w-44">
+                                <option value="DOOR-01">DOOR-01 (Turnstile 1)</option>
+                                <option value="DOOR-02">DOOR-02 (Turnstile 2)</option>
+                                <option value="GATE-01">GATE-01 (Barrier In)</option>
+                                <option value="GATE-02">GATE-02 (Barrier Out)</option>
+                                <option value="DOOR-03">DOOR-03 (Server Room)</option>
+                            </select>
+
+                            <select id="simPinDirection" class="select select-bordered select-sm text-xs w-24">
+                                <option value="IN">IN (เข้า)</option>
+                                <option value="OUT">OUT (ออก)</option>
+                            </select>
+
+                            <button onclick="triggerPinEntry()" id="btnSimulatePin" class="btn btn-sm btn-warning gap-1 font-bold shadow-sm text-warning-content">
+                                <i class="fa-solid fa-hashtag"></i>
+                                <span>Enter PIN</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -162,9 +304,12 @@
                                 <div class="text-center sm:text-left space-y-1 flex-1">
                                     <h3 id="spotlightName" class="font-black text-lg text-base-content">System Ready</h3>
                                     <p id="spotlightDept" class="text-xs text-base-content/60">Swipe a card or scan face</p>
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 pt-1 font-mono text-xs text-base-content/50">
-                                        <i class="fa-solid fa-id-badge text-[10px]"></i>
-                                        <span id="spotlightCardNo">-</span>
+                                    <div class="flex items-center justify-center sm:justify-start gap-2 pt-1 font-mono text-xs text-base-content/50 flex-wrap">
+                                        <div class="flex items-center gap-1.5">
+                                            <i class="fa-solid fa-id-badge text-[10px]"></i>
+                                            <span id="spotlightCardNo">-</span>
+                                        </div>
+                                        <span id="spotlightCredBadge"></span>
                                     </div>
                                     <div id="spotlightMatchConfidence" class="hidden"></div>
                                 </div>
@@ -274,32 +419,151 @@
 
         // Switch Simulator Tab
         function switchSimTab(tab) {
-            const cardPanel = document.getElementById('simCardPanel');
-            const facePanel = document.getElementById('simFacePanel');
-            const tabCardBtn = document.getElementById('tabCardBtn');
-            const tabFaceBtn = document.getElementById('tabFaceBtn');
+            const tabs = ['card', 'mobile', 'fingerprint', 'face', 'pin'];
+            const panels = {
+                card: document.getElementById('simCardPanel'),
+                mobile: document.getElementById('simMobilePanel'),
+                fingerprint: document.getElementById('simFpPanel'),
+                face: document.getElementById('simFacePanel'),
+                pin: document.getElementById('simPinPanel')
+            };
+            const btns = {
+                card: { el: document.getElementById('tabCardBtn'), activeClass: 'btn-primary' },
+                mobile: { el: document.getElementById('tabMobileBtn'), activeClass: 'btn-secondary' },
+                fingerprint: { el: document.getElementById('tabFpBtn'), activeClass: 'btn-accent' },
+                face: { el: document.getElementById('tabFaceBtn'), activeClass: 'btn-secondary' },
+                pin: { el: document.getElementById('tabPinBtn'), activeClass: 'btn-warning' }
+            };
 
-            if (tab === 'face') {
-                cardPanel.classList.add('hidden');
-                facePanel.classList.remove('hidden');
-                tabCardBtn.className = 'btn btn-xs btn-outline gap-1';
-                tabFaceBtn.className = 'btn btn-xs btn-secondary gap-1';
-            } else {
-                facePanel.classList.add('hidden');
-                cardPanel.classList.remove('hidden');
-                tabFaceBtn.className = 'btn btn-xs btn-outline gap-1';
-                tabCardBtn.className = 'btn btn-xs btn-primary gap-1';
+            tabs.forEach(t => {
+                if (panels[t]) {
+                    if (t === tab) {
+                        panels[t].classList.remove('hidden');
+                    } else {
+                        panels[t].classList.add('hidden');
+                    }
+                }
+                if (btns[t] && btns[t].el) {
+                    if (t === tab) {
+                        btns[t].el.className = `btn btn-xs ${btns[t].activeClass} gap-1 font-bold shadow-xs`;
+                    } else {
+                        btns[t].el.className = 'btn btn-xs btn-outline gap-1';
+                    }
+                }
+            });
+        }
+
+        // 1. Mobile Simulation Helper & Trigger
+        function setSimMobile(id, tech, door, dir) {
+            document.getElementById('simMobileId').value = id;
+            document.getElementById('simMobileTech').value = tech;
+            document.getElementById('simMobileDoor').value = door;
+            document.getElementById('simMobileDirection').value = dir;
+        }
+
+        async function triggerMobileTap() {
+            const btn = document.getElementById('btnSimulateMobile');
+            const mobileId = document.getElementById('simMobileId').value.trim();
+            const tech = document.getElementById('simMobileTech').value;
+            const door = document.getElementById('simMobileDoor').value;
+            const direction = document.getElementById('simMobileDirection').value;
+
+            if (!mobileId) {
+                if (window.toast) toast.warning("Please enter device UUID or virtual card number");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Transmitting...';
+
+            try {
+                const res = await fetch('/api/access/event/mobile-credential', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        device_uuid: mobileId,
+                        comm_tech: tech,
+                        door_code: door,
+                        direction: direction,
+                        reader_id: `SIM-${tech}-01`
+                    })
+                });
+                const result = await res.json();
+                if (result.success && window.toast) {
+                    if (result.granted) {
+                        toast.success(`Mobile Tap Granted: ${result.member_name} (${tech})`);
+                    } else {
+                        toast.info(`Mobile Denied: ${result.reason}`);
+                    }
+                }
+            } catch (err) {
+                console.error("Mobile simulation error:", err);
+                if (window.toast) toast.error("Mobile simulation failed");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> <span>Tap Phone</span>';
             }
         }
 
-        // Face Simulation Helper
+        // 2. Fingerprint Simulation Helper & Trigger
+        function setSimFp(memberCode, fingerIdx, door, dir) {
+            document.getElementById('simFpMemberCode').value = memberCode;
+            document.getElementById('simFpFingerIndex').value = fingerIdx;
+            document.getElementById('simFpDoor').value = door;
+            document.getElementById('simFpDirection').value = dir;
+        }
+
+        async function triggerFingerprintScan() {
+            const btn = document.getElementById('btnSimulateFp');
+            const memberCode = document.getElementById('simFpMemberCode').value.trim();
+            const fingerIndex = parseInt(document.getElementById('simFpFingerIndex').value, 10);
+            const door = document.getElementById('simFpDoor').value;
+            const direction = document.getElementById('simFpDirection').value;
+
+            if (!memberCode) {
+                if (window.toast) toast.warning("Please enter cardholder member code");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Verifying...';
+
+            try {
+                const res = await fetch('/api/access/event/fingerprint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_code: memberCode,
+                        finger_index: fingerIndex,
+                        door_code: door,
+                        direction: direction,
+                        reader_id: 'SIM-FP-01'
+                    })
+                });
+                const result = await res.json();
+                if (result.success && window.toast) {
+                    if (result.granted) {
+                        toast.success(`Fingerprint Match: ${result.member_name}`);
+                    } else {
+                        toast.info(`Fingerprint Denied: ${result.reason}`);
+                    }
+                }
+            } catch (err) {
+                console.error("Fingerprint simulation error:", err);
+                if (window.toast) toast.error("Fingerprint simulation failed");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-fingerprint"></i> <span>Scan Finger</span>';
+            }
+        }
+
+        // 3. Face Simulation Helper & Trigger
         function setSimFace(memberCode, doorCode, direction) {
             document.getElementById('simFaceCode').value = memberCode;
             document.getElementById('simFaceDoor').value = doorCode;
             document.getElementById('simFaceDirection').value = direction;
         }
 
-        // Trigger Face Scan Simulation
         async function triggerFaceScan() {
             const btn = document.getElementById('btnSimulateFace');
             const memberCode = document.getElementById('simFaceCode').value.trim();
@@ -341,6 +605,60 @@
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-camera"></i> <span>Scan Face</span>';
+            }
+        }
+
+        // 4. Keypad PIN Simulation Helper & Trigger
+        function setSimPin(pin, memberCode, door, dir) {
+            document.getElementById('simPinCode').value = pin;
+            document.getElementById('simPinMemberCode').value = memberCode;
+            document.getElementById('simPinDoor').value = door;
+            document.getElementById('simPinDirection').value = dir;
+        }
+
+        async function triggerPinEntry() {
+            const btn = document.getElementById('btnSimulatePin');
+            const pinCode = document.getElementById('simPinCode').value.trim();
+            const memberCode = document.getElementById('simPinMemberCode').value.trim();
+            const door = document.getElementById('simPinDoor').value;
+            const direction = document.getElementById('simPinDirection').value;
+
+            if (!pinCode) {
+                if (window.toast) toast.warning("Please enter PIN code");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Verifying...';
+
+            try {
+                const res = await fetch('/api/access/event/pin-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pin_code: pinCode,
+                        member_code: memberCode || null,
+                        door_code: door,
+                        direction: direction,
+                        reader_id: 'SIM-KEYPAD-01'
+                    })
+                });
+                const result = await res.json();
+                if (result.success && window.toast) {
+                    if (result.is_duress) {
+                        toast.error(`🚨 SILENT DURESS ALARM: Silent distress code entered by ${result.member_name}! Security notified.`);
+                    } else if (result.granted) {
+                        toast.success(`PIN Verified: ${result.member_name}`);
+                    } else {
+                        toast.info(`PIN Denied: ${result.reason}`);
+                    }
+                }
+            } catch (err) {
+                console.error("PIN simulation error:", err);
+                if (window.toast) toast.error("PIN entry simulation failed");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-hashtag"></i> <span>Enter PIN</span>';
             }
         }
 
@@ -499,11 +817,35 @@
             appendLogCard(data, true);
         }
 
+        // Credential Modality Badge Generator
+        function getCredentialBadgeHtml(credType, isDuress) {
+            if (isDuress) {
+                return '<span class="badge badge-xs badge-error gap-1 font-bold font-mono animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> DURESS PIN (SILENT ALARM)</span>';
+            }
+            const t = (credType || '').toUpperCase();
+            if (t.includes('BLE')) {
+                return '<span class="badge badge-xs badge-secondary gap-1 font-bold font-mono"><i class="fa-brands fa-bluetooth-b"></i> BLE Mobile</span>';
+            } else if (t.includes('NFC')) {
+                return '<span class="badge badge-xs badge-secondary gap-1 font-bold font-mono"><i class="fa-solid fa-nfc-symbol"></i> NFC Mobile</span>';
+            } else if (t.includes('MOBILE')) {
+                return '<span class="badge badge-xs badge-secondary gap-1 font-bold font-mono"><i class="fa-solid fa-mobile-screen"></i> Mobile</span>';
+            } else if (t.includes('FINGER')) {
+                return '<span class="badge badge-xs badge-accent gap-1 font-bold font-mono"><i class="fa-solid fa-fingerprint"></i> Fingerprint</span>';
+            } else if (t.includes('FACE')) {
+                return '<span class="badge badge-xs badge-info gap-1 font-bold font-mono"><i class="fa-solid fa-camera"></i> Face Bio</span>';
+            } else if (t.includes('PIN')) {
+                return '<span class="badge badge-xs badge-warning gap-1 font-bold font-mono"><i class="fa-solid fa-hashtag"></i> Keypad PIN</span>';
+            } else {
+                return '<span class="badge badge-xs badge-primary gap-1 font-bold font-mono"><i class="fa-solid fa-id-card"></i> RFID</span>';
+            }
+        }
+
         // Update Big Spotlight Card
         function updateSpotlight(d) {
             const card = document.getElementById('liveSpotlightCard');
             const badge = document.getElementById('spotlightBadge');
             const isGranted = (d.result === 'GRANTED');
+            const isDuress = Boolean(d.is_duress || (d.credential_identifier && d.credential_identifier.includes('DURESS')));
 
             // Sound feedback if available
             try {
@@ -516,12 +858,16 @@
             card.classList.add(isGranted ? 'border-success' : 'border-error', isGranted ? 'shadow-success/20' : 'shadow-error/20');
 
             // Badge
-            badge.className = isGranted 
-                ? 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-success text-success-content animate-pulse'
-                : 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-error text-error-content animate-pulse';
-            badge.innerHTML = isGranted 
-                ? '<i class="fa-solid fa-circle-check"></i> <span>ACCESS GRANTED</span>'
-                : '<i class="fa-solid fa-circle-xmark"></i> <span>ACCESS DENIED</span>';
+            if (isDuress) {
+                badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-lg bg-error text-error-content animate-bounce';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>DURESS ALARM (SILENT ALERT)</span>';
+            } else if (isGranted) {
+                badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-success text-success-content animate-pulse';
+                badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>ACCESS GRANTED</span>';
+            } else {
+                badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-error text-error-content animate-pulse';
+                badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <span>ACCESS DENIED</span>';
+            }
 
             // Cardholder Info
             document.getElementById('spotlightName').textContent = d.member_name || 'Unknown Person';
@@ -531,6 +877,12 @@
             document.getElementById('spotlightDirection').textContent = d.direction || 'IN';
             document.getElementById('spotlightReason').textContent = d.reason || '-';
             document.getElementById('spotlightTime').textContent = d.time || new Date().toLocaleTimeString();
+
+            // Credential Modality Badge
+            const credBadgeEl = document.getElementById('spotlightCredBadge');
+            if (credBadgeEl) {
+                credBadgeEl.innerHTML = getCredentialBadgeHtml(d.credential_type, isDuress);
+            }
 
             // Face Match Confidence Indicator
             const confEl = document.getElementById('spotlightMatchConfidence');
@@ -563,28 +915,29 @@
         function appendLogCard(log, animate = true) {
             const feed = document.getElementById('liveFeedList');
             const isGranted = (log.result === 'GRANTED');
-            const isFace = (log.event_type === 'FACE_RECOGNITION' || (log.card_number && log.card_number.startsWith('FACE:')));
+            const isDuress = Boolean(log.is_duress || (log.credential_identifier && log.credential_identifier.includes('DURESS')));
             const timeStr = log.time || (log.event_time ? log.event_time.substring(11, 19) : '');
+            const credBadge = getCredentialBadgeHtml(log.credential_type, isDuress);
 
             const cardHtml = document.createElement('div');
-            cardHtml.className = `p-3 rounded-xl border ${isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20'} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
+            cardHtml.className = `p-3 rounded-xl border ${isDuress ? 'bg-error/15 border-error' : (isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20')} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
             
             cardHtml.innerHTML = `
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full ${isGranted ? 'bg-success text-success-content' : 'bg-error text-error-content'} flex items-center justify-center text-xs font-bold shrink-0">
-                        <i class="${isGranted ? 'fa-solid fa-check' : 'fa-solid fa-xmark'}"></i>
+                    <div class="w-8 h-8 rounded-full ${isDuress ? 'bg-error text-error-content animate-ping' : (isGranted ? 'bg-success text-success-content' : 'bg-error text-error-content')} flex items-center justify-center text-xs font-bold shrink-0">
+                        <i class="${isDuress ? 'fa-solid fa-triangle-exclamation' : (isGranted ? 'fa-solid fa-check' : 'fa-solid fa-xmark')}"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="font-bold text-xs text-base-content">${log.member_name || 'Unknown'}</span>
                             <span class="badge badge-xs ${isGranted ? 'badge-success' : 'badge-error'} font-mono">${log.result}</span>
                             <span class="badge badge-xs badge-neutral font-mono">${log.direction || 'IN'}</span>
-                            ${isFace ? `<span class="badge badge-xs badge-secondary font-mono gap-1"><i class="fa-solid fa-camera text-[8px]"></i>${log.confidence_percent || 'FACE'}</span>` : ''}
+                            ${credBadge}
                         </div>
                         <div class="text-[11px] text-base-content/60 mt-0.5">
                             <span>${log.door_name}</span> • <span class="font-mono">${log.card_number}</span>
                         </div>
-                        <div class="text-[10px] ${isGranted ? 'text-success' : 'text-error'} font-semibold mt-0.5">
+                        <div class="text-[10px] ${isDuress ? 'text-error font-black' : (isGranted ? 'text-success' : 'text-error')} font-semibold mt-0.5">
                             ${log.reason || ''}
                         </div>
                     </div>

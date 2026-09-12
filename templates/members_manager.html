@@ -276,6 +276,286 @@
         </div>
     </dialog>
 
+    <!-- 🔑 All-in-One Multi-Credential Management Hub Modal -->
+    <dialog id="credentialsModal" class="modal">
+        <div class="modal-box max-w-3xl p-6">
+            <form method="dialog">
+                <button type="button" onclick="credentialsModal.close()" class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
+            </form>
+
+            <!-- Header -->
+            <div class="flex items-center gap-3 border-b border-base-content/10 pb-3 mb-4">
+                <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl shadow-xs">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-black text-lg text-base-content">Member Credentials Hub</h3>
+                        <span id="credHubStatusBadge" class="badge badge-sm badge-success font-bold font-mono">Active</span>
+                    </div>
+                    <p class="text-xs text-base-content/60" id="credHubSubtitle">Manage RFID Cards, Mobile BLE/NFC, Fingerprints, Face, and Keypad PINs</p>
+                </div>
+            </div>
+
+            <!-- Member Info Header Card with KPI counters -->
+            <div class="p-3.5 rounded-2xl bg-base-200/80 border border-base-content/10 mb-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div id="credHubAvatar" class="avatar">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">?</div>
+                        </div>
+                        <div>
+                            <div id="credHubMemberName" class="font-bold text-base text-base-content">Cardholder Name</div>
+                            <div class="flex items-center gap-2 text-xs text-base-content/60 font-mono mt-0.5">
+                                <span id="credHubMemberCode" class="badge badge-xs badge-neutral">MEM-000</span>
+                                <span id="credHubDepartment">General Department</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Quick Summary Counters -->
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="badge badge-sm badge-primary gap-1 font-mono font-bold" title="RFID Cards">
+                            <i class="fa-solid fa-credit-card text-[10px]"></i> <span id="cntRfid">0</span> RFID
+                        </span>
+                        <span class="badge badge-sm badge-secondary gap-1 font-mono font-bold" title="Mobile BLE/NFC">
+                            <i class="fa-solid fa-mobile-screen text-[10px]"></i> <span id="cntMobile">0</span> Mobile
+                        </span>
+                        <span class="badge badge-sm badge-accent gap-1 font-mono font-bold" title="Fingerprints">
+                            <i class="fa-solid fa-fingerprint text-[10px]"></i> <span id="cntFp">0</span> Finger
+                        </span>
+                        <span class="badge badge-sm badge-info gap-1 font-mono font-bold" title="Face Embeddings">
+                            <i class="fa-solid fa-camera text-[10px]"></i> <span id="cntFace">0</span> Face
+                        </span>
+                        <span class="badge badge-sm badge-warning gap-1 font-mono font-bold" title="Keypad PINs">
+                            <i class="fa-solid fa-hashtag text-[10px]"></i> <span id="cntPin">0</span> PIN
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DaisyUI 5 Tab Bar -->
+            <div class="tabs tabs-boxed bg-base-200 p-1 mb-4 grid grid-cols-5 text-xs">
+                <button type="button" id="tabCredRfid" onclick="switchCredTab('rfid')" class="tab tab-active gap-1 font-bold">
+                    <i class="fa-solid fa-credit-card"></i> <span class="hidden sm:inline">RFID</span>
+                </button>
+                <button type="button" id="tabCredMobile" onclick="switchCredTab('mobile')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-mobile-screen"></i> <span class="hidden sm:inline">Mobile</span>
+                </button>
+                <button type="button" id="tabCredFp" onclick="switchCredTab('fingerprint')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-fingerprint"></i> <span class="hidden sm:inline">Fingerprint</span>
+                </button>
+                <button type="button" id="tabCredFace" onclick="switchCredTab('face')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-camera"></i> <span class="hidden sm:inline">Face</span>
+                </button>
+                <button type="button" id="tabCredPin" onclick="switchCredTab('pin')" class="tab gap-1 font-bold">
+                    <i class="fa-solid fa-hashtag"></i> <span class="hidden sm:inline">PIN</span>
+                </button>
+            </div>
+
+            <!-- Tab 1: RFID Cards -->
+            <div id="credPanelRfid" class="space-y-4">
+                <div class="overflow-x-auto max-h-56 rounded-xl border border-base-content/10 bg-base-100">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-200/50">
+                                <th>Card Number</th>
+                                <th>Type</th>
+                                <th>Facility Code</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credRfidTableBody">
+                            <tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">Loading RFID cards...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add RFID Card Inline Form -->
+                <div class="card bg-base-200/60 p-3 rounded-xl border border-base-content/10">
+                    <div class="font-bold text-xs text-base-content mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle text-primary"></i>
+                        <span>Issue / Assign New RFID Card</span>
+                    </div>
+                    <form onsubmit="submitNewRfidCard(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <input type="text" id="newRfidNumber" placeholder="Card No (e.g. 1001234570)" class="input input-bordered input-xs font-mono" required />
+                        <input type="text" id="newRfidFacility" placeholder="Facility Code (e.g. 101)" class="input input-bordered input-xs font-mono" />
+                        <select id="newRfidType" class="select select-bordered select-xs">
+                            <option value="RFID_125K">RFID 125KHz</option>
+                            <option value="MIFARE">Mifare 13.56MHz</option>
+                            <option value="UHF">UHF Long Range</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-xs font-bold gap-1">
+                            <i class="fa-solid fa-check"></i> Assign Card
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab 2: Mobile Credentials -->
+            <div id="credPanelMobile" class="hidden space-y-4">
+                <div class="overflow-x-auto max-h-56 rounded-xl border border-base-content/10 bg-base-100">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-200/50">
+                                <th>Virtual Card #</th>
+                                <th>Device UUID</th>
+                                <th>Tech</th>
+                                <th>Platform</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credMobileTableBody">
+                            <tr><td colspan="6" class="text-center py-4 text-xs text-base-content/40">Loading mobile credentials...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pair Mobile Device Inline Form -->
+                <div class="card bg-base-200/60 p-3 rounded-xl border border-base-content/10">
+                    <div class="font-bold text-xs text-base-content mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-mobile-screen-button text-secondary"></i>
+                        <span>Pair Smartphone (BLE / NFC)</span>
+                    </div>
+                    <form onsubmit="submitNewMobileCred(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                        <input type="text" id="newMobileVCard" placeholder="Virtual Card #" class="input input-bordered input-xs font-mono" required />
+                        <input type="text" id="newMobileUuid" placeholder="Device UUID / App ID" class="input input-bordered input-xs font-mono" required />
+                        <select id="newMobileTech" class="select select-bordered select-xs">
+                            <option value="BLE">BLE (Bluetooth)</option>
+                            <option value="NFC">NFC (Host Emulation)</option>
+                        </select>
+                        <select id="newMobilePlatform" class="select select-bordered select-xs">
+                            <option value="iOS">Apple iOS</option>
+                            <option value="Android">Google Android</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary btn-xs font-bold gap-1">
+                            <i class="fa-solid fa-link"></i> Pair Device
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab 3: Fingerprints -->
+            <div id="credPanelFp" class="hidden space-y-4">
+                <div class="overflow-x-auto max-h-56 rounded-xl border border-base-content/10 bg-base-100">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-200/50">
+                                <th>Finger</th>
+                                <th>Quality Score</th>
+                                <th>Algorithm</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credFpTableBody">
+                            <tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">Loading fingerprints...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Enroll Fingerprint Inline Form -->
+                <div class="card bg-base-200/60 p-3 rounded-xl border border-base-content/10">
+                    <div class="font-bold text-xs text-base-content mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-fingerprint text-accent"></i>
+                        <span>Enroll Fingerprint Biometric Template</span>
+                    </div>
+                    <form onsubmit="submitNewFingerprint(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <select id="newFpFingerIndex" class="select select-bordered select-xs">
+                            <option value="1">1 - Right Thumb (นิ้วโป้งขวา)</option>
+                            <option value="2" selected>2 - Right Index (นิ้วชี้ขวา)</option>
+                            <option value="3">3 - Right Middle (นิ้วกลางขวา)</option>
+                            <option value="6">6 - Left Thumb (นิ้วโป้งซ้าย)</option>
+                            <option value="7">7 - Left Index (นิ้วชี้ซ้าย)</option>
+                        </select>
+                        <input type="number" id="newFpQuality" min="50" max="100" value="92" class="input input-bordered input-xs font-mono" placeholder="Quality Score (1-100)" />
+                        <select id="newFpAlgo" class="select select-bordered select-xs">
+                            <option value="ISO_19794_2">ISO 19794-2 (Minutiae)</option>
+                            <option value="ANSI_378">ANSI-378</option>
+                        </select>
+                        <button type="submit" class="btn btn-accent btn-xs font-bold gap-1">
+                            <i class="fa-solid fa-plus"></i> Enroll Finger
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab 4: Face Biometrics -->
+            <div id="credPanelFace" class="hidden space-y-4">
+                <div class="p-5 rounded-2xl bg-base-200/50 border border-base-content/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div id="credFacePreviewContainer" class="w-20 h-20 rounded-2xl bg-base-300 border-2 border-primary/20 overflow-hidden flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-camera text-3xl text-base-content/30"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span id="credFaceEnrolledBadge" class="badge badge-sm badge-ghost font-bold font-mono">Checking...</span>
+                                <span id="credFaceModelTag" class="text-xs font-mono text-base-content/60">InsightFace ArcFace-512</span>
+                            </div>
+                            <div class="text-xs text-base-content/70" id="credFaceRegDate">Registered Date: -</div>
+                            <p class="text-[11px] text-base-content/50">Normalized 512-dim ArcFace vector in in-memory cache</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2 shrink-0">
+                        <button type="button" onclick="launchFaceEnrollFromHub()" class="btn btn-secondary btn-sm gap-1.5 font-bold shadow-xs">
+                            <i class="fa-solid fa-camera"></i> <span>Open Camera / Enroll</span>
+                        </button>
+                        <button type="button" id="btnHubRemoveFace" onclick="removeFaceFromHub()" class="btn btn-ghost btn-xs text-error gap-1 hidden">
+                            <i class="fa-solid fa-trash-can"></i> Remove Face Vector
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: PIN Code Credentials -->
+            <div id="credPanelPin" class="hidden space-y-4">
+                <div class="overflow-x-auto max-h-56 rounded-xl border border-base-content/10 bg-base-100">
+                    <table class="table table-xs table-zebra w-full">
+                        <thead>
+                            <tr class="bg-base-200/50">
+                                <th>PIN Type</th>
+                                <th>Status</th>
+                                <th>Failed Attempts</th>
+                                <th>Security Policy</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credPinTableBody">
+                            <tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">Loading PIN credentials...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Set Member PIN Form -->
+                <div class="card bg-base-200/60 p-3 rounded-xl border border-base-content/10">
+                    <div class="font-bold text-xs text-base-content mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-key text-warning"></i>
+                        <span>Register or Update Keypad PIN (Salted Hash)</span>
+                    </div>
+                    <form onsubmit="submitNewPin(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <input type="password" id="newPinCode" minlength="4" maxlength="12" placeholder="PIN Code (4-12 digits)" class="input input-bordered input-xs font-mono" required />
+                        <select id="newPinType" class="select select-bordered select-xs">
+                            <option value="STANDARD">STANDARD (รหัสผ่านปกติ)</option>
+                            <option value="DURESS">DURESS (รหัสสัญญาณแจ้งภัยเงียบ)</option>
+                        </select>
+                        <div class="text-[10px] text-base-content/50 flex items-center">
+                            <i class="fa-solid fa-shield-halved text-success mr-1"></i> Bcrypt/Argon2 Hashed
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-xs font-bold gap-1 text-warning-content">
+                            <i class="fa-solid fa-check"></i> Set PIN
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Close Action -->
+            <div class="modal-action border-t border-base-content/10 pt-3 mt-4 flex justify-end">
+                <button type="button" onclick="credentialsModal.close()" class="btn btn-sm btn-ghost">Close</button>
+            </div>
+        </div>
+    </dialog>
+
     {% include '_dialog.html' %}
     {% include '_script.html' %}
 
@@ -305,13 +585,16 @@
                                 const fullName = (row.first_name + ' ' + (row.last_name || '')).trim();
                                 return `
                                     <div class="flex items-center justify-center gap-1">
+                                        <button onclick="openCredentialsHub(${data}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', '${row.department || ''}', '${row.status || ''}')" class="btn btn-ghost btn-xs btn-circle text-primary hover:bg-primary/15" title="Credentials Hub (RFID, Mobile, Fingerprint, Face, PIN)">
+                                            <i class="fa-solid fa-id-card-clip"></i>
+                                        </button>
                                         <button onclick="openFaceEnrollModal(${data}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', ${Boolean(row.face_embedding)})" class="btn btn-ghost btn-xs btn-circle text-secondary hover:bg-secondary/15" title="Enroll / Manage Face Access">
                                             <i class="fa-solid fa-camera"></i>
                                         </button>
-                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-primary" title="Edit">
+                                        <button onclick="openEditModal(${data})" class="btn btn-ghost btn-xs btn-circle text-info hover:bg-info/15" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button onclick="confirmDelete(${data}, '${row.first_name}')" class="btn btn-ghost btn-xs btn-circle text-error" title="Delete">
+                                        <button onclick="confirmDelete(${data}, '${row.first_name}')" class="btn btn-ghost btn-xs btn-circle text-error hover:bg-error/15" title="Delete">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -350,26 +633,26 @@
                             }
                         },
                         {
-                            data: "face_embedding",
-                            name: "face_embedding",
-                            title: "Face Access",
+                            data: "id",
+                            name: "credentials",
+                            title: "Credentials",
                             className: "text-center",
+                            orderable: false,
+                            searchable: false,
                             render: function (data, type, row) {
-                                const hasFace = Boolean(data && data.length > 20);
                                 const fullName = (row.first_name + ' ' + (row.last_name || '')).trim();
-                                if (hasFace) {
-                                    return `
-                                        <button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', true)" class="badge badge-xs badge-success gap-1 font-mono font-bold hover:scale-105 transition-transform cursor-pointer" title="${row.face_tag || 'Enrolled'}">
-                                            <i class="fa-solid fa-check text-[9px]"></i> Enrolled
+                                const hasFace = Boolean(row.face_embedding && row.face_embedding.length > 20);
+                                return `
+                                    <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                        <button type="button" onclick="openCredentialsHub(${data}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', '${row.department || ''}', '${row.status || ''}')" class="btn btn-xs btn-outline btn-primary gap-1 font-semibold hover:scale-105 transition-transform" title="Manage RFID, Mobile, Fingerprint, Face, PIN">
+                                            <i class="fa-solid fa-key text-[10px]"></i> Credentials Hub
                                         </button>
-                                    `;
-                                } else {
-                                    return `
-                                        <button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', false)" class="badge badge-xs badge-ghost text-base-content/50 gap-1 font-mono hover:scale-105 transition-transform cursor-pointer">
-                                            <i class="fa-solid fa-plus text-[9px]"></i> Add Face
-                                        </button>
-                                    `;
-                                }
+                                        ${hasFace 
+                                            ? `<button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', true)" class="badge badge-xs badge-success gap-0.5 font-mono cursor-pointer hover:scale-105 transition-transform" title="Face Enrolled"><i class="fa-solid fa-camera text-[9px]"></i> Face</button>`
+                                            : `<button type="button" onclick="openFaceEnrollModal(${row.id}, '${fullName}', '${row.member_code}', '${row.picture_url || ''}', false)" class="badge badge-xs badge-ghost text-base-content/50 gap-0.5 font-mono cursor-pointer hover:scale-105 transition-transform" title="Add Face"><i class="fa-solid fa-plus text-[9px]"></i> Face</button>`
+                                        }
+                                    </div>
+                                `;
                             }
                         },
                         {
@@ -779,6 +1062,486 @@
             }
         }
 
+        // =========================================================================
+        // 🔑 ALL-IN-ONE MULTI-CREDENTIALS HUB CONTROLLER
+        // =========================================================================
+        let currentMemberForCreds = null;
+        let activeCredTab = 'rfid';
+
+        async function openCredentialsHub(id, name, code, pictureUrl, department, status) {
+            currentMemberForCreds = { id, name, code, pictureUrl, department, status };
+
+            document.getElementById('credHubMemberName').textContent = name || 'Cardholder';
+            document.getElementById('credHubMemberCode').textContent = code || 'MEM-000';
+            document.getElementById('credHubDepartment').textContent = department || 'General Department';
+            document.getElementById('credHubSubtitle').textContent = `Manage RFID Cards, Mobile BLE/NFC, Fingerprints, Face, and PINs for ${name}`;
+
+            const badge = document.getElementById('credHubStatusBadge');
+            if (status === 'active') {
+                badge.className = 'badge badge-sm badge-success font-bold font-mono';
+                badge.textContent = 'Active';
+            } else {
+                badge.className = 'badge badge-sm badge-warning font-bold font-mono';
+                badge.textContent = status || 'Inactive';
+            }
+
+            const avatarBox = document.getElementById('credHubAvatar');
+            if (pictureUrl) {
+                avatarBox.innerHTML = `<img src="${pictureUrl}" class="w-12 h-12 rounded-xl object-cover border border-base-content/10 shadow-xs" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg\\'>?</div>';" />`;
+            } else {
+                const initial = name ? name.charAt(0).toUpperCase() : '?';
+                avatarBox.innerHTML = `<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">${initial}</div>`;
+            }
+
+            switchCredTab('rfid');
+            credentialsModal.showModal();
+            await loadMemberCredentials(id);
+        }
+
+        function switchCredTab(tab) {
+            activeCredTab = tab;
+            const tabs = ['rfid', 'mobile', 'fingerprint', 'face', 'pin'];
+            const tabBtnMap = {
+                'rfid': 'tabCredRfid',
+                'mobile': 'tabCredMobile',
+                'fingerprint': 'tabCredFp',
+                'face': 'tabCredFace',
+                'pin': 'tabCredPin'
+            };
+            const tabPanMap = {
+                'rfid': 'credPanelRfid',
+                'mobile': 'credPanelMobile',
+                'fingerprint': 'credPanelFp',
+                'face': 'credPanelFace',
+                'pin': 'credPanelPin'
+            };
+
+            tabs.forEach(t => {
+                const btn = document.getElementById(tabBtnMap[t]);
+                const pan = document.getElementById(tabPanMap[t]);
+                if (btn) {
+                    if (t === tab) {
+                        btn.classList.add('tab-active');
+                    } else {
+                        btn.classList.remove('tab-active');
+                    }
+                }
+                if (pan) {
+                    if (t === tab) {
+                        pan.classList.remove('hidden');
+                    } else {
+                        pan.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        async function loadMemberCredentials(memberId) {
+            try {
+                const res = await fetch(`/api/access/credentials/member/${memberId}`);
+                const result = await res.json();
+                if (!result.success) {
+                    if (window.toast) toast.error("Failed to load member credentials");
+                    return;
+                }
+
+                // 1. Quick Counters
+                document.getElementById('cntRfid').textContent = result.counts.rfid;
+                document.getElementById('cntMobile').textContent = result.counts.mobile;
+                document.getElementById('cntFp').textContent = result.counts.fingerprint;
+                document.getElementById('cntFace').textContent = result.counts.face;
+                document.getElementById('cntPin').textContent = result.counts.pin;
+
+                // 2. Tab 1: RFID Cards
+                const rfidBody = document.getElementById('credRfidTableBody');
+                const cards = result.credentials.rfid_cards || [];
+                if (cards.length === 0) {
+                    rfidBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">No RFID cards assigned</td></tr>';
+                } else {
+                    rfidBody.innerHTML = cards.map(c => `
+                        <tr>
+                            <td>
+                                <div class="font-mono font-bold text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-credit-card text-primary text-[10px]"></i>
+                                    <span>${c.card_number}</span>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-xs badge-neutral font-mono">${c.card_type || 'RFID'}</span></td>
+                            <td><span class="font-mono text-xs text-base-content/70">${c.facility_code || '-'}</span></td>
+                            <td><span class="badge badge-xs ${c.status === 'active' ? 'badge-success' : 'badge-error'} font-bold">${c.status}</span></td>
+                            <td class="text-center">
+                                <button type="button" onclick="deleteMemberCard(${c.id})" class="btn btn-ghost btn-xs text-error btn-circle hover:bg-error/15" title="Revoke Card">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 3. Tab 2: Mobile Credentials
+                const mobBody = document.getElementById('credMobileTableBody');
+                const mobiles = result.credentials.mobile_credentials || [];
+                if (mobiles.length === 0) {
+                    mobBody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-xs text-base-content/40">No mobile devices paired</td></tr>';
+                } else {
+                    mobBody.innerHTML = mobiles.map(m => `
+                        <tr>
+                            <td>
+                                <div class="font-mono font-bold text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-mobile-screen text-secondary text-[10px]"></i>
+                                    <span>${m.virtual_card_number}</span>
+                                </div>
+                            </td>
+                            <td><span class="font-mono text-[11px] text-base-content/70" title="${m.device_uuid}">${m.device_uuid.substring(0, 14)}...</span></td>
+                            <td><span class="badge badge-xs badge-secondary font-mono font-bold">${m.comm_tech}</span></td>
+                            <td>
+                                <span class="badge badge-xs badge-ghost font-medium">
+                                    <i class="fa-brands ${m.os_platform === 'iOS' ? 'fa-apple' : 'fa-android'} mr-1"></i>
+                                    ${m.os_platform}
+                                </span>
+                            </td>
+                            <td><span class="badge badge-xs ${m.status === 'active' ? 'badge-success' : 'badge-error'} font-bold">${m.status}</span></td>
+                            <td class="text-center">
+                                <button type="button" onclick="deleteMobileCred(${m.id})" class="btn btn-ghost btn-xs text-error btn-circle hover:bg-error/15" title="Revoke Device">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 4. Tab 3: Fingerprints
+                const fpBody = document.getElementById('credFpTableBody');
+                const fps = result.credentials.fingerprints || [];
+                if (fps.length === 0) {
+                    fpBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">No fingerprint templates enrolled</td></tr>';
+                } else {
+                    fpBody.innerHTML = fps.map(f => `
+                        <tr>
+                            <td>
+                                <div class="font-bold text-xs flex items-center gap-1.5">
+                                    <i class="fa-solid fa-fingerprint text-accent text-sm"></i>
+                                    <span>${f.finger_name || 'Finger #' + f.finger_index}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <progress class="progress progress-accent w-16 h-2" value="${f.quality_score || 80}" max="100"></progress>
+                                    <span class="font-mono text-xs font-bold">${f.quality_score || 80}%</span>
+                                </div>
+                            </td>
+                            <td><span class="font-mono text-[11px] text-base-content/60">${f.algorithm_version}</span></td>
+                            <td><span class="badge badge-xs ${f.status === 'active' ? 'badge-success' : 'badge-error'} font-bold">${f.status}</span></td>
+                            <td class="text-center">
+                                <button type="button" onclick="deleteFingerprint(${f.id})" class="btn btn-ghost btn-xs text-error btn-circle hover:bg-error/15" title="Delete Fingerprint">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 5. Tab 4: Face Biometrics Panel
+                const faces = result.credentials.face_credentials || [];
+                const faceBadge = document.getElementById('credFaceEnrolledBadge');
+                const btnRemoveFace = document.getElementById('btnHubRemoveFace');
+                const regDateText = document.getElementById('credFaceRegDate');
+                const facePreview = document.getElementById('credFacePreviewContainer');
+
+                if (faces.length > 0) {
+                    faceBadge.className = 'badge badge-sm badge-success font-bold font-mono gap-1';
+                    faceBadge.innerHTML = `<i class="fa-solid fa-check"></i> Enrolled (${faces.length} Template${faces.length > 1 ? 's' : ''})`;
+                    btnRemoveFace.classList.remove('hidden');
+                    const firstFace = faces[0];
+                    regDateText.textContent = `Registered: ${firstFace.created_at ? firstFace.created_at.substring(0, 19).replace('T', ' ') : '-'}`;
+                    if (currentMemberForCreds && currentMemberForCreds.pictureUrl) {
+                        facePreview.innerHTML = `<img src="${currentMemberForCreds.pictureUrl}" class="w-full h-full object-cover" />`;
+                    }
+                } else {
+                    faceBadge.className = 'badge badge-sm badge-ghost text-base-content/50 font-bold font-mono gap-1';
+                    faceBadge.innerHTML = `<i class="fa-solid fa-minus"></i> Not Enrolled`;
+                    btnRemoveFace.classList.add('hidden');
+                    regDateText.textContent = `Registered: -`;
+                    facePreview.innerHTML = `<i class="fa-solid fa-camera text-3xl text-base-content/30"></i>`;
+                }
+
+                // 6. Tab 5: PIN Codes
+                const pinBody = document.getElementById('credPinTableBody');
+                const pins = result.credentials.pin_credentials || [];
+                if (pins.length === 0) {
+                    pinBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-xs text-base-content/40">No PIN credentials configured</td></tr>';
+                } else {
+                    pinBody.innerHTML = pins.map(p => `
+                        <tr>
+                            <td>
+                                ${p.pin_type === 'DURESS' 
+                                    ? '<span class="badge badge-xs badge-error font-bold gap-1 font-mono animate-pulse"><i class="fa-solid fa-triangle-exclamation"></i> DURESS (แจ้งภัยเงียบ)</span>' 
+                                    : '<span class="badge badge-xs badge-primary font-bold font-mono">STANDARD (ปกติ)</span>'
+                                }
+                            </td>
+                            <td><span class="badge badge-xs ${p.status === 'active' ? 'badge-success' : 'badge-error'} font-bold">${p.status}</span></td>
+                            <td><span class="font-mono text-xs">${p.failed_attempts || 0} / 5</span></td>
+                            <td><span class="text-[11px] text-base-content/60 font-mono"><i class="fa-solid fa-shield-halved text-success mr-1"></i>Bcrypt Salted Hash</span></td>
+                            <td class="text-center">
+                                <button type="button" onclick="deletePinCred(${p.id})" class="btn btn-ghost btn-xs text-error btn-circle hover:bg-error/15" title="Revoke PIN">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+
+            } catch (err) {
+                console.error("Credentials load error:", err);
+            }
+        }
+
+        async function submitNewRfidCard(event) {
+            event.preventDefault();
+            if (!currentMemberForCreds) return;
+            const cardNum = document.getElementById('newRfidNumber').value.trim();
+            const facCode = document.getElementById('newRfidFacility').value.trim();
+            const cardType = document.getElementById('newRfidType').value;
+
+            try {
+                const res = await fetch('/api/access/card/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_id: currentMemberForCreds.id,
+                        card_number: cardNum,
+                        facility_code: facCode || null,
+                        card_type: cardType,
+                        status: 'active'
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "RFID card assigned successfully");
+                    document.getElementById('newRfidNumber').value = '';
+                    document.getElementById('newRfidFacility').value = '';
+                    await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Failed to assign RFID card");
+                }
+            } catch (err) {
+                console.error("RFID assign error:", err);
+                if (window.toast) toast.error("Error assigning RFID card");
+            }
+        }
+
+        async function deleteMemberCard(cardId) {
+            if (!confirm("Revoke and remove this RFID card?")) return;
+            try {
+                const res = await fetch(`/api/access/card/${cardId}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Card revoked");
+                    if (currentMemberForCreds) await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Card delete error:", err);
+            }
+        }
+
+        async function submitNewMobileCred(event) {
+            event.preventDefault();
+            if (!currentMemberForCreds) return;
+            const vcard = document.getElementById('newMobileVCard').value.trim();
+            const uuid = document.getElementById('newMobileUuid').value.trim();
+            const tech = document.getElementById('newMobileTech').value;
+            const platform = document.getElementById('newMobilePlatform').value;
+
+            try {
+                const res = await fetch('/api/access/credentials/mobile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_id: currentMemberForCreds.id,
+                        virtual_card_number: vcard,
+                        device_uuid: uuid,
+                        comm_tech: tech,
+                        os_platform: platform,
+                        status: 'active'
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Mobile credential paired!");
+                    document.getElementById('newMobileVCard').value = '';
+                    document.getElementById('newMobileUuid').value = '';
+                    await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Pairing failed");
+                }
+            } catch (err) {
+                console.error("Mobile cred error:", err);
+            }
+        }
+
+        async function deleteMobileCred(credId) {
+            if (!confirm("Revoke and disconnect this mobile credential?")) return;
+            try {
+                const res = await fetch(`/api/access/credentials/mobile/${credId}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Mobile credential revoked");
+                    if (currentMemberForCreds) await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Mobile delete error:", err);
+            }
+        }
+
+        async function submitNewFingerprint(event) {
+            event.preventDefault();
+            if (!currentMemberForCreds) return;
+            const fingerIndex = parseInt(document.getElementById('newFpFingerIndex').value, 10);
+            const qualityScore = parseInt(document.getElementById('newFpQuality').value, 10);
+            const algo = document.getElementById('newFpAlgo').value;
+
+            const fingerNames = {
+                1: 'Right Thumb',
+                2: 'Right Index',
+                3: 'Right Middle',
+                6: 'Left Thumb',
+                7: 'Left Index'
+            };
+            const fingerName = fingerNames[fingerIndex] || `Finger #${fingerIndex}`;
+            const dummyTemplate = 'ISO_MINUTIAE_' + Math.random().toString(36).substring(2).toUpperCase();
+
+            try {
+                const res = await fetch('/api/access/credentials/fingerprint', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_id: currentMemberForCreds.id,
+                        finger_index: fingerIndex,
+                        finger_name: fingerName,
+                        template_data: dummyTemplate,
+                        algorithm_version: algo,
+                        quality_score: qualityScore,
+                        status: 'active'
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Fingerprint enrolled!");
+                    await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Fingerprint enrollment failed");
+                }
+            } catch (err) {
+                console.error("Fingerprint enroll error:", err);
+            }
+        }
+
+        async function deleteFingerprint(fpId) {
+            if (!confirm("Remove this fingerprint biometric template?")) return;
+            try {
+                const res = await fetch(`/api/access/credentials/fingerprint/${fpId}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Fingerprint deleted");
+                    if (currentMemberForCreds) await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("Fingerprint delete error:", err);
+            }
+        }
+
+        async function submitNewPin(event) {
+            event.preventDefault();
+            if (!currentMemberForCreds) return;
+            const pinCode = document.getElementById('newPinCode').value.trim();
+            const pinType = document.getElementById('newPinType').value;
+
+            try {
+                const res = await fetch('/api/access/credentials/pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        member_id: currentMemberForCreds.id,
+                        pin_code: pinCode,
+                        pin_type: pinType,
+                        status: 'active'
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "PIN credential set successfully!");
+                    document.getElementById('newPinCode').value = '';
+                    await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Failed to set PIN");
+                }
+            } catch (err) {
+                console.error("PIN save error:", err);
+            }
+        }
+
+        async function deletePinCred(pinId) {
+            if (!confirm("Revoke this PIN code credential?")) return;
+            try {
+                const res = await fetch(`/api/access/credentials/pin/${pinId}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "PIN revoked");
+                    if (currentMemberForCreds) await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Delete failed");
+                }
+            } catch (err) {
+                console.error("PIN delete error:", err);
+            }
+        }
+
+        function launchFaceEnrollFromHub() {
+            if (!currentMemberForCreds) return;
+            openFaceEnrollModal(
+                currentMemberForCreds.id,
+                currentMemberForCreds.name,
+                currentMemberForCreds.code,
+                currentMemberForCreds.pictureUrl,
+                false
+            );
+        }
+
+        async function removeFaceFromHub() {
+            if (!currentMemberForCreds) return;
+            if (!confirm(`Are you sure you want to remove face biometric access for ${currentMemberForCreds.name}?`)) return;
+
+            try {
+                const res = await fetch(`/api/access/member/${currentMemberForCreds.id}/remove-face`, {
+                    method: 'DELETE'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    if (window.toast) toast.success(result.message || "Face credential removed");
+                    await loadMemberCredentials(currentMemberForCreds.id);
+                    reloadTable();
+                } else {
+                    if (window.toast) toast.error(result.detail || "Failed to remove face credential");
+                }
+            } catch (err) {
+                console.error("Remove face error:", err);
+            }
+        }
+
         window.openFaceEnrollModal = openFaceEnrollModal;
         window.closeFaceEnrollModal = closeFaceEnrollModal;
         window.switchFaceMethod = switchFaceMethod;
@@ -789,6 +1552,20 @@
         window.previewUploadedFile = previewUploadedFile;
         window.submitFaceEnrollment = submitFaceEnrollment;
         window.deleteFaceBiometrics = deleteFaceBiometrics;
+
+        window.openCredentialsHub = openCredentialsHub;
+        window.switchCredTab = switchCredTab;
+        window.loadMemberCredentials = loadMemberCredentials;
+        window.submitNewRfidCard = submitNewRfidCard;
+        window.deleteMemberCard = deleteMemberCard;
+        window.submitNewMobileCred = submitNewMobileCred;
+        window.deleteMobileCred = deleteMobileCred;
+        window.submitNewFingerprint = submitNewFingerprint;
+        window.deleteFingerprint = deleteFingerprint;
+        window.submitNewPin = submitNewPin;
+        window.deletePinCred = deletePinCred;
+        window.launchFaceEnrollFromHub = launchFaceEnrollFromHub;
+        window.removeFaceFromHub = removeFaceFromHub;
     </script>
 
 </body>

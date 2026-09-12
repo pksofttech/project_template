@@ -43,6 +43,8 @@ async def get_logs_datatable(req_para: Request, db: AsyncDbDep):
             Access_Log.door_name.ilike(f"%{search}%"),
             Access_Log.result.ilike(f"%{search}%"),
             Access_Log.reason.ilike(f"%{search}%"),
+            Access_Log.credential_type.ilike(f"%{search}%"),
+            Access_Log.credential_identifier.ilike(f"%{search}%"),
         )
 
     # 2. Dynamic Column Select & Where Expressions
@@ -64,6 +66,8 @@ async def get_logs_datatable(req_para: Request, db: AsyncDbDep):
         base_stmt = base_stmt.where(Access_Log.direction == params["direction"].upper())
     if params.get("event_type"):
         base_stmt = base_stmt.where(Access_Log.event_type == params["event_type"].upper())
+    if params.get("credential_type"):
+        base_stmt = base_stmt.where(Access_Log.credential_type == params["credential_type"].upper())
 
     order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Access_Log)
     if order_expr is None:
