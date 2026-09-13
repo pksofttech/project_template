@@ -3,6 +3,7 @@ import json
 import os
 import uuid
 from datetime import datetime
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlmodel import func, literal, or_, select
@@ -296,4 +297,3 @@ async def remove_member_face_endpoint(member_id: int, db: AsyncDbDep):
         "success": True,
         "message": f"Face biometric credential removed for {member.first_name}",
     }
-

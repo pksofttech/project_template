@@ -1,6 +1,5 @@
 """API Endpoints for Access Devices (Readers, Terminals, Keypads, Face Kiosks)."""
 
-from datetime import datetime
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlmodel import func, literal, or_, select
@@ -150,7 +149,7 @@ async def get_device(device_id: int, db: AsyncDbDep):
     device = await db.get(Access_Device, device_id)
     if not device:
         raise HTTPException(status_code=404, detail=f"Device {device_id} not found")
-    
+
     door = await db.get(Access_Door, device.door_id)
     data = device.model_dump()
     data["door_name"] = door.name if door else "-"

@@ -1,6 +1,5 @@
 """API Endpoints for Multi-Credential Management (RFID, Mobile BLE/NFC, Fingerprint, Face, PIN)."""
 
-from datetime import datetime
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlmodel import func, literal, or_, select
@@ -18,8 +17,8 @@ from app.core.models import (
     build_select_expr,
     build_where_expr,
 )
-from app.core.utility import export_excel_response, get_datatable_select
-from app.stdio import parse_datetime_bkk, time_now
+from app.core.utility import get_datatable_select
+from app.stdio import time_now
 
 router = APIRouter(
     prefix="/api/access/credentials",
@@ -31,6 +30,7 @@ router = APIRouter(
 # 👤 MEMBER ALL-CREDENTIALS OVERVIEW
 # =========================================================================
 
+
 @router.get("/member/{member_id}", summary="Get all credentials assigned to a member")
 async def get_member_credentials(member_id: int, db: AsyncDbDep):
     """Retrieve all credentials (RFID, Mobile, Fingerprint, Face, PIN) belonging to a member."""
@@ -39,25 +39,15 @@ async def get_member_credentials(member_id: int, db: AsyncDbDep):
         raise HTTPException(status_code=404, detail="Member not found")
 
     # 1. RFID Cards
-    rfid_cards = (
-        await db.exec(select(Access_Card).where(Access_Card.member_id == member_id))
-    ).all()
+    rfid_cards = (await db.exec(select(Access_Card).where(Access_Card.member_id == member_id))).all()
 
     # 2. Mobile Credentials (BLE / NFC)
     mobile_creds = (
-        await db.exec(
-            select(Member_Mobile_Credential).where(
-                Member_Mobile_Credential.member_id == member_id
-            )
-        )
+        await db.exec(select(Member_Mobile_Credential).where(Member_Mobile_Credential.member_id == member_id))
     ).all()
 
     # 3. Fingerprint Biometrics
-    fingerprints = (
-        await db.exec(
-            select(Member_Fingerprint).where(Member_Fingerprint.member_id == member_id)
-        )
-    ).all()
+    fingerprints = (await db.exec(select(Member_Fingerprint).where(Member_Fingerprint.member_id == member_id))).all()
     fp_list = [
         {
             "id": fp.id,
@@ -74,13 +64,7 @@ async def get_member_credentials(member_id: int, db: AsyncDbDep):
     ]
 
     # 4. Face Credentials
-    faces = (
-        await db.exec(
-            select(Member_Face_Credential).where(
-                Member_Face_Credential.member_id == member_id
-            )
-        )
-    ).all()
+    faces = (await db.exec(select(Member_Face_Credential).where(Member_Face_Credential.member_id == member_id))).all()
     face_list = [
         {
             "id": f.id,
@@ -97,13 +81,7 @@ async def get_member_credentials(member_id: int, db: AsyncDbDep):
     ]
 
     # 5. PIN Credentials (Sanitized: hide hash)
-    pins = (
-        await db.exec(
-            select(Member_Pin_Credential).where(
-                Member_Pin_Credential.member_id == member_id
-            )
-        )
-    ).all()
+    pins = (await db.exec(select(Member_Pin_Credential).where(Member_Pin_Credential.member_id == member_id))).all()
     pin_list = [
         {
             "id": p.id,
@@ -149,6 +127,7 @@ async def get_member_credentials(member_id: int, db: AsyncDbDep):
 # 📱 MOBILE CREDENTIALS (BLE / NFC / HCE)
 # =========================================================================
 
+
 class MobileCredCreate(BaseModel):
     member_id: int
     virtual_card_number: str = Field(..., description="Virtual Card Number")
@@ -190,9 +169,7 @@ async def get_mobile_datatable(req_para: Request, db: AsyncDbDep):
             Member_Mobile_Credential.status.ilike(f"%{search}%"),
         )
 
-    select_stmt = build_select_expr(
-        datatable_select["list_datas"], fallback_model=Member_Mobile_Credential
-    )
+    select_stmt = build_select_expr(datatable_select["list_datas"], fallback_model=Member_Mobile_Credential)
     if not select_stmt:
         select_stmt = [c.label(c.name) for c in Member_Mobile_Credential.__table__.c]
     base_stmt = select(*select_stmt).where(search_cond)
@@ -201,22 +178,14 @@ async def get_mobile_datatable(req_para: Request, db: AsyncDbDep):
     if where_stmt is not None:
         base_stmt = base_stmt.where(where_stmt)
 
-    order_expr = build_order_by_expr(
-        datatable_select["order_by"], fallback_model=Member_Mobile_Credential
-    )
+    order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Member_Mobile_Credential)
     if order_expr is None:
         order_expr = Member_Mobile_Credential.id.desc()
 
     total_subq = base_stmt.subquery()
-    records_total = (
-        await db.execute(select(func.count()).select_from(total_subq))
-    ).scalar_one()
+    records_total = (await db.execute(select(func.count()).select_from(total_subq))).scalar_one()
 
-    rows = (
-        (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit)))
-        .mappings()
-        .all()
-    )
+    rows = (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit))).mappings().all()
     return {
         "draw": params.get("draw"),
         "recordsTotal": records_total,
@@ -235,8 +204,7 @@ async def create_mobile_credential(data: MobileCredCreate, db: AsyncDbDep):
         await db.exec(
             select(Member_Mobile_Credential).where(
                 or_(
-                    Member_Mobile_Credential.virtual_card_number
-                    == data.virtual_card_number,
+                    Member_Mobile_Credential.virtual_card_number == data.virtual_card_number,
                     Member_Mobile_Credential.device_uuid == data.device_uuid,
                 )
             )
@@ -261,9 +229,7 @@ async def create_mobile_credential(data: MobileCredCreate, db: AsyncDbDep):
 
 
 @router.put("/mobile/{cred_id}", summary="Update Mobile Credential")
-async def update_mobile_credential(
-    cred_id: int, data: MobileCredUpdate, db: AsyncDbDep
-):
+async def update_mobile_credential(cred_id: int, data: MobileCredUpdate, db: AsyncDbDep):
     cred = await db.get(Member_Mobile_Credential, cred_id)
     if not cred:
         raise HTTPException(status_code=404, detail="Mobile credential not found")
@@ -297,6 +263,7 @@ async def delete_mobile_credential(cred_id: int, db: AsyncDbDep):
 # 👆 FINGERPRINT BIOMETRICS
 # =========================================================================
 
+
 class FingerprintCreate(BaseModel):
     member_id: int
     finger_index: int = Field(default=1, ge=1, le=10)
@@ -324,9 +291,7 @@ async def get_fingerprint_datatable(req_para: Request, db: AsyncDbDep):
             Member_Fingerprint.status.ilike(f"%{search}%"),
         )
 
-    select_stmt = build_select_expr(
-        datatable_select["list_datas"], fallback_model=Member_Fingerprint
-    )
+    select_stmt = build_select_expr(datatable_select["list_datas"], fallback_model=Member_Fingerprint)
     if not select_stmt:
         select_stmt = [
             Member_Fingerprint.id.label("id"),
@@ -341,22 +306,14 @@ async def get_fingerprint_datatable(req_para: Request, db: AsyncDbDep):
         ]
     base_stmt = select(*select_stmt).where(search_cond)
 
-    order_expr = build_order_by_expr(
-        datatable_select["order_by"], fallback_model=Member_Fingerprint
-    )
+    order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Member_Fingerprint)
     if order_expr is None:
         order_expr = Member_Fingerprint.id.desc()
 
     total_subq = base_stmt.subquery()
-    records_total = (
-        await db.execute(select(func.count()).select_from(total_subq))
-    ).scalar_one()
+    records_total = (await db.execute(select(func.count()).select_from(total_subq))).scalar_one()
 
-    rows = (
-        (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit)))
-        .mappings()
-        .all()
-    )
+    rows = (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit))).mappings().all()
     return {
         "draw": params.get("draw"),
         "recordsTotal": records_total,
@@ -403,6 +360,7 @@ async def delete_fingerprint(fp_id: int, db: AsyncDbDep):
 # =========================================================================
 # 👤 FACIAL RECOGNITION CREDENTIALS
 # =========================================================================
+
 
 class FaceCredCreate(BaseModel):
     member_id: int
@@ -455,9 +413,7 @@ async def get_face_datatable(req_para: Request, db: AsyncDbDep):
             Member_Face_Credential.status.ilike(f"%{search}%"),
         )
 
-    select_stmt = build_select_expr(
-        datatable_select["list_datas"], fallback_model=Member_Face_Credential
-    )
+    select_stmt = build_select_expr(datatable_select["list_datas"], fallback_model=Member_Face_Credential)
     if not select_stmt:
         select_stmt = [
             Member_Face_Credential.id.label("id"),
@@ -472,22 +428,14 @@ async def get_face_datatable(req_para: Request, db: AsyncDbDep):
         ]
     base_stmt = select(*select_stmt).where(search_cond)
 
-    order_expr = build_order_by_expr(
-        datatable_select["order_by"], fallback_model=Member_Face_Credential
-    )
+    order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Member_Face_Credential)
     if order_expr is None:
         order_expr = Member_Face_Credential.id.desc()
 
     total_subq = base_stmt.subquery()
-    records_total = (
-        await db.execute(select(func.count()).select_from(total_subq))
-    ).scalar_one()
+    records_total = (await db.execute(select(func.count()).select_from(total_subq))).scalar_one()
 
-    rows = (
-        (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit)))
-        .mappings()
-        .all()
-    )
+    rows = (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit))).mappings().all()
     return {
         "draw": params.get("draw"),
         "recordsTotal": records_total,
@@ -510,6 +458,7 @@ async def delete_face_credential(face_id: int, db: AsyncDbDep):
 # =========================================================================
 # 🔢 PIN CODE CREDENTIALS
 # =========================================================================
+
 
 class PinCreate(BaseModel):
     member_id: int
@@ -540,9 +489,7 @@ async def get_pin_datatable(req_para: Request, db: AsyncDbDep):
             Member_Pin_Credential.status.ilike(f"%{search}%"),
         )
 
-    select_stmt = build_select_expr(
-        datatable_select["list_datas"], fallback_model=Member_Pin_Credential
-    )
+    select_stmt = build_select_expr(datatable_select["list_datas"], fallback_model=Member_Pin_Credential)
     if not select_stmt:
         select_stmt = [
             Member_Pin_Credential.id.label("id"),
@@ -556,22 +503,14 @@ async def get_pin_datatable(req_para: Request, db: AsyncDbDep):
         ]
     base_stmt = select(*select_stmt).where(search_cond)
 
-    order_expr = build_order_by_expr(
-        datatable_select["order_by"], fallback_model=Member_Pin_Credential
-    )
+    order_expr = build_order_by_expr(datatable_select["order_by"], fallback_model=Member_Pin_Credential)
     if order_expr is None:
         order_expr = Member_Pin_Credential.id.desc()
 
     total_subq = base_stmt.subquery()
-    records_total = (
-        await db.execute(select(func.count()).select_from(total_subq))
-    ).scalar_one()
+    records_total = (await db.execute(select(func.count()).select_from(total_subq))).scalar_one()
 
-    rows = (
-        (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit)))
-        .mappings()
-        .all()
-    )
+    rows = (await db.execute(base_stmt.order_by(order_expr).offset(skip).limit(limit))).mappings().all()
     return {
         "draw": params.get("draw"),
         "recordsTotal": records_total,

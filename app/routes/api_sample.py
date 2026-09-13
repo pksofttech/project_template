@@ -1,10 +1,10 @@
 """Sample Entity API: Full CRUD & DataTables Server-Side Pagination with Excel Export."""
 
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
 from sqlmodel import func, literal, or_, select
 
-from fastapi import APIRouter, HTTPException, Query, Request, status
-from app.core.dependencies import AsyncDbDep, JWTDep
+from app.core.dependencies import AsyncDbDep
 from app.core.models import (
     Sample_Item,
     build_order_by_expr,
@@ -12,7 +12,7 @@ from app.core.models import (
     build_where_expr,
 )
 from app.core.utility import export_excel_response, get_datatable_select
-from app.stdio import print_error, print_success, time_now
+from app.stdio import print_success, time_now
 
 router = APIRouter(
     prefix="/api/sample",

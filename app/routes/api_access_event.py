@@ -3,9 +3,9 @@ import json
 import os
 import uuid
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-from pydantic import BaseModel, Field
+
 from fastapi import APIRouter, HTTPException, Request
+from pydantic import BaseModel, Field
 from sqlmodel import func, or_, select
 
 from app.core.auth import verify_password
@@ -50,6 +50,7 @@ def track_denial_for_alerts(identifier: str, door_name: str, reason: str):
     _denial_history[identifier] = history
     if len(history) >= 3:
         from app.module.notification_service import notification_service
+
         notification_service.dispatch_alert_background(
             event_type="DENIED_LIMIT",
             title="⚠️ SECURITY ALERT: REPEATED ACCESS DENIALS",
@@ -67,7 +68,6 @@ def clear_denial_history(identifier: str):
     """Clear failed attempts history on successful access."""
     if identifier in _denial_history:
         _denial_history.pop(identifier, None)
-
 
 
 class CardSwipeRequest(BaseModel):
@@ -307,7 +307,9 @@ async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
                                 # Validate Time window
                                 current_hh_mm = now.strftime("%H:%M")
                                 if not (access_group.time_start <= current_hh_mm <= access_group.time_end):
-                                    reason = f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                    reason = (
+                                        f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                    )
                                 else:
                                     # All checks passed!
                                     result = "GRANTED"
@@ -388,7 +390,7 @@ async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
     # 6. Update Member Zone Location if Access Granted (Only on final GRANTED)
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -485,13 +487,15 @@ async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
         "device_name": device_name,
     }
     if v_session:
-        ret.update({
-            "challenge_required": True,
-            "session_token": v_session.session_token,
-            "expected_factor": v_session.expected_second_factor,
-            "timeout_sec": active_policy.inter_factor_timeout_sec if active_policy else 15,
-            "expires_at": v_session.expires_at.isoformat(),
-        })
+        ret.update(
+            {
+                "challenge_required": True,
+                "session_token": v_session.session_token,
+                "expected_factor": v_session.expected_second_factor,
+                "timeout_sec": active_policy.inter_factor_timeout_sec if active_policy else 15,
+                "expires_at": v_session.expires_at.isoformat(),
+            }
+        )
     return ret
 
 
@@ -505,9 +509,7 @@ async def verify_challenge_factor(payload: ChallengeVerifyRequest, db: AsyncDbDe
     now = time_now()
     session_token = payload.session_token.strip()
 
-    stmt = select(Access_Verification_Session).where(
-        Access_Verification_Session.session_token == session_token
-    )
+    stmt = select(Access_Verification_Session).where(Access_Verification_Session.session_token == session_token)
     v_session = (await db.exec(stmt)).first()
 
     if not v_session:
@@ -532,9 +534,7 @@ async def verify_challenge_factor(payload: ChallengeVerifyRequest, db: AsyncDbDe
     if dev_lookup:
         device = (
             await db.exec(
-                select(Access_Device).where(
-                    or_(Access_Device.code == dev_lookup, Access_Device.name == dev_lookup)
-                )
+                select(Access_Device).where(or_(Access_Device.code == dev_lookup, Access_Device.name == dev_lookup))
             )
         ).first()
         if not device and dev_lookup.isdigit():
@@ -621,7 +621,7 @@ async def verify_challenge_factor(payload: ChallengeVerifyRequest, db: AsyncDbDe
 
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -657,32 +657,35 @@ async def verify_challenge_factor(payload: ChallengeVerifyRequest, db: AsyncDbDe
     await db.refresh(log_entry)
 
     # SSE Broadcast
-    broadcast_sse({
-        "event": "access_swipe",
-        "data": {
-            "id": log_entry.id,
-            "time": now.strftime("%H:%M:%S"),
-            "date": now.strftime("%Y-%m-%d"),
-            "card_number": v_session.first_factor_value,
-            "member_id": member_id,
-            "member_name": member_name,
-            "door_id": door_id,
-            "door_name": door_name,
-            "device_id": device_id,
-            "device_name": device_name,
-            "from_zone_name": from_zone_name,
-            "to_zone_name": to_zone_name,
-            "result": result,
-            "reason": reason,
-            "event_type": "2FA_VERIFICATION",
-            "is_duress": is_duress,
-            "unlock_relay": (result == "GRANTED"),
-            "relay_time_sec": door.relay_time_sec if door else 5,
-        },
-    })
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": log_entry.id,
+                "time": now.strftime("%H:%M:%S"),
+                "date": now.strftime("%Y-%m-%d"),
+                "card_number": v_session.first_factor_value,
+                "member_id": member_id,
+                "member_name": member_name,
+                "door_id": door_id,
+                "door_name": door_name,
+                "device_id": device_id,
+                "device_name": device_name,
+                "from_zone_name": from_zone_name,
+                "to_zone_name": to_zone_name,
+                "result": result,
+                "reason": reason,
+                "event_type": "2FA_VERIFICATION",
+                "is_duress": is_duress,
+                "unlock_relay": (result == "GRANTED"),
+                "relay_time_sec": door.relay_time_sec if door else 5,
+            },
+        }
+    )
 
     if is_duress:
         from app.module.notification_service import notification_service
+
         notification_service.dispatch_alert_background(
             event_type="DURESS_PIN",
             title="🚨 DURESS PIN SILENT ALARM",
@@ -776,6 +779,7 @@ async def remote_door_unlock(payload: RemoteUnlockRequest, db: AsyncDbDep):
 # =========================================================================
 # 📹 CAMERA FACE DETECTION & RECOGNITION (INSIGHTFACE / MOCKUP)
 # =========================================================================
+
 
 @router.post("/camera-face", summary="Camera Face Detection & Recognition Webhook")
 async def handle_camera_face(request: Request, db: AsyncDbDep):
@@ -952,7 +956,9 @@ async def handle_camera_face(request: Request, db: AsyncDbDep):
                             # Validate Time window
                             current_hh_mm = now.strftime("%H:%M")
                             if not (access_group.time_start <= current_hh_mm <= access_group.time_end):
-                                reason = f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                reason = (
+                                    f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                )
                             else:
                                 result = "GRANTED"
                                 reason = f"Face Verified ({confidence * 100:.1f}%)"
@@ -1006,7 +1012,7 @@ async def handle_camera_face(request: Request, db: AsyncDbDep):
     # 6. Update Member Location if Granted
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -1079,7 +1085,7 @@ async def handle_camera_face(request: Request, db: AsyncDbDep):
     broadcast_sse(event_payload)
 
     if result == "GRANTED":
-        print_success(f"🔓 [FACE GRANTED] {member_name} ({confidence*100:.1f}%) at {door_name}")
+        print_success(f"🔓 [FACE GRANTED] {member_name} ({confidence * 100:.1f}%) at {door_name}")
     else:
         print_info(f"🚫 [FACE DENIED] {matched_code or 'STRANGER'} at {door_name} - Reason: {reason}")
 
@@ -1228,29 +1234,33 @@ async def get_face_review_gallery(
         time_str = log.event_time.strftime("%H:%M:%S") if log.event_time else "-"
         date_str = log.event_time.strftime("%Y-%m-%d") if log.event_time else "-"
 
-        items.append({
-            "id": log.id,
-            "event_time": evt_time_str,
-            "date_str": date_str,
-            "time_str": time_str,
-            "result": log.result,
-            "reason": log.reason,
-            "direction": log.direction,
-            "door_id": log.door_id,
-            "door_name": log.door_name,
-            "card_number": log.card_number,
-            "member_id": log.member_id,
-            "member_name": log.member_name or "Unknown / Stranger",
-            "department": log.department or (mem.department if mem else ""),
-            "member_code": mem.member_code if mem else (log.card_number.replace("FACE:", "") if log.card_number else ""),
-            "master_photo_url": mem.picture_url if (mem and mem.picture_url) else "",
-            "snapshot_url": log.snapshot_url or "",
-            "confidence_score": round(conf, 4),
-            "confidence_percent": conf_pct,
-            "is_match": is_match,
-            "face_tag": mem.face_tag if mem else "",
-            "threshold": face_service.threshold,
-        })
+        items.append(
+            {
+                "id": log.id,
+                "event_time": evt_time_str,
+                "date_str": date_str,
+                "time_str": time_str,
+                "result": log.result,
+                "reason": log.reason,
+                "direction": log.direction,
+                "door_id": log.door_id,
+                "door_name": log.door_name,
+                "card_number": log.card_number,
+                "member_id": log.member_id,
+                "member_name": log.member_name or "Unknown / Stranger",
+                "department": log.department or (mem.department if mem else ""),
+                "member_code": mem.member_code
+                if mem
+                else (log.card_number.replace("FACE:", "") if log.card_number else ""),
+                "master_photo_url": mem.picture_url if (mem and mem.picture_url) else "",
+                "snapshot_url": log.snapshot_url or "",
+                "confidence_score": round(conf, 4),
+                "confidence_percent": conf_pct,
+                "is_match": is_match,
+                "face_tag": mem.face_tag if mem else "",
+                "threshold": face_service.threshold,
+            }
+        )
 
     total_pages = (total + limit - 1) // limit if total > 0 else 1
 
@@ -1270,9 +1280,7 @@ async def get_face_review_gallery(
 async def get_face_review_stats(db: AsyncDbDep):
     """Get metrics and KPIs for face recognition operations."""
     total_face_logs = (
-        await db.execute(
-            select(func.count()).where(Access_Log.event_type == "FACE_RECOGNITION")
-        )
+        await db.execute(select(func.count()).where(Access_Log.event_type == "FACE_RECOGNITION"))
     ).scalar_one()
 
     granted_logs = (
@@ -1332,23 +1340,26 @@ async def get_face_enrolled_members(db: AsyncDbDep):
     results = []
     for m in members:
         has_face = bool(m.face_embedding and len(m.face_embedding) > 20)
-        results.append({
-            "id": m.id,
-            "member_code": m.member_code,
-            "name": f"{m.first_name} {m.last_name or ''}".strip(),
-            "department": m.department or "-",
-            "picture_url": m.picture_url or "",
-            "status": m.status,
-            "has_face": has_face,
-            "face_tag": m.face_tag or ("Enrolled" if has_face else "Not Enrolled"),
-            "face_registered_at": m.face_registered_at.strftime("%Y-%m-%d %H:%M") if m.face_registered_at else "-",
-        })
+        results.append(
+            {
+                "id": m.id,
+                "member_code": m.member_code,
+                "name": f"{m.first_name} {m.last_name or ''}".strip(),
+                "department": m.department or "-",
+                "picture_url": m.picture_url or "",
+                "status": m.status,
+                "has_face": has_face,
+                "face_tag": m.face_tag or ("Enrolled" if has_face else "Not Enrolled"),
+                "face_registered_at": m.face_registered_at.strftime("%Y-%m-%d %H:%M") if m.face_registered_at else "-",
+            }
+        )
     return {"success": True, "data": results, "count": len(results)}
 
 
 # =========================================================================
 # 📱 MOBILE CREDENTIAL ACCESS EVENT (BLE / NFC)
 # =========================================================================
+
 
 class MobileSwipeRequest(BaseModel):
     device_uuid: str = Field(..., description="Device UUID or Virtual Card Number")
@@ -1462,7 +1473,9 @@ async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
                             else:
                                 current_hh_mm = now.strftime("%H:%M")
                                 if not (access_group.time_start <= current_hh_mm <= access_group.time_end):
-                                    reason = f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                    reason = (
+                                        f"Access outside schedule ({access_group.time_start} - {access_group.time_end})"
+                                    )
                                 else:
                                     result = "GRANTED"
                                     reason = f"Mobile Access Granted ({access_group.name})"
@@ -1493,7 +1506,7 @@ async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
 
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -1526,31 +1539,33 @@ async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
     await db.refresh(log_entry)
 
     # 5. Broadcast SSE
-    broadcast_sse({
-        "event": "access_swipe",
-        "data": {
-            "id": log_entry.id,
-            "time": now.strftime("%H:%M:%S"),
-            "date": now.strftime("%Y-%m-%d"),
-            "card_number": device_id,
-            "member_id": member_id,
-            "member_name": member_name,
-            "department": department,
-            "door_id": door_id,
-            "door_code": door_code,
-            "door_name": door_name,
-            "from_zone_name": from_zone_name,
-            "to_zone_name": to_zone_name,
-            "direction": direction,
-            "result": result,
-            "reason": reason,
-            "event_type": "MOBILE_TAP",
-            "credential_type": f"MOBILE_{payload.comm_tech.upper()}",
-            "picture_url": picture_url,
-            "unlock_relay": (result == "GRANTED"),
-            "relay_time_sec": door.relay_time_sec if door else 5,
-        },
-    })
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": log_entry.id,
+                "time": now.strftime("%H:%M:%S"),
+                "date": now.strftime("%Y-%m-%d"),
+                "card_number": device_id,
+                "member_id": member_id,
+                "member_name": member_name,
+                "department": department,
+                "door_id": door_id,
+                "door_code": door_code,
+                "door_name": door_name,
+                "from_zone_name": from_zone_name,
+                "to_zone_name": to_zone_name,
+                "direction": direction,
+                "result": result,
+                "reason": reason,
+                "event_type": "MOBILE_TAP",
+                "credential_type": f"MOBILE_{payload.comm_tech.upper()}",
+                "picture_url": picture_url,
+                "unlock_relay": (result == "GRANTED"),
+                "relay_time_sec": door.relay_time_sec if door else 5,
+            },
+        }
+    )
 
     return {
         "success": True,
@@ -1568,6 +1583,7 @@ async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
 # =========================================================================
 # 👆 FINGERPRINT BIOMETRIC ACCESS EVENT
 # =========================================================================
+
 
 class FingerprintSwipeRequest(BaseModel):
     door_code: str = Field(..., description="Door identifier code")
@@ -1607,11 +1623,7 @@ async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
     elif door.status.upper() != "ONLINE":
         reason = f"Door '{door.name}' is currently {door.status}"
     else:
-        member = (
-            await db.exec(
-                select(Access_Member).where(Access_Member.member_code == member_code)
-            )
-        ).first()
+        member = (await db.exec(select(Access_Member).where(Access_Member.member_code == member_code))).first()
 
         if not member:
             reason = f"Unregistered Member: {member_code}"
@@ -1703,7 +1715,7 @@ async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
 
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -1734,25 +1746,27 @@ async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
     await db.commit()
     await db.refresh(log_entry)
 
-    broadcast_sse({
-        "event": "access_swipe",
-        "data": {
-            "id": log_entry.id,
-            "time": now.strftime("%H:%M:%S"),
-            "date": now.strftime("%Y-%m-%d"),
-            "card_number": f"FP:{member_code}",
-            "member_id": member_id,
-            "member_name": member_name,
-            "door_id": door_id,
-            "door_name": door_name,
-            "result": result,
-            "reason": reason,
-            "event_type": "FINGERPRINT_SCAN",
-            "credential_type": "FINGERPRINT",
-            "unlock_relay": (result == "GRANTED"),
-            "relay_time_sec": door.relay_time_sec if door else 5,
-        },
-    })
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": log_entry.id,
+                "time": now.strftime("%H:%M:%S"),
+                "date": now.strftime("%Y-%m-%d"),
+                "card_number": f"FP:{member_code}",
+                "member_id": member_id,
+                "member_name": member_name,
+                "door_id": door_id,
+                "door_name": door_name,
+                "result": result,
+                "reason": reason,
+                "event_type": "FINGERPRINT_SCAN",
+                "credential_type": "FINGERPRINT",
+                "unlock_relay": (result == "GRANTED"),
+                "relay_time_sec": door.relay_time_sec if door else 5,
+            },
+        }
+    )
 
     return {
         "success": True,
@@ -1770,6 +1784,7 @@ async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
 # =========================================================================
 # 🔢 PIN CODE / KEYPAD ACCESS EVENT
 # =========================================================================
+
 
 class PinEntryRequest(BaseModel):
     door_code: str = Field(..., description="Door identifier code")
@@ -1796,9 +1811,7 @@ async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
     if dev_lookup:
         device = (
             await db.exec(
-                select(Access_Device).where(
-                    or_(Access_Device.code == dev_lookup, Access_Device.name == dev_lookup)
-                )
+                select(Access_Device).where(or_(Access_Device.code == dev_lookup, Access_Device.name == dev_lookup))
             )
         ).first()
         if not device and dev_lookup.isdigit():
@@ -1839,16 +1852,10 @@ async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
         reason = f"Door '{door.name}' is currently {door.status}"
     else:
         # Find matching PIN
-        query = select(Member_Pin_Credential).where(
-            Member_Pin_Credential.status == "active"
-        )
+        query = select(Member_Pin_Credential).where(Member_Pin_Credential.status == "active")
         if payload.member_code:
             target_mem = (
-                await db.exec(
-                    select(Access_Member).where(
-                        Access_Member.member_code == payload.member_code.strip()
-                    )
-                )
+                await db.exec(select(Access_Member).where(Access_Member.member_code == payload.member_code.strip()))
             ).first()
             if target_mem:
                 query = query.where(Member_Pin_Credential.member_id == target_mem.id)
@@ -1900,7 +1907,7 @@ async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
 
     if result == "GRANTED" and member:
         member.current_zone_id = to_zone_id
-        member.is_inside = (target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE")
+        member.is_inside = target_zone is not None and target_zone.zone_type.upper() != "OUTSIDE"
         member.last_access_door_id = door_id
         member.last_access_time = now
         member.last_direction = direction
@@ -1933,31 +1940,34 @@ async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
     await db.commit()
     await db.refresh(log_entry)
 
-    broadcast_sse({
-        "event": "access_swipe",
-        "data": {
-            "id": log_entry.id,
-            "time": now.strftime("%H:%M:%S"),
-            "date": now.strftime("%Y-%m-%d"),
-            "card_number": f"PIN:{pin_type}",
-            "member_id": member_id,
-            "member_name": member_name,
-            "door_id": door_id,
-            "door_name": door_name,
-            "device_id": device_id,
-            "device_name": device_name,
-            "result": result,
-            "reason": reason,
-            "event_type": "PIN_ENTRY",
-            "credential_type": "PIN",
-            "is_duress": (pin_type == "DURESS"),
-            "unlock_relay": (result == "GRANTED"),
-            "relay_time_sec": door.relay_time_sec if door else 5,
-        },
-    })
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": log_entry.id,
+                "time": now.strftime("%H:%M:%S"),
+                "date": now.strftime("%Y-%m-%d"),
+                "card_number": f"PIN:{pin_type}",
+                "member_id": member_id,
+                "member_name": member_name,
+                "door_id": door_id,
+                "door_name": door_name,
+                "device_id": device_id,
+                "device_name": device_name,
+                "result": result,
+                "reason": reason,
+                "event_type": "PIN_ENTRY",
+                "credential_type": "PIN",
+                "is_duress": (pin_type == "DURESS"),
+                "unlock_relay": (result == "GRANTED"),
+                "relay_time_sec": door.relay_time_sec if door else 5,
+            },
+        }
+    )
 
     if pin_type == "DURESS":
         from app.module.notification_service import notification_service
+
         notification_service.dispatch_alert_background(
             event_type="DURESS_PIN",
             title="🚨 DURESS PIN SILENT ALARM",
@@ -1990,6 +2000,3 @@ async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
         "device_id": device_id,
         "device_name": device_name,
     }
-
-
-

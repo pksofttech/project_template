@@ -1,6 +1,7 @@
 """API Endpoints for Access Cards (RFID/Keycards) Management."""
 
 from datetime import datetime
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlmodel import func, literal, or_, select

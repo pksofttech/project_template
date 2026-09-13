@@ -1,9 +1,9 @@
 """System Configuration API: Read & Update key-value application settings."""
 
+from fastapi import APIRouter
 from pydantic import BaseModel
 from sqlmodel import select
 
-from fastapi import APIRouter, HTTPException, status
 from app.core.database import set_configurations
 from app.core.dependencies import AsyncDbDep, SystemUserDep
 from app.core.models import App_Configurations
@@ -44,6 +44,7 @@ async def update_configs(payload: ConfigUpdateRequest, current_user: SystemUserD
 async def get_backups(current_user: SystemUserDep):
     """Retrieve list of existing database backups."""
     from app.core.backup_service import list_backups
+
     backups = await list_backups()
     return {"backups": backups}
 
@@ -52,6 +53,7 @@ async def get_backups(current_user: SystemUserDep):
 async def create_backup(current_user: SystemUserDep):
     """Trigger online SQLite hot backup."""
     from app.core.backup_service import create_hot_backup
+
     res = await create_hot_backup()
     return res
 
@@ -81,6 +83,7 @@ class TestNotificationRequest(BaseModel):
 async def get_notification_config(current_user: SystemUserDep):
     """Retrieve multi-channel notification settings."""
     from app.module.notification_service import notification_service
+
     return await notification_service.get_config()
 
 
@@ -120,7 +123,6 @@ async def test_notification(
 ):
     """Send test notification via LINE, Telegram, or Webhook."""
     from app.module.notification_service import notification_service
+
     res = await notification_service.send_test_alert(channel=payload.channel, custom_message=payload.message)
     return res
-
-

@@ -1,6 +1,7 @@
 """API Endpoints for Access Event Logs, Audit Trails, and Analytics."""
 
 from datetime import datetime
+
 from fastapi import APIRouter, Request
 from sqlmodel import func, literal, or_, select
 

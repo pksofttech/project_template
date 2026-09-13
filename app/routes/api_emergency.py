@@ -7,18 +7,16 @@ Provides endpoints for:
 4. Real-time status reporting and audit logging.
 """
 
-from datetime import datetime
-from typing import Literal
+from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field
-from fastapi import APIRouter, HTTPException, Request
 from sqlmodel import select
 
 from app.core.auth import decode_access_token
 from app.core.database import get_configurations, set_configurations
 from app.core.dependencies import AsyncDbDep
-from app.core.models import Access_Door, Access_Log, Access_Zone
+from app.core.models import Access_Door, Access_Log
 from app.core.utility import broadcast_sse
-from app.stdio import print_error, print_info, print_success, print_warning, time_now
+from app.stdio import print_success, print_warning, time_now
 
 router = APIRouter(
     prefix="/api/access/emergency",
@@ -141,21 +139,27 @@ async def trigger_fire_alarm(
         "action": "ALL_DOORS_UNLOCKED",
     }
     broadcast_sse({"event": "emergency_event", "data": broadcast_data})
-    broadcast_sse({"event": "access_swipe", "data": {
-        "id": emergency_log.id,
-        "event_time": now_iso,
-        "member_name": "🚨 FIRE ALARM EVACUATION",
-        "department": "Life Safety",
-        "door_name": "ALL DOORS UNLOCKED",
-        "result": "GRANTED",
-        "reason": reason,
-        "card_number": "EMERGENCY",
-        "credential_type": "FIRE_ALARM",
-        "direction": "OUT",
-    }})
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": emergency_log.id,
+                "event_time": now_iso,
+                "member_name": "🚨 FIRE ALARM EVACUATION",
+                "department": "Life Safety",
+                "door_name": "ALL DOORS UNLOCKED",
+                "result": "GRANTED",
+                "reason": reason,
+                "card_number": "EMERGENCY",
+                "credential_type": "FIRE_ALARM",
+                "direction": "OUT",
+            },
+        }
+    )
 
     # 5. Multi-Channel Notification Dispatch
     from app.module.notification_service import notification_service
+
     notification_service.dispatch_alert_background(
         event_type="FIRE_ALARM",
         title="🔥 FIRE ALARM EVACUATION ACTIVATED",
@@ -236,21 +240,27 @@ async def trigger_lockdown(
         "action": "ALL_DOORS_LOCKED",
     }
     broadcast_sse({"event": "emergency_event", "data": broadcast_data})
-    broadcast_sse({"event": "access_swipe", "data": {
-        "id": lockdown_log.id,
-        "event_time": now_iso,
-        "member_name": "🔒 GLOBAL FACILITY LOCKDOWN",
-        "department": "Security Command",
-        "door_name": "ALL DOORS SECURED",
-        "result": "DENIED",
-        "reason": reason,
-        "card_number": "LOCKDOWN",
-        "credential_type": "LOCKDOWN",
-        "direction": "IN",
-    }})
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": lockdown_log.id,
+                "event_time": now_iso,
+                "member_name": "🔒 GLOBAL FACILITY LOCKDOWN",
+                "department": "Security Command",
+                "door_name": "ALL DOORS SECURED",
+                "result": "DENIED",
+                "reason": reason,
+                "card_number": "LOCKDOWN",
+                "credential_type": "LOCKDOWN",
+                "direction": "IN",
+            },
+        }
+    )
 
     # 5. Multi-Channel Notification Dispatch
     from app.module.notification_service import notification_service
+
     notification_service.dispatch_alert_background(
         event_type="LOCKDOWN",
         title="🔒 GLOBAL LOCKDOWN ACTIVATED",
@@ -323,21 +333,27 @@ async def reset_emergency_mode(
         "action": "NORMAL_RULES_RESTORED",
     }
     broadcast_sse({"event": "emergency_event", "data": broadcast_data})
-    broadcast_sse({"event": "access_swipe", "data": {
-        "id": reset_log.id,
-        "event_time": now_iso,
-        "member_name": "✅ NORMAL OPERATION RESTORED",
-        "department": "Operations",
-        "door_name": "ALL ACCESS POINTS",
-        "result": "GRANTED",
-        "reason": f"Cleared '{previous_mode}' mode",
-        "card_number": "NORMAL",
-        "credential_type": "RESET",
-        "direction": "IN",
-    }})
+    broadcast_sse(
+        {
+            "event": "access_swipe",
+            "data": {
+                "id": reset_log.id,
+                "event_time": now_iso,
+                "member_name": "✅ NORMAL OPERATION RESTORED",
+                "department": "Operations",
+                "door_name": "ALL ACCESS POINTS",
+                "result": "GRANTED",
+                "reason": f"Cleared '{previous_mode}' mode",
+                "card_number": "NORMAL",
+                "credential_type": "RESET",
+                "direction": "IN",
+            },
+        }
+    )
 
     # 4. Multi-Channel Notification Dispatch
     from app.module.notification_service import notification_service
+
     notification_service.dispatch_alert_background(
         event_type="EMERGENCY_RESET",
         title="✅ EMERGENCY CLEARED - NORMAL OPERATION RESTORED",
