@@ -150,23 +150,9 @@
 <!-- 🎨 Theme Selector Modal -->
 <dialog id="theme_modal" class="modal">
     <div class="modal-box max-w-lg overflow-hidden rounded-box border border-base-300 shadow-2xl bg-base-100 p-0">
-        <!-- Header -->
-        <div class="bg-linear-to-r from-primary/15 via-base-200/60 to-primary/5 px-6 py-4 border-b border-base-300/80 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-box bg-primary/15 text-primary flex items-center justify-center font-bold text-lg shrink-0">
-                    <i class="fa-solid fa-palette"></i>
-                </div>
-                <div>
-                    <h3 class="text-base font-black tracking-tight text-base-content" data-i18n="System Theme">System Theme</h3>
-                    <p class="text-xs text-base-content/60 font-medium">Customize system theme and interface color palette</p>
-                </div>
-            </div>
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost hover:bg-error/10 hover:text-error transition-colors">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </form>
-        </div>
+        {% with modal_title="System Theme", modal_icon="fa-palette", modal_subtitle="Customize system theme and interface color palette" %}
+        {% include "_modal_header.html" %}
+        {% endwith %}
 
         <div class="p-5 max-h-[65vh] overflow-y-auto">
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" data-choose-theme>
@@ -194,16 +180,13 @@
 <!-- 👤 User Profile Modal -->
 <dialog id="profile_modal" class="modal">
     <div class="modal-box max-w-sm overflow-hidden bg-base-100 rounded-box border border-base-300 shadow-2xl p-0">
-        <!-- Cover Banner -->
-        <div class="h-28 w-full bg-linear-to-r from-primary via-primary/85 to-secondary relative flex justify-end p-3">
-            <button class="btn btn-sm btn-circle bg-black/20 hover:bg-black/40 text-white border-none transition-all shadow-xs" onclick="profile_modal.close()">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-        </div>
+        {% with modal_title="User Profile", modal_icon="fa-user", modal_close_action="profile_modal.close()" %}
+        {% include "_modal_header.html" %}
+        {% endwith %}
 
         <div class="px-6 pb-6 text-center">
             <!-- Avatar -->
-            <div class="avatar -mt-14 mb-3 flex justify-center">
+            <div class="avatar my-4 flex justify-center">
                 <div class="w-24 h-24 rounded-box ring-4 ring-base-100 shadow-2xl bg-base-100 overflow-hidden">
                     <img src="{{ user.pictureUrl or '/static/favicon.svg' }}" class="object-cover w-full h-full" onerror="this.src='/static/favicon.svg'" loading="lazy" decoding="async" width="96" height="96" />
                 </div>

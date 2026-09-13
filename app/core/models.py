@@ -196,17 +196,13 @@ class Access_Device(SQLModel, table=True):
     name: str = Field(index=True, nullable=False)
     door_id: int = Field(foreign_key="access_door.id", index=True, nullable=False)
     device_category: str = Field(default="READER", index=True)  # READER, TERMINAL, CONTROLLER, CAMERA_AI, KIOSK
-    reader_technology: str = Field(default="MIFARE", index=True)  # RFID_125K, MIFARE, UHF, FACE, FINGERPRINT, PIN, QR, BLE, MULTI_COMBO
     direction: str = Field(default="IN", index=True)  # IN, OUT, BOTH
     supported_factors: str = Field(default='["CARD"]')  # JSON string of factors e.g. ["CARD"], ["CARD", "PIN"]
-    comm_protocol: str = Field(default="HTTP_REST", index=True)  # HTTP_REST, MQTT, WEBSOCKET, WIEGAND, OSDP_RS485
     ip_address: str | None = Field(default=None, index=True)
-    port: int | None = Field(default=None)
     mac_address: str | None = Field(default=None, index=True)
     device_token: str | None = Field(default=None, index=True)
     brand: str | None = Field(default=None)
     model_name: str | None = Field(default=None)
-    firmware_version: str | None = Field(default=None)
     status: str = Field(default="ONLINE", index=True)  # ONLINE, OFFLINE, MAINTENANCE, DISABLED
     last_heartbeat: datetime | None = Field(default=None, sa_type=ISODateTime)
     description: str | None = Field(default=None)

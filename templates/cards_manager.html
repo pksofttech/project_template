@@ -64,16 +64,12 @@
 
     <!-- Create / Edit Modal -->
     <dialog id="cardModal" class="modal">
-        <div class="modal-box max-w-lg">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
-                <i class="fa-solid fa-credit-card"></i>
-                <span>Register Access Card</span>
-            </h3>
+        <div class="modal-box max-w-lg p-0 overflow-hidden rounded-box">
+            {% with modal_title="Register Access Card", modal_icon="fa-credit-card", modal_title_id="modalTitle" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
 
-            <form id="cardForm" onsubmit="saveCard(event)" class="space-y-3">
+            <form id="cardForm" onsubmit="saveCard(event)" class="p-6 space-y-3">
                 <input type="hidden" id="cardId" value="" />
 
                 <div class="grid grid-cols-2 gap-3">

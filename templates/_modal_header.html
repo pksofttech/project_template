@@ -1,17 +1,25 @@
-<div class="flex items-center justify-between w-full px-4 sm:px-5 py-3 bg-linear-to-r from-primary via-primary/95 to-primary text-primary-content select-none border-b border-white/10 shadow-xs">
+<div class="flex items-center justify-between w-full px-4 sm:px-5 py-3 bg-linear-to-r {{ modal_gradient | default('from-primary via-primary/95 to-primary') }} text-primary-content select-none border-b border-white/10 shadow-xs">
     <div class="flex items-center gap-3 min-w-0">
-        <div class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-box bg-white/15 ring-1 ring-white/25 shadow-2xs shrink-0 text-white">
-            <i class="fa-solid fa-layer-group text-sm"></i>
+        <div class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-box bg-white/15 ring-1 ring-white/25 shadow-2xs shrink-0 text-white" {% if modal_icon_box_id %}id="{{ modal_icon_box_id }}"{% endif %}>
+            <i class="fa-solid {{ modal_icon | default('fa-layer-group') }} text-sm" {% if modal_icon_id %}id="{{ modal_icon_id }}"{% endif %}></i>
         </div>
         <div class="min-w-0">
-            <h3 class="font-bold text-sm sm:text-base text-primary-content tracking-wide truncate drop-shadow-xs" data-field="title">
-                {{ modal_title | default('') }}
-            </h3>
+            <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-bold text-sm sm:text-base text-primary-content tracking-wide truncate drop-shadow-xs flex items-center gap-2 [&>i]:hidden" data-field="title" {% if modal_title_id %}id="{{ modal_title_id }}"{% endif %}>
+                    {% if modal_title %}<span data-i18n="{{ modal_title }}">{{ modal_title }}</span>{% endif %}
+                </h3>
+                {% if modal_extra_html %}{{ modal_extra_html | safe }}{% endif %}
+            </div>
+            {% if modal_subtitle %}
+            <p class="text-[11px] text-white/80 truncate font-normal leading-tight mt-0.5" {% if modal_subtitle_id %}id="{{ modal_subtitle_id }}"{% endif %}>
+                {{ modal_subtitle }}
+            </p>
+            {% endif %}
         </div>
     </div>
     <div class="flex items-center shrink-0">
         <form method="dialog">
-            <button class="btn btn-circle btn-xs sm:btn-sm bg-white/15 hover:bg-error text-white hover:text-white border-0 ring-1 ring-white/20 hover:ring-error transition-all duration-200 shadow-2xs" title="Close Window (Esc)">
+            <button {% if modal_close_action %}type="button" onclick="{{ modal_close_action }}"{% endif %} class="btn btn-circle btn-xs sm:btn-sm bg-white/15 hover:bg-error text-white hover:text-white border-0 ring-1 ring-white/20 hover:ring-error transition-all duration-200 shadow-2xs" title="Close Window (Esc)">
                 <i class="fa-solid fa-xmark text-xs sm:text-sm"></i>
             </button>
         </form>

@@ -90,20 +90,6 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data: "reader_technology",
-                    name: "reader_technology",
-                    title: "Technology",
-                    render: function (data) {
-                        let color = "badge-neutral";
-                        if (data === "MIFARE" || data === "RFID_125K") color = "badge-ghost";
-                        if (data === "FACE") color = "badge-secondary";
-                        if (data === "FINGERPRINT") color = "badge-warning";
-                        if (data === "UHF") color = "badge-info";
-                        if (data === "PIN") color = "badge-accent";
-                        return `<span class="badge badge-xs ${color} font-mono font-bold">${data}</span>`;
-                    }
-                },
-                {
                     data: "direction",
                     name: "direction",
                     title: "Direction",
@@ -117,11 +103,9 @@ $(document).ready(function () {
                 {
                     data: "ip_address",
                     name: "ip_address",
-                    title: "IP / Protocol",
-                    render: function (data, type, row) {
-                        const portStr = row.port ? `:${row.port}` : '';
-                        const ipStr = data ? `${data}${portStr}` : '-';
-                        return `<div><span class="font-mono text-[11px] text-base-content/80">${ipStr}</span><span class="badge badge-xs badge-ghost text-[10px] ml-1.5">${row.comm_protocol || ''}</span></div>`;
+                    title: "IP Address",
+                    render: function (data) {
+                        return data ? `<span class="font-mono text-[11px] text-base-content/80">${data}</span>` : '-';
                     }
                 },
                 {
@@ -185,11 +169,8 @@ export function openCreateModal() {
     document.getElementById("deviceName").value = "";
     populateDoorSelect();
     document.getElementById("deviceCategory").value = "READER";
-    document.getElementById("readerTechnology").value = "MIFARE";
     document.getElementById("deviceDirection").value = "IN";
-    document.getElementById("commProtocol").value = "HTTP_REST";
     document.getElementById("ipAddress").value = "";
-    document.getElementById("devicePort").value = "";
     document.getElementById("macAddress").value = "";
     document.getElementById("deviceToken").value = "";
     document.getElementById("deviceBrand").value = "";
@@ -216,11 +197,8 @@ export async function openEditModal(id) {
         document.getElementById("deviceName").value = d.name;
         populateDoorSelect(d.door_id);
         document.getElementById("deviceCategory").value = d.device_category || "READER";
-        document.getElementById("readerTechnology").value = d.reader_technology || "MIFARE";
         document.getElementById("deviceDirection").value = d.direction || "IN";
-        document.getElementById("commProtocol").value = d.comm_protocol || "HTTP_REST";
         document.getElementById("ipAddress").value = d.ip_address || "";
-        document.getElementById("devicePort").value = d.port || "";
         document.getElementById("macAddress").value = d.mac_address || "";
         document.getElementById("deviceToken").value = d.device_token || "";
         document.getElementById("deviceBrand").value = d.brand || "";
@@ -251,11 +229,8 @@ export async function saveDevice(event) {
         name: document.getElementById("deviceName").value.trim(),
         door_id: parseInt(doorIdVal, 10),
         device_category: document.getElementById("deviceCategory").value,
-        reader_technology: document.getElementById("readerTechnology").value,
         direction: document.getElementById("deviceDirection").value,
-        comm_protocol: document.getElementById("commProtocol").value,
         ip_address: document.getElementById("ipAddress").value.trim() || null,
-        port: document.getElementById("devicePort").value ? parseInt(document.getElementById("devicePort").value, 10) : null,
         mac_address: document.getElementById("macAddress").value.trim() || null,
         device_token: document.getElementById("deviceToken").value.trim() || null,
         brand: document.getElementById("deviceBrand").value.trim() || null,

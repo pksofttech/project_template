@@ -27,17 +27,13 @@ class DeviceCreate(BaseModel):
     name: str = Field(..., description="Descriptive device name")
     door_id: int = Field(..., description="Associated Door / Barrier Gate ID")
     device_category: str = Field(default="READER")  # READER, TERMINAL, CONTROLLER, CAMERA_AI, KIOSK
-    reader_technology: str = Field(default="MIFARE")  # RFID_125K, MIFARE, UHF, FACE, FINGERPRINT, PIN, QR, BLE, MULTI_COMBO
     direction: str = Field(default="IN")  # IN, OUT, BOTH
     supported_factors: str = Field(default='["CARD"]')  # JSON list
-    comm_protocol: str = Field(default="HTTP_REST")  # HTTP_REST, MQTT, WEBSOCKET, WIEGAND, OSDP_RS485
     ip_address: str | None = None
-    port: int | None = None
     mac_address: str | None = None
     device_token: str | None = None
     brand: str | None = None
     model_name: str | None = None
-    firmware_version: str | None = None
     status: str = Field(default="ONLINE")  # ONLINE, OFFLINE, MAINTENANCE, DISABLED
     description: str | None = None
 
@@ -47,17 +43,13 @@ class DeviceUpdate(BaseModel):
     name: str | None = None
     door_id: int | None = None
     device_category: str | None = None
-    reader_technology: str | None = None
     direction: str | None = None
     supported_factors: str | None = None
-    comm_protocol: str | None = None
     ip_address: str | None = None
-    port: int | None = None
     mac_address: str | None = None
     device_token: str | None = None
     brand: str | None = None
     model_name: str | None = None
-    firmware_version: str | None = None
     status: str | None = None
     description: str | None = None
 
@@ -79,7 +71,6 @@ async def get_devices_datatable(req_para: Request, db: AsyncDbDep):
             Access_Device.code.ilike(f"%{search}%"),
             Access_Device.name.ilike(f"%{search}%"),
             Access_Device.device_category.ilike(f"%{search}%"),
-            Access_Device.reader_technology.ilike(f"%{search}%"),
             Access_Device.ip_address.ilike(f"%{search}%"),
             Access_Device.brand.ilike(f"%{search}%"),
             Access_Door.name.ilike(f"%{search}%"),
@@ -146,7 +137,6 @@ async def list_devices(db: AsyncDbDep, door_id: int | None = None):
             "name": d.name,
             "door_id": d.door_id,
             "category": d.device_category,
-            "tech": d.reader_technology,
             "direction": d.direction,
             "status": d.status,
         }
@@ -186,17 +176,13 @@ async def create_device(payload: DeviceCreate, db: AsyncDbDep):
         name=payload.name.strip(),
         door_id=payload.door_id,
         device_category=payload.device_category,
-        reader_technology=payload.reader_technology,
         direction=payload.direction,
         supported_factors=payload.supported_factors or '["CARD"]',
-        comm_protocol=payload.comm_protocol,
         ip_address=payload.ip_address.strip() if payload.ip_address else None,
-        port=payload.port,
         mac_address=payload.mac_address.strip() if payload.mac_address else None,
         device_token=payload.device_token.strip() if payload.device_token else None,
         brand=payload.brand.strip() if payload.brand else None,
         model_name=payload.model_name.strip() if payload.model_name else None,
-        firmware_version=payload.firmware_version.strip() if payload.firmware_version else None,
         status=payload.status,
         last_heartbeat=time_now(),
         description=payload.description,

@@ -64,16 +64,12 @@
 
     <!-- Create / Edit Device Modal -->
     <dialog id="deviceModal" class="modal">
-        <div class="modal-box max-w-2xl rounded-box">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 id="modalTitle" class="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
-                <i class="fa-solid fa-microchip"></i>
-                <span data-i18n="Add New Access Device">Add New Access Device</span>
-            </h3>
+        <div class="modal-box max-w-2xl p-0 overflow-hidden rounded-box">
+            {% with modal_title="Add New Access Device", modal_icon="fa-microchip", modal_title_id="modalTitle" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
 
-            <form id="deviceForm" onsubmit="saveDevice(event)" class="space-y-3">
+            <form id="deviceForm" onsubmit="saveDevice(event)" class="p-6 space-y-3">
                 <input type="hidden" id="deviceId" value="" />
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -106,21 +102,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="form-control">
-                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Technology">Technology</span></label>
-                        <select id="readerTechnology" class="select select-bordered select-sm text-xs rounded-box">
-                            <option value="MIFARE">MIFARE (13.56MHz NFC/IC)</option>
-                            <option value="RFID_125K">RFID_125K (EM Proximity)</option>
-                            <option value="UHF">UHF (Long-Range Vehicle)</option>
-                            <option value="FACE">FACE (Facial Biometric)</option>
-                            <option value="FINGERPRINT">FINGERPRINT (Biometric)</option>
-                            <option value="PIN">PIN (Keypad Entry)</option>
-                            <option value="QR">QR (Barcode / QR Scanner)</option>
-                            <option value="BLE">BLE (Mobile Bluetooth/NFC)</option>
-                            <option value="MULTI_COMBO">MULTI_COMBO (Card + PIN + Bio)</option>
-                        </select>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="form-control">
                         <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Direction">Direction</span></label>
                         <select id="deviceDirection" class="select select-bordered select-sm text-xs rounded-box">
@@ -130,25 +112,8 @@
                         </select>
                     </div>
                     <div class="form-control">
-                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Protocol">Protocol</span></label>
-                        <select id="commProtocol" class="select select-bordered select-sm text-xs rounded-box">
-                            <option value="HTTP_REST">HTTP_REST (Webhook)</option>
-                            <option value="MQTT">MQTT (Broker Push)</option>
-                            <option value="WEBSOCKET">WEBSOCKET (Persistent)</option>
-                            <option value="WIEGAND">WIEGAND (via Controller)</option>
-                            <option value="OSDP_RS485">OSDP_RS485 (RS-485)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="form-control sm:col-span-2">
                         <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="IP Address">IP Address</span></label>
                         <input type="text" id="ipAddress" class="input input-bordered input-sm font-mono rounded-box" placeholder="192.168.1.150" />
-                    </div>
-                    <div class="form-control">
-                        <label class="label py-1"><span class="label-text text-xs font-semibold" data-i18n="Port">Port</span></label>
-                        <input type="number" id="devicePort" class="input input-bordered input-sm font-mono rounded-box" placeholder="8080" />
                     </div>
                 </div>
 

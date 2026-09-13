@@ -253,21 +253,9 @@
     <!-- High-Resolution Inspection Modal -->
     <dialog id="faceInspectModal" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box max-w-4xl p-0 overflow-hidden border border-base-content/15 bg-base-100 shadow-2xl">
-            <!-- Modal Header -->
-            <div class="px-6 py-4 bg-base-200/70 border-b border-base-content/10 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-box bg-primary/10 text-primary flex items-center justify-center text-base">
-                        <i class="fa-solid fa-face-smile"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-base text-base-content">Biometric Face Verification Audit</h3>
-                        <p class="text-xs text-base-content/60" id="inspectSubtitle">Inspection Detail</p>
-                    </div>
-                </div>
-                <button type="button" onclick="document.getElementById('faceInspectModal').close()" class="btn btn-ghost btn-circle btn-sm">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
+            {% with modal_title="Biometric Face Verification Audit", modal_icon="fa-face-smile", modal_subtitle="Inspection Detail", modal_subtitle_id="inspectSubtitle", modal_close_action="document.getElementById('faceInspectModal').close()" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
 
             <!-- Modal Body -->
             <div class="p-6 space-y-6">

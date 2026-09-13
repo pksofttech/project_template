@@ -255,22 +255,19 @@
 
     <!-- Zone Members Modal -->
     <dialog id="zoneMembersModal" class="modal">
-        <div class="modal-box max-w-2xl">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 id="modalZoneTitle" class="font-bold text-lg mb-1 flex items-center gap-2 text-primary">
-                <i class="fa-solid fa-users"></i>
-                <span id="zoneModalName">Zone Personnel</span>
-            </h3>
-            <p id="zoneModalSubtitle" class="text-xs text-base-content/60 mb-4"></p>
+        <div class="modal-box max-w-2xl p-0 overflow-hidden rounded-box">
+            {% with modal_title="Zone Personnel", modal_icon="fa-users", modal_title_id="zoneModalName", modal_subtitle="Zone occupancy details", modal_subtitle_id="zoneModalSubtitle", modal_close_action="document.getElementById('zoneMembersModal').close()" %}
+            {% include "_modal_header.html" %}
+            {% endwith %}
 
-            <div class="max-h-96 overflow-y-auto divide-y divide-base-content/10" id="zoneMembersList">
-                <!-- Dynamically populated -->
-            </div>
+            <div class="p-6 space-y-4">
+                <div class="max-h-96 overflow-y-auto divide-y divide-base-content/10" id="zoneMembersList">
+                    <!-- Dynamically populated -->
+                </div>
 
-            <div class="modal-action">
-                <button type="button" onclick="document.getElementById('zoneMembersModal').close()" class="btn btn-ghost btn-sm">Close</button>
+                <div class="modal-action">
+                    <button type="button" onclick="document.getElementById('zoneMembersModal').close()" class="btn btn-ghost btn-sm">Close</button>
+                </div>
             </div>
         </div>
     </dialog>
