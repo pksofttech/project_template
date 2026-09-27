@@ -174,6 +174,7 @@ async def broadcast_sse_endpoint(payload: dict = Body(...)):  # noqa: B008
 app.include_router(api_health.router)
 app.include_router(api_upload.router)
 app.include_router(api_access_event.router)
+app.include_router(api_access_event.authorization_router)
 app.include_router(api_emergency.router)
 app.include_router(api_access_door.router)
 app.include_router(api_access_device.router)
@@ -218,4 +219,3 @@ async def custom_http_exception_handler(request: Request, exc: StarletteHTTPExce
         return templates.TemplateResponse("403.html", context, status_code=403)
 
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
-

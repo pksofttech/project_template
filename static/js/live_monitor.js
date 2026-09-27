@@ -378,7 +378,7 @@ let eventCount = 0;
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Tapping...';
 
             try {
-                const res = await fetch('/api/access/event/swipe', {
+                const res = await fetch('/api/access/authorizations/card', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -826,5 +826,4 @@ window.openLockdownModal = openLockdownModal;
 window.submitLockdown = submitLockdown;
 window.confirmResetEmergency = confirmResetEmergency;
 window.submitResetEmergency = submitResetEmergency;
-
 

@@ -1,7 +1,7 @@
 <!-- ✅ Responsive Drawer Sidebar -->
 <div class="drawer-side z-50">
     <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <aside class="bg-base-100 w-64 min-h-screen max-h-screen flex flex-col justify-between border-r border-base-content/10 shadow-xl overflow-hidden p-3 select-none">
+    <aside class="bg-base-100 w-72 min-h-screen max-h-screen flex flex-col justify-between border-r border-base-content/10 shadow-xl overflow-hidden p-3 select-none">
         <!-- Sidebar Brand Header -->
         <div class="flex-none px-2 py-2.5 border-b border-base-content/10 mb-1">
             <a href="/page?page=home" class="flex items-center gap-3 hover:opacity-85 transition-opacity group">
@@ -19,7 +19,7 @@
         </div>
 
         <!-- Scrollable Navigation Rail -->
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pr-1 -mr-1 space-y-3">
+        <div class="sidebar-scroll custom-scrollbar flex-1 overflow-y-auto overflow-x-hidden -mr-3 pr-5 space-y-3">
             <ul class="menu menu-sm p-0 gap-1 w-full">
                 <!-- 📊 Overview -->
                 {% set main_menus = (user_menus | default([])) | selectattr('category', 'equalto', 'main') | list %}

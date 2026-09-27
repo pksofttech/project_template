@@ -122,36 +122,36 @@ async def run_all_tests():
 
             # 9a. First Swipe IN -> Granted
             r = await client.post(
-                "/api/access/event/swipe",
+                "/api/access/authorizations/card",
                 json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r.status_code == 200
             d = r.json()
             assert d["granted"] is True
             assert d["unlock_relay"] is True
-            print_success("  [PASS] POST /api/access/event/swipe - Granted & Relay Triggered")
+            print_success("  [PASS] POST /api/access/authorizations/card - Granted & Relay Triggered")
             passed += 1
 
             # 9b. Second Swipe IN immediately (Same Zone) -> Denied by Anti-Passback (APB)
             r_apb = await client.post(
-                "/api/access/event/swipe",
+                "/api/access/authorizations/card",
                 json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r_apb.status_code == 200
             d_apb = r_apb.json()
             assert d_apb["granted"] is False
             assert "Anti-Passback" in d_apb["reason"]
-            print_success("  [PASS] POST /api/access/event/swipe - Anti-Passback (APB) Protection Verified")
+            print_success("  [PASS] POST /api/access/authorizations/card - Anti-Passback (APB) Protection Verified")
             passed += 1
 
             # 9c. Swipe OUT -> Granted
             r_out = await client.post(
-                "/api/access/event/swipe",
+                "/api/access/authorizations/card",
                 json={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "OUT"},
             )
             assert r_out.status_code == 200
             assert r_out.json()["granted"] is True
-            print_success("  [PASS] POST /api/access/event/swipe - Swipe OUT Granted & Exit Tracked")
+            print_success("  [PASS] POST /api/access/authorizations/card - Swipe OUT Granted & Exit Tracked")
             passed += 1
         except Exception as e:
             print_error(f"  [FAIL] Access Card Swipe Granted / APB: {e}")
@@ -160,14 +160,14 @@ async def run_all_tests():
         # Test 10: Access Control - Card Swipe (Denied / Blocked)
         try:
             r = await client.post(
-                "/api/access/event/swipe",
+                "/api/access/authorizations/card",
                 json={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r.status_code == 200
             d = r.json()
             assert d["granted"] is False
             assert d["unlock_relay"] is False
-            print_success("  [PASS] POST /api/access/event/swipe - Blocked Card Denied")
+            print_success("  [PASS] POST /api/access/authorizations/card - Blocked Card Denied")
             passed += 1
         except Exception as e:
             print_error(f"  [FAIL] Access Card Swipe Denied: {e}")

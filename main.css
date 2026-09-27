@@ -1037,6 +1037,10 @@ div.dts div.dataTables_scrollBody table {
 }
 
 /* 📜 Scrollbar styles for smaller scrollable container elements */
+.sidebar-scroll {
+    scrollbar-gutter: stable;
+}
+
 .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: color-mix(in oklch, var(--color-base-content) 20%, transparent) transparent;

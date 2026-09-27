@@ -46,7 +46,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # Test Swipe during FIRE_ALARM:
         # 1. Blocked card '9990001111' MUST be GRANTED for emergency life safety
         swipe_blocked = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "OUT"},
         )
         assert swipe_blocked.status_code == 200
@@ -57,7 +57,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
 
         # 2. Completely unregistered card MUST be GRANTED for emergency evacuation
         swipe_unknown = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={"card_number": "UNKNOWN_CARD_999", "door_code": "DOOR-01", "direction": "OUT"},
         )
         assert swipe_unknown.status_code == 200
@@ -88,7 +88,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # Test Swipe during GLOBAL_LOCKDOWN:
         # 1. Regular active user '1001234567' (Engineering / Somchai) MUST be DENIED
         swipe_regular = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
         )
         assert swipe_regular.status_code == 200
@@ -114,11 +114,11 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # Verify Somchai can swipe normally again
         # Move Somchai to outside zone via DOOR-02 exit turnstile (direction="IN" moves from lobby to outside)
         await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "IN"},
         )
         swipe_normal = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
         )
         assert swipe_normal.status_code == 200

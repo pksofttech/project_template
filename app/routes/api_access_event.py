@@ -35,6 +35,11 @@ router = APIRouter(
     tags=["Access Events & Hardware Integration"],
 )
 
+authorization_router = APIRouter(
+    prefix="/api/access/authorizations",
+    tags=["Access Authorizations"],
+)
+
 # In-memory history for excessive denial alerts (> 3 attempts within 5 minutes)
 _denial_history: dict[str, list[datetime]] = {}
 
@@ -70,8 +75,8 @@ def clear_denial_history(identifier: str):
         _denial_history.pop(identifier, None)
 
 
-class CardSwipeRequest(BaseModel):
-    """Schema for card swipe event webhook payload from readers/controllers."""
+class CardAccessRequest(BaseModel):
+    """Schema for a card credential access authorization request."""
 
     card_number: str = Field(..., description="Card RFID / Wiegand Number")
     door_code: str = Field(..., description="Door or Barrier Gate identifier code")
@@ -125,8 +130,9 @@ class RemoteUnlockRequest(BaseModel):
     operator_name: str | None = Field(default="Operator", description="Name of operator triggering the unlock")
 
 
-@router.post("/swipe", summary="Card Swipe Event Webhook / Ingest Endpoint")
-async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
+@router.post("/swipe", include_in_schema=False, deprecated=True)
+@authorization_router.post("/card", summary="Authorize Access Using Card Credential")
+async def authorize_card_access(payload: CardAccessRequest, db: AsyncDbDep):
     """
     Ingest card swipe events from external RFID readers, turnstiles, or barrier gates.
     Validates permissions against card status, membership, door permissions, time profiles,
@@ -499,8 +505,9 @@ async def handle_card_swipe(payload: CardSwipeRequest, db: AsyncDbDep):
     return ret
 
 
-@router.post("/challenge-verify", summary="Verify Second Factor in Multi-Factor Authentication Challenge")
-async def verify_challenge_factor(payload: ChallengeVerifyRequest, db: AsyncDbDep):
+@router.post("/challenge-verify", include_in_schema=False, deprecated=True)
+@authorization_router.post("/challenge/verify", summary="Verify Access Authorization Challenge")
+async def verify_access_challenge(payload: ChallengeVerifyRequest, db: AsyncDbDep):
     """
     Validate the second factor (e.g. PIN, Fingerprint) for an active Access Verification Session.
     If valid: logs GRANTED access, moves member into target zone, and triggers relay unlock.

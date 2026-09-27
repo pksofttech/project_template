@@ -13,7 +13,7 @@ async def test_access_card_swipe_granted():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         # Move Somchai to outside zone via exit turnstile DOOR-02 to ensure clean state
         await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "1001234567",
                 "door_code": "DOOR-02",
@@ -22,7 +22,7 @@ async def test_access_card_swipe_granted():
         )
         # Somchai's card '1001234567' on DOOR-01
         res = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "1001234567",
                 "door_code": "DOOR-01",
@@ -46,7 +46,7 @@ async def test_access_card_swipe_denied_blocked():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         # John Doe's blocked card '9990001111'
         res = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "9990001111",
                 "door_code": "DOOR-01",
@@ -67,7 +67,7 @@ async def test_access_card_swipe_unregistered():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         res = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "UNKNOWN_987654321",
                 "door_code": "DOOR-01",
@@ -427,7 +427,7 @@ async def test_access_dual_factor_challenge_and_verification():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         # Step 1: Somchai swipes card at Server Room (DOOR-03) which enforces CARD_AND_PIN
         res_swipe = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "1001234567",
                 "door_code": "DOOR-03",
@@ -447,7 +447,7 @@ async def test_access_dual_factor_challenge_and_verification():
 
         # Step 2: Submit WRONG PIN for second factor
         res_fail = await client.post(
-            "/api/access/event/challenge-verify",
+            "/api/access/authorizations/challenge/verify",
             json={
                 "session_token": session_token,
                 "factor_type": "PIN",
@@ -464,7 +464,7 @@ async def test_access_dual_factor_challenge_and_verification():
 
         # Step 3: Swipe again to get a new challenge session
         res_swipe2 = await client.post(
-            "/api/access/event/swipe",
+            "/api/access/authorizations/card",
             json={
                 "card_number": "1001234567",
                 "door_code": "DOOR-03",
@@ -478,7 +478,7 @@ async def test_access_dual_factor_challenge_and_verification():
 
         # Step 4: Submit VALID PIN (Somchai's seeded PIN '1234')
         res_verify = await client.post(
-            "/api/access/event/challenge-verify",
+            "/api/access/authorizations/challenge/verify",
             json={
                 "session_token": new_token,
                 "factor_type": "PIN",
@@ -493,6 +493,5 @@ async def test_access_dual_factor_challenge_and_verification():
         assert verify_data["result"] == "GRANTED"
         assert verify_data["unlock_relay"] is True
         assert verify_data["relay_time"] > 0
-
 
 
