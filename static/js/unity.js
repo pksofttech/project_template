@@ -502,7 +502,8 @@ export async function showDialogConfirm({
     cancelBtn = true,
 } = {}) {
     return new Promise((resolve) => {
-        const dialogElement = document.getElementById("Dialog_Confirm") || document.getElementById("global_confirm_modal");
+        const dialogElement =
+            document.getElementById("Dialog_Confirm") || document.getElementById("global_confirm_modal");
         if (!dialogElement) {
             const confirmed = window.confirm(`${title}\n${content}`);
             resolve({ confirm: confirmed, value: null });
@@ -945,17 +946,26 @@ let controlSound = false;
 
 const dummyHowl = { play: () => {} };
 
-const soundBtn = typeof Howl !== "undefined" ? new Howl({
-    src: ["/static/sound/click-button-140881.mp3"],
-}) : dummyHowl;
+const soundBtn =
+    typeof Howl !== "undefined"
+        ? new Howl({
+              src: ["/static/sound/click-button-140881.mp3"],
+          })
+        : dummyHowl;
 
-const soundError = typeof Howl !== "undefined" ? new Howl({
-    src: ["/static/sound/computer-error-meme-jam-fx-1-00-02.mp3"],
-}) : dummyHowl;
+const soundError =
+    typeof Howl !== "undefined"
+        ? new Howl({
+              src: ["/static/sound/computer-error-meme-jam-fx-1-00-02.mp3"],
+          })
+        : dummyHowl;
 
-const soundSuccess = typeof Howl !== "undefined" ? new Howl({
-    src: ["/static/sound/success-1-6297.mp3"],
-}) : dummyHowl;
+const soundSuccess =
+    typeof Howl !== "undefined"
+        ? new Howl({
+              src: ["/static/sound/success-1-6297.mp3"],
+          })
+        : dummyHowl;
 
 function btnClickSound() {
     if (controlSound) {
@@ -1240,11 +1250,7 @@ export function getCookie(cname) {
  *   - `Content-Type`: The value of this header is set to `"application/json"`.
  */
 export async function getHeaders() {
-    const rawToken =
-        localStorage.getItem("token") ||
-        getCookie("Authorization") ||
-        getCookie("access_token") ||
-        "";
+    const rawToken = localStorage.getItem("token") || getCookie("Authorization") || getCookie("access_token") || "";
     const headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -1402,7 +1408,10 @@ export async function fetchApi(
 window.logout = logout;
 export async function logout() {
     const title = (typeof i18next_translate === "function" ? i18next_translate("Sign Out") : "Sign Out") || "Sign Out";
-    const content = (typeof i18next_translate === "function" ? i18next_translate("Are you sure you want to sign out?") : "Are you sure you want to sign out?") || "Are you sure you want to sign out?";
+    const content =
+        (typeof i18next_translate === "function"
+            ? i18next_translate("Are you sure you want to sign out?")
+            : "Are you sure you want to sign out?") || "Are you sure you want to sign out?";
     const result = await showDialogConfirm({ title, content });
     debug("Logout confirm result:", result);
     if (result && result.confirm) {
@@ -2381,8 +2390,14 @@ export function peper_header_owner({ title = "Summary Report", titleI18n = null,
             }
         }
     }
-    if (!translatedTitle || (translatedTitle === titleKey && typeof title === "object" && title !== null && title.text)) {
-        translatedTitle = typeof title === "object" && title !== null ? (title.text || title.label || titleKey) : (title || "Summary Report");
+    if (
+        !translatedTitle ||
+        (translatedTitle === titleKey && typeof title === "object" && title !== null && title.text)
+    ) {
+        translatedTitle =
+            typeof title === "object" && title !== null
+                ? title.text || title.label || titleKey
+                : title || "Summary Report";
     }
 
     // Check if HTML <template id="template_report_header_owner"> exists
@@ -2614,8 +2629,14 @@ export function renderSummaryReportA4({
             }
         }
     }
-    if (!translatedTitle || (translatedTitle === titleKey && typeof title === "object" && title !== null && title.text)) {
-        translatedTitle = typeof title === "object" && title !== null ? (title.text || title.label || titleKey) : (title || "Summary Report");
+    if (
+        !translatedTitle ||
+        (translatedTitle === titleKey && typeof title === "object" && title !== null && title.text)
+    ) {
+        translatedTitle =
+            typeof title === "object" && title !== null
+                ? title.text || title.label || titleKey
+                : title || "Summary Report";
     }
 
     let reportDom;
@@ -2723,7 +2744,9 @@ export function renderSummaryReportA4({
                         sec.titleI18n ||
                         sec.title_i18n ||
                         sec.i18n ||
-                        (typeof sec.title === "object" && sec.title !== null ? sec.title.i18n || sec.title.key : null) ||
+                        (typeof sec.title === "object" && sec.title !== null
+                            ? sec.title.i18n || sec.title.key
+                            : null) ||
                         sec.title;
                     let secTranslated = secTitleKey ? i18next_translate(secTitleKey) : "";
                     let secActiveKey = secTitleKey;
@@ -2738,7 +2761,10 @@ export function renderSummaryReportA4({
                         }
                     }
                     if (!secTranslated) {
-                        secTranslated = typeof sec.title === "object" && sec.title !== null ? (sec.title.text || sec.title.label || secTitleKey) : sec.title;
+                        secTranslated =
+                            typeof sec.title === "object" && sec.title !== null
+                                ? sec.title.text || sec.title.label || secTitleKey
+                                : sec.title;
                     }
                     titleEl.textContent = secTranslated;
                     if (secActiveKey && typeof secActiveKey === "string") {
@@ -2770,7 +2796,7 @@ export function renderSummaryReportA4({
                     const widthStyle = h.width ? `width: ${h.width};` : "";
                     const label = h.label || "";
                     const translated = h.i18n ? i18next_translate(h.i18n) : i18next_translate(label);
-                    const i18nAttr = h.i18n ? `data-i18n="${h.i18n}"` : (label ? `data-i18n="${label}"` : "");
+                    const i18nAttr = h.i18n ? `data-i18n="${h.i18n}"` : label ? `data-i18n="${label}"` : "";
                     thHtml += `<th ${i18nAttr} style="padding: ${cellPadding}; text-align: ${align}; font-weight: bold; border: 1px solid ${colorBorder}; ${widthStyle}">${translated}</th>`;
                 });
                 thHtml += `</tr>`;
@@ -2782,7 +2808,9 @@ export function renderSummaryReportA4({
             if (tbody) {
                 if (!Array.isArray(sec.rows) || sec.rows.length === 0) {
                     const colSpan = sec.headers?.length || 1;
-                    const emptyMsg = i18next_translate(sec.emptyText || "No transaction data available for this time range");
+                    const emptyMsg = i18next_translate(
+                        sec.emptyText || "No transaction data available for this time range",
+                    );
                     tbody.innerHTML = `
                         <tr style="height: 22px;">
                             <td colspan="${colSpan}" style="padding: ${cellPadding}; text-align: center; border: 1px solid ${colorBorder}; color: ${colorTextLight};">${emptyMsg}</td>
@@ -2800,11 +2828,18 @@ export function renderSummaryReportA4({
                         rowsHtml += `<tr style="border-bottom: 1px solid ${colorBorder}; height: 22px; ${rowBg} ${rowFontWeight} ${rowBorderTop} ${rowColor}">`;
                         cells.forEach((cell, idx) => {
                             const header = sec.headers?.[idx] || {};
-                            const align = (typeof cell === "object" && cell !== null && cell.align) || header.align || "left";
-                            const cellVal = typeof cell === "object" && cell !== null && "text" in cell ? cell.text : cell;
-                            const cellBold = typeof cell === "object" && cell !== null && cell.bold ? "font-weight: bold;" : "";
-                            const cellColor = typeof cell === "object" && cell !== null && cell.color ? `color: ${cell.color};` : "";
-                            const cellColspan = typeof cell === "object" && cell !== null && cell.colspan ? `colspan="${cell.colspan}"` : "";
+                            const align =
+                                (typeof cell === "object" && cell !== null && cell.align) || header.align || "left";
+                            const cellVal =
+                                typeof cell === "object" && cell !== null && "text" in cell ? cell.text : cell;
+                            const cellBold =
+                                typeof cell === "object" && cell !== null && cell.bold ? "font-weight: bold;" : "";
+                            const cellColor =
+                                typeof cell === "object" && cell !== null && cell.color ? `color: ${cell.color};` : "";
+                            const cellColspan =
+                                typeof cell === "object" && cell !== null && cell.colspan
+                                    ? `colspan="${cell.colspan}"`
+                                    : "";
 
                             rowsHtml += `<td ${cellColspan} style="padding: ${cellPadding}; text-align: ${align}; border: 1px solid ${colorBorder}; ${cellBold} ${cellColor}">${cellVal}</td>`;
                         });
@@ -2821,13 +2856,25 @@ export function renderSummaryReportA4({
                     let ftHtml = `<tr style="background-color: ${colorBgAlt}; font-weight: bold; border-top: 2px solid ${colorBorder}; height: 22px;">`;
                     sec.footers.forEach((footCell, idx) => {
                         const header = sec.headers?.[idx] || {};
-                        const align = (typeof footCell === "object" && footCell !== null && footCell.align) || header.align || "left";
-                        let cellVal = typeof footCell === "object" && footCell !== null && "text" in footCell ? footCell.text : footCell;
+                        const align =
+                            (typeof footCell === "object" && footCell !== null && footCell.align) ||
+                            header.align ||
+                            "left";
+                        let cellVal =
+                            typeof footCell === "object" && footCell !== null && "text" in footCell
+                                ? footCell.text
+                                : footCell;
                         if (typeof cellVal === "string" && (cellVal.endsWith(":") || isNaN(cellVal))) {
                             cellVal = i18next_translate(cellVal);
                         }
-                        const cellColor = typeof footCell === "object" && footCell !== null && footCell.color ? `color: ${footCell.color};` : `color: ${colorPrimary};`;
-                        const cellColspan = typeof footCell === "object" && footCell !== null && footCell.colspan ? `colspan="${footCell.colspan}"` : "";
+                        const cellColor =
+                            typeof footCell === "object" && footCell !== null && footCell.color
+                                ? `color: ${footCell.color};`
+                                : `color: ${colorPrimary};`;
+                        const cellColspan =
+                            typeof footCell === "object" && footCell !== null && footCell.colspan
+                                ? `colspan="${footCell.colspan}"`
+                                : "";
 
                         ftHtml += `<td ${cellColspan} style="padding: ${cellPadding}; text-align: ${align}; border: 1px solid ${colorBorder}; ${cellColor}">${cellVal}</td>`;
                     });
@@ -4230,7 +4277,6 @@ export async function generate_attr_i18n(root = document.body) {
     console.log("🌎 Unique Keys found:", keysToTranslate.length);
     console.log("✅ Total Elements tagged:", taggedElements.length);
 
-
     return keysToTranslate;
 }
 
@@ -4804,7 +4850,8 @@ async function initUnityApp() {
         }
     }
     if (typeof software_is_demo_expired !== "undefined" && software_is_demo_expired == "true") {
-        const demo_option = typeof software_demo_expired_option !== "undefined" ? software_demo_expired_option : "warning";
+        const demo_option =
+            typeof software_demo_expired_option !== "undefined" ? software_demo_expired_option : "warning";
         switch (demo_option) {
             case "warning":
                 showDialogWarning({
