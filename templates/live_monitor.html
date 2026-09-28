@@ -15,7 +15,7 @@
             {% include '_nav_bar.html' %}
 
             <!-- Main Content Area -->
-            <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+            <main class="flex-1 w-full max-w-[1600px] mx-auto space-y-5 p-3 sm:p-5 lg:p-8">
 
                 <!-- Premium Header Card -->
                 {% set header_icon = "fa-solid fa-tower-broadcast" %}
@@ -24,6 +24,60 @@
                 {% set header_badge = "Live SSE Stream" %}
                 {% set show_back_btn = false %}
                 {% include '_header_card.html' %}
+
+                <!-- Live operational overview -->
+                <section aria-label="Live monitor status" class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                    <div class="card card-sm card-border bg-base-100 shadow-sm">
+                        <div class="card-body flex-row items-center gap-3">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-box bg-info/10 text-info">
+                                <i class="fa-solid fa-satellite-dish"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-base-content/50">Live connection</div>
+                                <div class="mt-1 flex items-center gap-2">
+                                    <span id="sseConnectionDot" class="status status-warning status-sm" aria-hidden="true"></span>
+                                    <span id="sseConnectionStatus" class="truncate text-sm font-bold">Connecting</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-sm card-border bg-base-100 shadow-sm">
+                        <div class="card-body flex-row items-center gap-3">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-box bg-primary/10 text-primary">
+                                <i class="fa-solid fa-wave-square"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-base-content/50">Session events</div>
+                                <div id="totalEventCount" class="font-mono text-2xl font-black leading-none">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-sm card-border bg-base-100 shadow-sm">
+                        <div class="card-body flex-row items-center gap-3">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-box bg-success/10 text-success">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-base-content/50">Granted</div>
+                                <div id="grantedEventCount" class="font-mono text-2xl font-black leading-none text-success">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-sm card-border bg-base-100 shadow-sm">
+                        <div class="card-body flex-row items-center gap-3">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-box bg-error/10 text-error">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-base-content/50">Denied</div>
+                                <div class="flex items-end justify-between gap-3">
+                                    <div id="deniedEventCount" class="font-mono text-2xl font-black leading-none text-error">0</div>
+                                    <time id="monitorClock" class="hidden font-mono text-[10px] text-base-content/50 sm:block">--:--:--</time>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 <!-- 🚨 Emergency Management & Life Safety Control Bar -->
                 <div id="emergencyContainer" class="space-y-4">
@@ -55,8 +109,8 @@
                     </div>
 
                     <!-- Normal Emergency Operation Toolbar -->
-                    <div class="card bg-base-100 shadow-sm border border-base-content/10 p-3 rounded-box">
-                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                    <div class="card card-border bg-base-100 shadow-sm">
+                        <div class="card-body flex-row flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-box bg-base-200 flex items-center justify-center text-sm text-base-content/70 shadow-xs">
                                     <i class="fa-solid fa-shield-heart"></i>
@@ -71,7 +125,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                            <div class="flex w-full flex-wrap items-center gap-2 md:w-auto md:justify-end">
                                 <!-- Fire Alarm Evacuation Button -->
                                 <button type="button" onclick="openFireAlarmModal()" class="btn btn-error btn-xs sm:btn-sm text-white gap-1.5 shadow-xs rounded-box font-semibold hover:scale-102 transition-transform">
                                     <i class="fa-solid fa-fire-flame-curved"></i>
@@ -93,37 +147,40 @@
                 </div>
 
                 <!-- Simulator & Test Console Toolbar -->
-                <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 rounded-box">
-                    <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="badge badge-primary badge-sm font-bold">Simulator</span>
-                                <span class="text-sm font-bold text-base-content">Hardware Access Simulator</span>
-                                <span id="faceEngineStatusBadge" class="badge badge-warning badge-xs gap-1 font-mono">
-                                    <i class="fa-solid fa-microchip"></i> InsightFace (Mockup)
-                                </span>
+                <section class="card card-border bg-base-100 shadow-sm" aria-labelledby="simulatorTitle">
+                    <div class="card-body gap-4 p-4 sm:p-5">
+                        <div class="flex flex-col gap-3 border-b border-base-content/10 pb-4 xl:flex-row xl:items-end xl:justify-between">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="badge badge-primary badge-sm font-bold">Simulator</span>
+                                    <h2 id="simulatorTitle" class="text-sm font-bold text-base-content">Hardware Access Simulator</h2>
+                                    <span id="faceEngineStatusBadge" class="badge badge-warning badge-xs gap-1 font-mono">
+                                        <i class="fa-solid fa-microchip"></i> InsightFace (Mockup)
+                                    </span>
+                                </div>
+                                <p class="mt-1 text-xs text-base-content/50">Test credentials against the same authorization flow used by connected readers.</p>
                             </div>
-                            <div class="flex items-center gap-1 pt-1 flex-wrap">
-                                <button type="button" id="tabCardBtn" onclick="switchSimTab('card')" class="btn btn-xs btn-primary gap-1">
+                            <div role="tablist" aria-label="Credential simulator" class="flex max-w-full items-center gap-1 overflow-x-auto rounded-box bg-base-200 p-1">
+                                <button type="button" role="tab" aria-selected="true" id="tabCardBtn" onclick="switchSimTab('card')" class="btn btn-xs btn-primary shrink-0 gap-1">
                                     <i class="fa-solid fa-id-card"></i> RFID Card
                                 </button>
-                                <button type="button" id="tabMobileBtn" onclick="switchSimTab('mobile')" class="btn btn-xs btn-outline gap-1">
+                                <button type="button" role="tab" aria-selected="false" id="tabMobileBtn" onclick="switchSimTab('mobile')" class="btn btn-xs btn-ghost shrink-0 gap-1">
                                     <i class="fa-solid fa-mobile-screen"></i> Mobile (BLE/NFC)
                                 </button>
-                                <button type="button" id="tabFpBtn" onclick="switchSimTab('fingerprint')" class="btn btn-xs btn-outline gap-1">
+                                <button type="button" role="tab" aria-selected="false" id="tabFpBtn" onclick="switchSimTab('fingerprint')" class="btn btn-xs btn-ghost shrink-0 gap-1">
                                     <i class="fa-solid fa-fingerprint"></i> Fingerprint
                                 </button>
-                                <button type="button" id="tabFaceBtn" onclick="switchSimTab('face')" class="btn btn-xs btn-outline gap-1">
+                                <button type="button" role="tab" aria-selected="false" id="tabFaceBtn" onclick="switchSimTab('face')" class="btn btn-xs btn-ghost shrink-0 gap-1">
                                     <i class="fa-solid fa-camera"></i> Face Scan
                                 </button>
-                                <button type="button" id="tabPinBtn" onclick="switchSimTab('pin')" class="btn btn-xs btn-outline gap-1">
+                                <button type="button" role="tab" aria-selected="false" id="tabPinBtn" onclick="switchSimTab('pin')" class="btn btn-xs btn-ghost shrink-0 gap-1">
                                     <i class="fa-solid fa-hashtag"></i> Keypad PIN
                                 </button>
                             </div>
                         </div>
 
                         <!-- 1. Card Simulation Action Form -->
-                        <div id="simCardPanel" class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div id="simCardPanel" class="flex w-full flex-wrap items-center gap-2 rounded-box bg-base-200/60 p-3">
                             <!-- Quick Test Presets -->
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
@@ -164,7 +221,7 @@
                         </div>
 
                         <!-- 2. Mobile Simulation Action Form -->
-                        <div id="simMobilePanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div id="simMobilePanel" class="hidden flex w-full flex-wrap items-center gap-2 rounded-box bg-base-200/60 p-3">
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
                                     <i class="fa-solid fa-mobile-screen-button text-secondary"></i>
@@ -208,7 +265,7 @@
                         </div>
 
                         <!-- 3. Fingerprint Simulation Action Form -->
-                        <div id="simFpPanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div id="simFpPanel" class="hidden flex w-full flex-wrap items-center gap-2 rounded-box bg-base-200/60 p-3">
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
                                     <i class="fa-solid fa-fingerprint text-accent"></i>
@@ -255,7 +312,7 @@
                         </div>
 
                         <!-- 4. Face Simulation Action Form -->
-                        <div id="simFacePanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div id="simFacePanel" class="hidden flex w-full flex-wrap items-center gap-2 rounded-box bg-base-200/60 p-3">
                             <!-- Quick Face Presets -->
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
@@ -296,7 +353,7 @@
                         </div>
 
                         <!-- 5. Keypad PIN Simulation Action Form -->
-                        <div id="simPinPanel" class="hidden flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                        <div id="simPinPanel" class="hidden flex w-full flex-wrap items-center gap-2 rounded-box bg-base-200/60 p-3">
                             <div class="dropdown dropdown-end">
                                 <button tabindex="0" class="btn btn-sm btn-outline gap-2">
                                     <i class="fa-solid fa-hashtag text-warning"></i>
@@ -337,14 +394,14 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <!-- Live Monitor Stage: Split Screen -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="grid grid-cols-1 gap-5 xl:grid-cols-12">
 
                     <!-- Left Column: Spotlight Last Swipe Card (5 cols) -->
-                    <div class="lg:col-span-5 space-y-4">
-                        <div id="liveSpotlightCard" class="card bg-base-100 shadow-md border-2 border-primary/30 p-6 transition-all duration-300 relative overflow-hidden">
+                    <div class="space-y-4 xl:col-span-5">
+                        <div id="liveSpotlightCard" class="card relative overflow-hidden border-2 border-primary/30 bg-base-100 p-4 shadow-md transition-all duration-300 sm:p-6">
                             <div class="flex items-center justify-between border-b border-base-content/10 pb-3 mb-4">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-success animate-ping"></span>
@@ -418,8 +475,8 @@
                     </div>
 
                     <!-- Right Column: Real-time Live Log Stream (7 cols) -->
-                    <div class="lg:col-span-7">
-                        <div class="card bg-base-100 shadow-sm border border-base-content/10 p-4 h-full flex flex-col">
+                    <div class="xl:col-span-7">
+                        <div class="card card-border flex h-full flex-col bg-base-100 p-4 shadow-sm">
                             <div class="flex items-center justify-between border-b border-base-content/10 pb-3 mb-3">
                                 <div class="flex items-center gap-2">
                                     <i class="fa-solid fa-list-check text-primary"></i>
@@ -432,8 +489,14 @@
                             </div>
 
                             <!-- Live Feed List Container -->
-                            <div class="flex-1 overflow-y-auto max-h-[580px] space-y-2 pr-1" id="liveFeedList">
-                                <!-- Pre-populated recent events will load here -->
+                            <div class="flex-1 space-y-2 overflow-y-auto pr-1 xl:max-h-[680px]" id="liveFeedList" aria-live="polite">
+                                <div id="feedLoadingState" class="flex min-h-48 flex-col items-center justify-center gap-3 text-center text-base-content/40">
+                                    <span class="loading loading-ring loading-lg"></span>
+                                    <div>
+                                        <p class="text-sm font-bold text-base-content/60">Loading access activity</p>
+                                        <p class="text-xs">Recent events will appear here automatically.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

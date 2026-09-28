@@ -3,9 +3,13 @@
  */
 
 let eventCount = 0;
+let grantedCount = 0;
+let deniedCount = 0;
 
         // 1. Initial Load: Fetch Doors for Remote Unlock & Initial Recent Logs
         $(document).ready(function () {
+            updateMonitorClock();
+            window.setInterval(updateMonitorClock, 1000);
             loadDoors();
             loadRecentLogs();
             initSSE();
@@ -60,13 +64,69 @@ let eventCount = 0;
                     }
                 }
                 if (btns[t] && btns[t].el) {
+                    btns[t].el.setAttribute('aria-selected', t === tab ? 'true' : 'false');
                     if (t === tab) {
-                        btns[t].el.className = `btn btn-xs ${btns[t].activeClass} gap-1 font-bold shadow-xs`;
+                        btns[t].el.className = `btn btn-xs ${btns[t].activeClass} shrink-0 gap-1 font-bold shadow-xs`;
                     } else {
-                        btns[t].el.className = 'btn btn-xs btn-outline gap-1';
+                        btns[t].el.className = 'btn btn-xs btn-ghost shrink-0 gap-1';
                     }
                 }
             });
+        }
+
+        function updateMonitorClock() {
+            const clock = document.getElementById('monitorClock');
+            if (clock) {
+                const now = new Date();
+                clock.dateTime = now.toISOString();
+                clock.textContent = now.toLocaleTimeString('en-GB');
+            }
+        }
+
+        function updateConnectionState(state) {
+            const dot = document.getElementById('sseConnectionDot');
+            const label = document.getElementById('sseConnectionStatus');
+            if (!dot || !label) return;
+
+            const states = {
+                connected: { label: 'Connected', className: 'status status-success status-sm' },
+                reconnecting: { label: 'Reconnecting', className: 'status status-warning status-sm animate-pulse' },
+                offline: { label: 'Offline', className: 'status status-error status-sm' }
+            };
+            const next = states[state] || states.offline;
+            dot.className = next.className;
+            label.textContent = next.label;
+        }
+
+        function updateEventMetrics(result) {
+            eventCount++;
+            if (result === 'GRANTED') grantedCount++;
+            if (result === 'DENIED') deniedCount++;
+
+            const totalEl = document.getElementById('totalEventCount');
+            const grantedEl = document.getElementById('grantedEventCount');
+            const deniedEl = document.getElementById('deniedEventCount');
+            const streamEl = document.getElementById('streamCounter');
+            if (totalEl) totalEl.textContent = eventCount;
+            if (grantedEl) grantedEl.textContent = grantedCount;
+            if (deniedEl) deniedEl.textContent = deniedCount;
+            if (streamEl) streamEl.textContent = `${eventCount} events`;
+        }
+
+        function renderEmptyFeed(message = 'Waiting for new access activity') {
+            const feed = document.getElementById('liveFeedList');
+            if (!feed) return;
+            feed.innerHTML = `
+                <div class="flex min-h-48 flex-col items-center justify-center gap-3 text-center text-base-content/40">
+                    <div class="flex size-12 items-center justify-center rounded-full bg-base-200 text-lg">
+                        <i class="fa-solid fa-wave-square"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-base-content/60">${message}</p>
+                        <p class="text-xs">Live events will appear here automatically.</p>
+                    </div>
+                </div>
+            `;
         }
 
         // 1. Mobile Simulation Helper & Trigger
@@ -346,12 +406,14 @@ let eventCount = 0;
                 if (result.success && result.data) {
                     const feed = document.getElementById('liveFeedList');
                     feed.innerHTML = '';
-                    result.data.forEach(log => {
+                    [...result.data].reverse().forEach(log => {
                         appendLogCard(log, false);
                     });
+                    if (result.data.length === 0) renderEmptyFeed();
                 }
             } catch (err) {
                 console.error("Failed to load recent logs:", err);
+                renderEmptyFeed('Unable to load recent activity');
             }
         }
 
@@ -399,6 +461,10 @@ let eventCount = 0;
         function initSSE() {
             const evtSource = new EventSource('/sse');
 
+            evtSource.onopen = function () {
+                updateConnectionState('connected');
+            };
+
             evtSource.addEventListener('access_swipe', function (e) {
                 try {
                     const payload = JSON.parse(e.data);
@@ -430,6 +496,7 @@ let eventCount = 0;
 
             evtSource.onerror = function () {
                 console.warn("SSE connection lost. Reconnecting...");
+                updateConnectionState('reconnecting');
             };
         }
 
@@ -467,17 +534,23 @@ let eventCount = 0;
             const card = document.getElementById('liveSpotlightCard');
             const badge = document.getElementById('spotlightBadge');
             const isGranted = (d.result === 'GRANTED');
+            const isPending = (d.result === 'CHALLENGE_REQUIRED');
             const isDuress = Boolean(d.is_duress || (d.credential_identifier && d.credential_identifier.includes('DURESS')));
 
             // Sound feedback if available
             try {
-                const audio = new Audio(isGranted ? '/static/sound/granted.mp3' : '/static/sound/denied.mp3');
-                audio.play().catch(() => {});
+                if (!isPending) {
+                    const audio = new Audio(isGranted ? '/static/sound/granted.mp3' : '/static/sound/denied.mp3');
+                    audio.play().catch(() => {});
+                }
             } catch (e) {}
 
             // Border & Glow Animation
-            card.classList.remove('border-primary/30', 'border-success', 'border-error', 'shadow-success/20', 'shadow-error/20');
-            card.classList.add(isGranted ? 'border-success' : 'border-error', isGranted ? 'shadow-success/20' : 'shadow-error/20');
+            card.classList.remove('border-primary/30', 'border-success', 'border-warning', 'border-error', 'shadow-success/20', 'shadow-warning/20', 'shadow-error/20');
+            const spotlightStateClasses = isGranted
+                ? ['border-success', 'shadow-success/20']
+                : (isPending ? ['border-warning', 'shadow-warning/20'] : ['border-error', 'shadow-error/20']);
+            card.classList.add(...spotlightStateClasses);
 
             // Badge
             if (isDuress) {
@@ -486,6 +559,9 @@ let eventCount = 0;
             } else if (isGranted) {
                 badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-success text-success-content animate-pulse';
                 badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>ACCESS GRANTED</span>';
+            } else if (isPending) {
+                badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-warning text-warning-content animate-pulse';
+                badge.innerHTML = '<i class="fa-solid fa-key"></i> <span>VERIFICATION REQUIRED</span>';
             } else {
                 badge.className = 'inline-flex items-center gap-2 px-6 py-2 rounded-full font-black text-base shadow-sm bg-error text-error-content animate-pulse';
                 badge.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> <span>ACCESS DENIED</span>';
@@ -526,7 +602,7 @@ let eventCount = 0;
             } else {
                 const initial = (d.member_name && d.member_name !== 'Unknown') ? d.member_name.charAt(0).toUpperCase() : '?';
                 avatarContainer.innerHTML = `
-                    <div class="${isGranted ? 'bg-success/15 text-success' : 'bg-error/15 text-error'} rounded-box w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
+                    <div class="${isGranted ? 'bg-success/15 text-success' : (isPending ? 'bg-warning/15 text-warning' : 'bg-error/15 text-error')} rounded-box w-20 h-20 shadow-inner flex items-center justify-center text-3xl font-black">
                         ${initial}
                     </div>
                 `;
@@ -537,42 +613,47 @@ let eventCount = 0;
         function appendLogCard(log, animate = true) {
             const feed = document.getElementById('liveFeedList');
             const isGranted = (log.result === 'GRANTED');
+            const isPending = (log.result === 'CHALLENGE_REQUIRED');
             const isDuress = Boolean(log.is_duress || (log.credential_identifier && log.credential_identifier.includes('DURESS')));
             const timeStr = log.time || (log.event_time ? log.event_time.substring(11, 19) : '');
             const credBadge = getCredentialBadgeHtml(log.credential_type, isDuress);
+            const resultClass = isGranted ? 'badge-success' : (isPending ? 'badge-warning' : 'badge-error');
+            const stateSurface = isGranted ? 'bg-success/5 border-success/20' : (isPending ? 'bg-warning/10 border-warning/30' : 'bg-error/5 border-error/20');
+            const stateIcon = isGranted ? 'fa-solid fa-check' : (isPending ? 'fa-solid fa-key' : 'fa-solid fa-xmark');
+            const stateIconClass = isGranted ? 'bg-success text-success-content' : (isPending ? 'bg-warning text-warning-content' : 'bg-error text-error-content');
+            const reasonClass = isGranted ? 'text-success' : (isPending ? 'text-warning' : 'text-error');
 
             const cardHtml = document.createElement('div');
-            cardHtml.className = `p-3 rounded-box border ${isDuress ? 'bg-error/15 border-error' : (isGranted ? 'bg-success/5 border-success/20' : 'bg-error/5 border-error/20')} flex items-center justify-between gap-3 ${animate ? 'animate-fade-in-down' : ''}`;
+            cardHtml.className = `rounded-box border p-3 ${isDuress ? 'bg-error/15 border-error' : stateSurface} flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center ${animate ? 'animate-fade-in-down' : ''}`;
             
             cardHtml.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full ${isDuress ? 'bg-error text-error-content animate-ping' : (isGranted ? 'bg-success text-success-content' : 'bg-error text-error-content')} flex items-center justify-center text-xs font-bold shrink-0">
-                        <i class="${isDuress ? 'fa-solid fa-triangle-exclamation' : (isGranted ? 'fa-solid fa-check' : 'fa-solid fa-xmark')}"></i>
+                <div class="flex min-w-0 items-center gap-3">
+                    <div class="flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ${isDuress ? 'bg-error text-error-content animate-ping' : stateIconClass}">
+                        <i class="${isDuress ? 'fa-solid fa-triangle-exclamation' : stateIcon}"></i>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="font-bold text-xs text-base-content">${log.member_name || 'Unknown'}</span>
-                            <span class="badge badge-xs ${isGranted ? 'badge-success' : 'badge-error'} font-mono">${log.result}</span>
+                            <span class="badge badge-xs ${resultClass} font-mono">${log.result}</span>
                             <span class="badge badge-xs badge-neutral font-mono">${log.direction || 'IN'}</span>
                             ${credBadge}
                         </div>
                         <div class="text-[11px] text-base-content/60 mt-0.5">
                             <span>${log.door_name}</span> • <span class="font-mono">${log.card_number}</span>
                         </div>
-                        <div class="text-[10px] ${isDuress ? 'text-error font-black' : (isGranted ? 'text-success' : 'text-error')} font-semibold mt-0.5">
+                        <div class="mt-0.5 text-[10px] font-semibold ${isDuress ? 'text-error font-black' : reasonClass}">
                             ${log.reason || ''}
                         </div>
                     </div>
                 </div>
-                <div class="text-right shrink-0">
+                <div class="shrink-0 pl-12 text-right sm:pl-0">
                     <span class="font-mono text-xs text-base-content/50">${timeStr}</span>
                 </div>
             `;
 
             feed.insertBefore(cardHtml, feed.firstChild);
 
-            eventCount++;
-            document.getElementById('streamCounter').textContent = `${eventCount} events`;
+            updateEventMetrics(log.result);
 
             // Limit feed to 40 items to prevent DOM bloat
             if (feed.children.length > 40) {
@@ -581,9 +662,14 @@ let eventCount = 0;
         }
 
         function clearStream() {
-            document.getElementById('liveFeedList').innerHTML = '';
             eventCount = 0;
+            grantedCount = 0;
+            deniedCount = 0;
+            document.getElementById('totalEventCount').textContent = '0';
+            document.getElementById('grantedEventCount').textContent = '0';
+            document.getElementById('deniedEventCount').textContent = '0';
             document.getElementById('streamCounter').textContent = '0 events';
+            renderEmptyFeed();
         }
 
         let emergencyTimerInterval = null;

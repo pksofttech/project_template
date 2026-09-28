@@ -178,7 +178,7 @@ async def authorize_card_access(payload: Annotated[CardAccessRequest, Query()], 
     door_stmt = select(Access_Door).where(Access_Door.code == door_code)
     door = (await db.exec(door_stmt)).first()
 
-    if not door:
+    if not door:  # noqa: SIM102
         # Fallback: try looking up by ID if numeric
         if door_code.isdigit():
             door = await db.get(Access_Door, int(door_code))
@@ -351,16 +351,15 @@ async def authorize_card_access(payload: Annotated[CardAccessRequest, Query()], 
 
     if result == "GRANTED" and target_zone and member and emergency_mode != "FIRE_ALARM":
         # 5.1 Anti-Passback (APB) Validation
-        if target_zone.antipassback_enabled:
-            if direction == "IN" and member.current_zone_id == target_zone.id:
-                apb_violation = True
-                if target_zone.antipassback_timeout_min and member.last_access_time:
-                    diff_min = (now - member.last_access_time).total_seconds() / 60
-                    if diff_min >= target_zone.antipassback_timeout_min:
-                        apb_violation = False
-                if apb_violation:
-                    result = "DENIED"
-                    reason = f"Anti-Passback Violation: Already inside '{target_zone.name}'"
+        if target_zone.antipassback_enabled and direction == "IN" and member.current_zone_id == target_zone.id:
+            apb_violation = True
+            if target_zone.antipassback_timeout_min and member.last_access_time:
+                diff_min = (now - member.last_access_time).total_seconds() / 60
+                if diff_min >= target_zone.antipassback_timeout_min:
+                    apb_violation = False
+            if apb_violation:
+                result = "DENIED"
+                reason = f"Anti-Passback Violation: Already inside '{target_zone.name}'"
 
         # 5.2 Maximum Zone Occupancy Limit Validation
         if result == "GRANTED" and target_zone.max_occupancy > 0 and direction == "IN":
@@ -486,7 +485,7 @@ async def authorize_card_access(payload: Annotated[CardAccessRequest, Query()], 
     ret = {
         "success": True,
         "cmd": "OPEN_RELAY01" if result == "GRANTED" else "",
-        "display": "50415353" if result == "GRANTED" else "44454E59",
+        "display": reason,
         "granted": (result == "GRANTED"),
         "result": result,
         "reason": reason,

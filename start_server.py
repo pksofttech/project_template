@@ -69,7 +69,7 @@ def parse_args():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="PKS Modern Project Server Runner")
     parser.add_argument("--host", type=str, default="0.0.0.0", help="Host interface to bind to")
-    parser.add_argument("--port", type=int, default=8001, help="Port to listen on")
+    parser.add_argument("--port", type=int, default=8000, help="Port to listen on")
     parser.add_argument("--dev", action="store_true", help="Run server with auto-reload (development mode)")
     parser.add_argument("--workers", type=int, default=1, help="Number of worker processes (production)")
     return parser.parse_args()
