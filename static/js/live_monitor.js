@@ -378,16 +378,13 @@ let eventCount = 0;
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Tapping...';
 
             try {
-                const res = await fetch('/api/access/authorizations/card', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        card_number: card,
-                        door_code: door,
-                        direction: direction,
-                        reader_id: 'SIM-READER-1'
-                    })
+                const query = new URLSearchParams({
+                    card_number: card,
+                    door_code: door,
+                    direction: direction,
+                    reader_id: 'SIM-READER-1'
                 });
+                const res = await fetch(`/api/access/authorizations/card?${query}`, { method: 'POST' });
                 const result = await res.json();
             } catch (err) {
                 console.error("Simulation error:", err);
@@ -826,4 +823,3 @@ window.openLockdownModal = openLockdownModal;
 window.submitLockdown = submitLockdown;
 window.confirmResetEmergency = confirmResetEmergency;
 window.submitResetEmergency = submitResetEmergency;
-

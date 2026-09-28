@@ -27,6 +27,7 @@ import json
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 # ANSI Colors
@@ -77,6 +78,28 @@ def send_http_request(url: str, payload: dict, timeout: float = 5.0) -> tuple[in
         return 0, {"error": str(e)}, elapsed_ms
 
 
+def send_query_request(url: str, params: dict, timeout: float = 5.0) -> tuple[int, dict, float]:
+    """Send POST request with URL query parameters."""
+    query_url = f"{url}?{urllib.parse.urlencode(params)}"
+    req = urllib.request.Request(query_url, method="POST", headers={"User-Agent": "PKS-Access-Test-Tool/1.0"})
+    start_time = time.perf_counter()
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            return resp.status, json.loads(resp.read().decode("utf-8")), elapsed_ms
+    except urllib.error.HTTPError as e:
+        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        error_body = e.read().decode("utf-8")
+        try:
+            parsed = json.loads(error_body)
+        except Exception:
+            parsed = {"error": error_body}
+        return e.code, parsed, elapsed_ms
+    except Exception as e:
+        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        return 0, {"error": str(e)}, elapsed_ms
+
+
 def swipe_card(
     server_url: str,
     card_number: str,
@@ -105,7 +128,7 @@ def swipe_card(
         print(f"  • Direction   : {C_BOLD}{direction.upper()}{C_RESET}")
         print(f"  • Reader ID   : {reader_id}")
 
-    status_code, response, latency = send_http_request(endpoint, payload)
+    status_code, response, latency = send_query_request(endpoint, payload)
 
     if verbose:
         print_swipe_result(status_code, response, latency)

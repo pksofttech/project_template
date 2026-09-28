@@ -170,17 +170,17 @@ async def test_repeated_access_denials_alert():
             # Swipe 1: Denied
             await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
             )
             # Swipe 2: Denied
             await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
             )
             # Swipe 3: Denied -> Should trigger alert!
             await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": target_card, "door_code": "DOOR-01", "direction": "IN"},
             )
 
             assert mock_dispatch.call_count >= 1

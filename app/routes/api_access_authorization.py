@@ -3,8 +3,9 @@ import json
 import os
 import uuid
 from datetime import datetime, timedelta
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlmodel import func, or_, select
 
@@ -30,12 +31,12 @@ from app.core.utility import broadcast_sse
 from app.module.face_service import face_service
 from app.stdio import print_error, print_info, print_success, time_now
 
-router = APIRouter(
+event_router = APIRouter(
     prefix="/api/access/event",
     tags=["Access Events & Hardware Integration"],
 )
 
-authorization_router = APIRouter(
+router = APIRouter(
     prefix="/api/access/authorizations",
     tags=["Access Authorizations"],
 )
@@ -79,7 +80,10 @@ class CardAccessRequest(BaseModel):
     """Schema for a card credential access authorization request."""
 
     card_number: str = Field(..., description="Card RFID / Wiegand Number")
-    door_code: str = Field(..., description="Door or Barrier Gate identifier code")
+    door_code: str = Field(
+        default="",
+        description="Optional door code; resolved from reader/device when omitted",
+    )
     direction: str = Field(default="IN", description="Direction: IN or OUT")
     reader_id: str | None = Field(default="", description="Optional hardware reader identifier")
     device_code: str | None = Field(default=None, description="Optional Access Device Code (e.g. DEV-LOBBY-RDR-01)")
@@ -130,9 +134,9 @@ class RemoteUnlockRequest(BaseModel):
     operator_name: str | None = Field(default="Operator", description="Name of operator triggering the unlock")
 
 
-@router.post("/swipe", include_in_schema=False, deprecated=True)
-@authorization_router.post("/card", summary="Authorize Access Using Card Credential")
-async def authorize_card_access(payload: CardAccessRequest, db: AsyncDbDep):
+@event_router.post("/swipe", include_in_schema=False, deprecated=True)
+@router.post("/card", summary="Authorize Access Using Card Credential")
+async def authorize_card_access(payload: Annotated[CardAccessRequest, Query()], db: AsyncDbDep):
     """
     Ingest card swipe events from external RFID readers, turnstiles, or barrier gates.
     Validates permissions against card status, membership, door permissions, time profiles,
@@ -145,6 +149,8 @@ async def authorize_card_access(payload: CardAccessRequest, db: AsyncDbDep):
     direction = (payload.direction or "IN").upper()
     reader_id = payload.reader_id or ""
     device_code = (payload.device_code or "").strip()
+
+    print_info(f"Card Swipe: {card_number} {door_code} {direction} {reader_id} {device_code}")
 
     # 1. Lookup Device if specified
     device = None
@@ -479,9 +485,12 @@ async def authorize_card_access(payload: CardAccessRequest, db: AsyncDbDep):
 
     ret = {
         "success": True,
+        "cmd": "OPEN_RELAY01" if result == "GRANTED" else "",
+        "display": "50415353" if result == "GRANTED" else "44454E59",
         "granted": (result == "GRANTED"),
         "result": result,
         "reason": reason,
+        "msg": reason,
         "member_name": member_name,
         "door_name": door_name,
         "from_zone": from_zone_name,
@@ -502,11 +511,12 @@ async def authorize_card_access(payload: CardAccessRequest, db: AsyncDbDep):
                 "expires_at": v_session.expires_at.isoformat(),
             }
         )
+    print_info(json.dumps(ret, indent=4))
     return ret
 
 
-@router.post("/challenge-verify", include_in_schema=False, deprecated=True)
-@authorization_router.post("/challenge/verify", summary="Verify Access Authorization Challenge")
+@event_router.post("/challenge-verify", include_in_schema=False, deprecated=True)
+@router.post("/challenge/verify", summary="Verify Access Authorization Challenge")
 async def verify_access_challenge(payload: ChallengeVerifyRequest, db: AsyncDbDep):
     """
     Validate the second factor (e.g. PIN, Fingerprint) for an active Access Verification Session.
@@ -729,7 +739,7 @@ async def verify_access_challenge(payload: ChallengeVerifyRequest, db: AsyncDbDe
     }
 
 
-@router.post("/remote_unlock", summary="Remote Door Unlock Trigger")
+@event_router.post("/remote_unlock", summary="Remote Door Unlock Trigger")
 async def remote_door_unlock(payload: RemoteUnlockRequest, db: AsyncDbDep):
     """Trigger a remote door unlock command from operator interface."""
     door = await db.get(Access_Door, payload.door_id)
@@ -788,7 +798,7 @@ async def remote_door_unlock(payload: RemoteUnlockRequest, db: AsyncDbDep):
 # =========================================================================
 
 
-@router.post("/camera-face", summary="Camera Face Detection & Recognition Webhook")
+@event_router.post("/camera-face", summary="Camera Face Detection & Recognition Webhook")
 async def handle_camera_face(request: Request, db: AsyncDbDep):
     """
     Ingest face detection snapshots from Smart IP Cameras (Hikvision, Dahua, Uniview, etc.)
@@ -1112,7 +1122,7 @@ async def handle_camera_face(request: Request, db: AsyncDbDep):
     }
 
 
-@router.get("/face-status", summary="Face Recognition Engine Diagnostic Status")
+@event_router.get("/face-status", summary="Face Recognition Engine Diagnostic Status")
 async def get_face_status(db: AsyncDbDep):
     """Return status of the InsightFace / Mockup recognition engine."""
     if len(face_service.member_ids) == 0:
@@ -1129,7 +1139,7 @@ async def get_face_status(db: AsyncDbDep):
     return face_service.get_status()
 
 
-@router.post("/face-sync", summary="Synchronize In-Memory Face Embeddings Cache")
+@event_router.post("/face-sync", summary="Synchronize In-Memory Face Embeddings Cache")
 async def sync_face_cache(db: AsyncDbDep):
     """Reload all member face embeddings into the in-memory vector cache."""
     members = (await db.exec(select(Access_Member))).all()
@@ -1141,7 +1151,7 @@ async def sync_face_cache(db: AsyncDbDep):
     }
 
 
-@router.post("/face-enroll", summary="Enroll or update Member Face Embedding")
+@event_router.post("/face-enroll", summary="Enroll or update Member Face Embedding")
 async def enroll_member_face(
     member_id: int,
     db: AsyncDbDep,
@@ -1172,7 +1182,7 @@ async def enroll_member_face(
     }
 
 
-@router.get("/face-review/gallery", summary="Paginated Face Recognition Audit Gallery")
+@event_router.get("/face-review/gallery", summary="Paginated Face Recognition Audit Gallery")
 async def get_face_review_gallery(
     db: AsyncDbDep,
     page: int = 1,
@@ -1283,7 +1293,7 @@ async def get_face_review_gallery(
     }
 
 
-@router.get("/face-review/stats", summary="Face Recognition Review Summary Statistics")
+@event_router.get("/face-review/stats", summary="Face Recognition Review Summary Statistics")
 async def get_face_review_stats(db: AsyncDbDep):
     """Get metrics and KPIs for face recognition operations."""
     total_face_logs = (
@@ -1339,7 +1349,7 @@ async def get_face_review_stats(db: AsyncDbDep):
     }
 
 
-@router.get("/face-review/enrolled", summary="List Enrolled Face Profiles")
+@event_router.get("/face-review/enrolled", summary="List Enrolled Face Profiles")
 async def get_face_enrolled_members(db: AsyncDbDep):
     """List members with enrolled biometric face embeddings."""
     stmt = select(Access_Member).order_by(Access_Member.id.asc())
@@ -1376,7 +1386,7 @@ class MobileSwipeRequest(BaseModel):
     reader_id: str | None = Field(default="BLE-READER-01")
 
 
-@router.post("/mobile-credential", summary="Mobile Credential Event (BLE / NFC)")
+@event_router.post("/mobile-credential", summary="Mobile Credential Event (BLE / NFC)")
 async def handle_mobile_credential(payload: MobileSwipeRequest, db: AsyncDbDep):
     """
     Authenticate smartphone virtual credentials via BLE (Bluetooth Low Energy)
@@ -1600,7 +1610,7 @@ class FingerprintSwipeRequest(BaseModel):
     reader_id: str | None = Field(default="FP-READER-01")
 
 
-@router.post("/fingerprint", summary="Fingerprint Biometric Event")
+@event_router.post("/fingerprint", summary="Fingerprint Biometric Event")
 async def handle_fingerprint(payload: FingerprintSwipeRequest, db: AsyncDbDep):
     """Authenticate biometric fingerprint verification against registered template."""
     now = time_now()
@@ -1802,7 +1812,7 @@ class PinEntryRequest(BaseModel):
     device_code: str | None = Field(default=None, description="Optional Device Code")
 
 
-@router.post("/pin-code", summary="PIN Code / Keypad Entry Event")
+@event_router.post("/pin-code", summary="PIN Code / Keypad Entry Event")
 async def handle_pin_entry(payload: PinEntryRequest, db: AsyncDbDep):
     """Authenticate Keypad PIN Entry with Duress Alarm detection."""
     now = time_now()

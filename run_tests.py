@@ -123,7 +123,7 @@ async def run_all_tests():
             # 9a. First Swipe IN -> Granted
             r = await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r.status_code == 200
             d = r.json()
@@ -135,7 +135,7 @@ async def run_all_tests():
             # 9b. Second Swipe IN immediately (Same Zone) -> Denied by Anti-Passback (APB)
             r_apb = await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r_apb.status_code == 200
             d_apb = r_apb.json()
@@ -147,7 +147,7 @@ async def run_all_tests():
             # 9c. Swipe OUT -> Granted
             r_out = await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "OUT"},
+                params={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "OUT"},
             )
             assert r_out.status_code == 200
             assert r_out.json()["granted"] is True
@@ -161,7 +161,7 @@ async def run_all_tests():
         try:
             r = await client.post(
                 "/api/access/authorizations/card",
-                json={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "IN"},
+                params={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "IN"},
             )
             assert r.status_code == 200
             d = r.json()

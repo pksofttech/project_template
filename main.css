@@ -192,9 +192,18 @@
     }
 }
 
-/* 5. Sticky Navbar Lock: ไม่เลื่อนตามการเปลี่ยนหน้า */
+/* 5. Persistent page chrome: ไม่เลื่อนตาม root page transition */
 .navbar {
     view-transition-name: main-navbar;
+}
+
+.drawer-side {
+    view-transition-name: main-sidebar;
+}
+
+/* Wider workspace for every page rendered inside the application drawer. */
+.drawer-content > main {
+    max-width: 96rem;
 }
 
 /* 6. Rendering Performance: ข้ามการคำนวณ Layout สำหรับเนื้อหาที่อยู่นอกจอ */

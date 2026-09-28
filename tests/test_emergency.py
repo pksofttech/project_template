@@ -47,7 +47,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # 1. Blocked card '9990001111' MUST be GRANTED for emergency life safety
         swipe_blocked = await client.post(
             "/api/access/authorizations/card",
-            json={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "OUT"},
+            params={"card_number": "9990001111", "door_code": "DOOR-01", "direction": "OUT"},
         )
         assert swipe_blocked.status_code == 200
         res_blocked = swipe_blocked.json()
@@ -58,7 +58,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # 2. Completely unregistered card MUST be GRANTED for emergency evacuation
         swipe_unknown = await client.post(
             "/api/access/authorizations/card",
-            json={"card_number": "UNKNOWN_CARD_999", "door_code": "DOOR-01", "direction": "OUT"},
+            params={"card_number": "UNKNOWN_CARD_999", "door_code": "DOOR-01", "direction": "OUT"},
         )
         assert swipe_unknown.status_code == 200
         res_unknown = swipe_unknown.json()
@@ -89,7 +89,7 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # 1. Regular active user '1001234567' (Engineering / Somchai) MUST be DENIED
         swipe_regular = await client.post(
             "/api/access/authorizations/card",
-            json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
+            params={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
         )
         assert swipe_regular.status_code == 200
         res_regular = swipe_regular.json()
@@ -115,11 +115,11 @@ async def test_emergency_lifecycle_and_swipe_enforcement():
         # Move Somchai to outside zone via DOOR-02 exit turnstile (direction="IN" moves from lobby to outside)
         await client.post(
             "/api/access/authorizations/card",
-            json={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "IN"},
+            params={"card_number": "1001234567", "door_code": "DOOR-02", "direction": "IN"},
         )
         swipe_normal = await client.post(
             "/api/access/authorizations/card",
-            json={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
+            params={"card_number": "1001234567", "door_code": "DOOR-01", "direction": "IN"},
         )
         assert swipe_normal.status_code == 200
         assert swipe_normal.json()["granted"] is True

@@ -14,7 +14,7 @@ async def test_access_card_swipe_granted():
         # Move Somchai to outside zone via exit turnstile DOOR-02 to ensure clean state
         await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "1001234567",
                 "door_code": "DOOR-02",
                 "direction": "IN",
@@ -23,7 +23,7 @@ async def test_access_card_swipe_granted():
         # Somchai's card '1001234567' on DOOR-01
         res = await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "1001234567",
                 "door_code": "DOOR-01",
                 "direction": "IN",
@@ -32,6 +32,8 @@ async def test_access_card_swipe_granted():
         assert res.status_code == 200
         data = res.json()
         assert data["success"] is True
+        assert data["cmd"] == "OPEN_RELAY01"
+        assert data["display"] == "50415353"
         assert data["granted"] is True
         assert data["result"] == "GRANTED"
         assert data["unlock_relay"] is True
@@ -47,7 +49,7 @@ async def test_access_card_swipe_denied_blocked():
         # John Doe's blocked card '9990001111'
         res = await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "9990001111",
                 "door_code": "DOOR-01",
                 "direction": "IN",
@@ -56,6 +58,8 @@ async def test_access_card_swipe_denied_blocked():
         assert res.status_code == 200
         data = res.json()
         assert data["success"] is True
+        assert data["cmd"] == ""
+        assert data["display"] == "44454E59"
         assert data["granted"] is False
         assert data["result"] == "DENIED"
         assert data["unlock_relay"] is False
@@ -68,7 +72,7 @@ async def test_access_card_swipe_unregistered():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         res = await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "UNKNOWN_987654321",
                 "door_code": "DOOR-01",
                 "direction": "IN",
@@ -77,6 +81,8 @@ async def test_access_card_swipe_unregistered():
         assert res.status_code == 200
         data = res.json()
         assert data["success"] is True
+        assert data["cmd"] == ""
+        assert data["display"] == "44454E59"
         assert data["granted"] is False
         assert data["result"] == "DENIED"
         assert "Unregistered" in data["reason"]
@@ -428,7 +434,7 @@ async def test_access_dual_factor_challenge_and_verification():
         # Step 1: Somchai swipes card at Server Room (DOOR-03) which enforces CARD_AND_PIN
         res_swipe = await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "1001234567",
                 "door_code": "DOOR-03",
                 "device_code": "DEV-SERVER-COMBO-01",
@@ -465,7 +471,7 @@ async def test_access_dual_factor_challenge_and_verification():
         # Step 3: Swipe again to get a new challenge session
         res_swipe2 = await client.post(
             "/api/access/authorizations/card",
-            json={
+            params={
                 "card_number": "1001234567",
                 "door_code": "DOOR-03",
                 "device_code": "DEV-SERVER-COMBO-01",
@@ -493,5 +499,3 @@ async def test_access_dual_factor_challenge_and_verification():
         assert verify_data["result"] == "GRANTED"
         assert verify_data["unlock_relay"] is True
         assert verify_data["relay_time"] > 0
-
-

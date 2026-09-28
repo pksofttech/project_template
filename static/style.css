@@ -8368,6 +8368,9 @@
   .h-128 {
     height: calc(var(--spacing) * 128);
   }
+  .h-dvh {
+    height: 100dvh;
+  }
   .h-full {
     height: 100%;
   }
@@ -8394,9 +8397,6 @@
   }
   .max-h-\[580px\] {
     max-height: 580px;
-  }
-  .max-h-screen {
-    max-height: 100vh;
   }
   .min-h-0 {
     min-height: calc(var(--spacing) * 0);
@@ -14638,6 +14638,16 @@
       }
     }
   }
+  .lg\:sticky {
+    @media (width >= 64rem) {
+      position: sticky;
+    }
+  }
+  .lg\:top-0 {
+    @media (width >= 64rem) {
+      top: calc(var(--spacing) * 0);
+    }
+  }
   .lg\:col-span-1 {
     @media (width >= 64rem) {
       grid-column: span 1 / span 1;
@@ -14676,6 +14686,11 @@
   .lg\:hidden {
     @media (width >= 64rem) {
       display: none;
+    }
+  }
+  .lg\:h-dvh {
+    @media (width >= 64rem) {
+      height: 100dvh;
     }
   }
   .lg\:w-1\/2 {
@@ -14728,6 +14743,16 @@
   .lg\:gap-3 {
     @media (width >= 64rem) {
       gap: calc(var(--spacing) * 3);
+    }
+  }
+  .lg\:self-start {
+    @media (width >= 64rem) {
+      align-self: flex-start;
+    }
+  }
+  .lg\:overflow-hidden {
+    @media (width >= 64rem) {
+      overflow: hidden;
     }
   }
   .lg\:p-8 {
@@ -14939,6 +14964,12 @@
 }
 .navbar {
   view-transition-name: main-navbar;
+}
+.drawer-side {
+  view-transition-name: main-sidebar;
+}
+.drawer-content > main {
+  max-width: 96rem;
 }
 .content-auto-render {
   content-visibility: auto;
